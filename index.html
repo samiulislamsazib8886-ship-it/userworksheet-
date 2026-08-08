@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MailCode Pro - Ultimate Hybrid Sync</title>
+    <title>MailCode Pro - Glitch-Free Secure Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Firebase & SDKs -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
@@ -26,10 +26,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-weight: 700; }
         body { background: var(--bg); padding: 5px; color: var(--text); overflow-x: hidden; transition: 0.3s; }
 
-        /* ট্যাব ও হেডার */
+        /* ট্যাব সিলেকশন */
         .tab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
-        .person-btn { padding: 18px; border: none; border-radius: 12px; color: white; font-size: 13px; cursor: pointer; }
+        .person-btn { padding: 18px; border: none; border-radius: 12px; color: white; font-size: 13px; cursor: pointer; transition: 0.2s; }
 
+        /* হেডার কার্ডস */
         .top-panel { position: sticky; top: 0; background: var(--bg); padding-bottom: 5px; z-index: 100; }
         .triple-header { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px; scrollbar-width: none; }
         .header-card { 
@@ -51,17 +52,17 @@
         .active-user-name { font-size: 13px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--text); }
         .theme-toggle { cursor: pointer; font-size: 18px; color: var(--p-color); padding: 5px; }
 
-        /* টেবিল */
+        /* টেবিল সেটিংস */
         .table-wrap { background: var(--card); border-radius: 10px; overflow: auto; border: 1px solid var(--border); height: calc(100vh - 195px); }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 1000px; }
-        th, td { font-size: var(--f-sz); padding: 8px 2px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; color: var(--text); }
+        th, td { font-size: var(--f-sz); padding: 8px 2px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); position: relative; }
         th { background: #1e293b; color: white; position: sticky; top: 0; z-index: 50; }
         td:first-child, th:first-child { position: sticky; left: 0; z-index: 51; background: var(--card); width: 30px; border-right: 2px solid var(--border); }
 
         .c-mail { color: var(--p-color); cursor: pointer; text-align: left; padding-left: 4px; }
         .active-mail-cell { background-color: var(--highlight) !important; color: white !important; border-radius: 4px; }
         
-        /* ম্যানেজ মোড ইউআই */
+        /* ম্যানেজ মোড সেটিংস */
         #manage-ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 200; padding: 10px; display: none; overflow-y: auto; }
         .manage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--p-color); padding-bottom: 10px; color: var(--text); }
         .bulk-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; }
@@ -69,10 +70,13 @@
         
         .edit-input { width: 100%; height: 100%; border: none; padding: 0 5px; font-size: 11px; font-weight: 700; background: transparent; outline: none; color: var(--text); }
         td.selected-cell { background-color: var(--selected) !important; border: 1px solid var(--p-color); }
-
-        /* একশন বাটনসমূহ */
         .btn-clean { padding: 8px; border: none; border-radius: 6px; font-size: 10px; color: white; cursor: pointer; flex: 1; min-width: 80px; }
-        .btn-apply { background: var(--p-color); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-size: 11px; }
+
+        #user-context-menu { position: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 2000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); min-width: 160px; }
+        .menu-item { padding: 12px 15px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+
+        .helper-box { background: var(--card); border: 1.5px solid var(--p-color); border-radius: 12px; padding: 8px; display: flex; gap: 4px; align-items: center; margin-top: 8px; }
+        .h-input { padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-size: 11px; font-weight: bold; background: var(--bg); color: var(--text); }
 
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 10px 20px; border-radius: 30px; font-size: 11px; z-index: 3000; display: none; }
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 9999; color: var(--text); }
@@ -81,7 +85,7 @@
 </head>
 <body onpointerup="stopSelection()">
 
-    <div id="loading-screen"><h3>CONNECTING SERVER...</h3></div>
+    <div id="loading-screen"><h3>ESTABLISHING SECURE CONNECTION...</h3></div>
     <div id="toast">Action Success!</div>
 
     <!-- স্ক্রিন ১: সিলেকশন ভিউ -->
@@ -91,6 +95,7 @@
             <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
         </div>
         <div id="tabs-container" class="tab-grid" style="padding: 10px;"></div>
+        <p style="text-align:center; font-size:10px; color:#888; margin-top:30px;">* Database configuration is locked for security.</p>
     </div>
 
     <!-- স্ক্রিন ২: মেইন ড্যাশবোর্ড -->
@@ -137,16 +142,7 @@
         <div class="table-wrap">
             <table id="user-table">
                 <thead>
-                    <tr>
-                        <th style="width:25px;">#</th>
-                        <th style="width:45px;">UID</th>
-                        <th style="width:45px;">Pass</th>
-                        <th style="width:45px;">2FA</th>
-                        <th style="width:45px;">Cook</th>
-                        <th>Full Mail</th>
-                        <th style="width:55px;">Status</th>
-                        <th style="width:30px;">X</th>
-                    </tr>
+                    <tr><th style="width:25px;">#</th><th style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr>
                 </thead>
                 <tbody id="user-table-body"></tbody>
             </table>
@@ -156,65 +152,54 @@
     <!-- স্ক্রিন ৩: ম্যানেজমেন্ট ইউআই -->
     <div id="manage-ui">
         <div class="manage-header">
-            <div style="font-size: 15px;"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div>
+            <div style="font-size: 15px;"><i class="fa-solid fa-screwdriver-wrench"></i> SECURE MANAGEMENT</div>
             <button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:8px 20px;">BACK</button>
         </div>
 
-        <!-- বাল্ক ইম্পোর্ট ফিক্সড সিস্টেম -->
         <div class="bulk-card">
             <div class="bulk-counter" id="bulk-count">Mails: 0</div>
             <span style="font-size: 11px; color: var(--p-color);">BULK IMPORT (Email|Pass|Cookie|Token)</span>
-            <textarea id="bulkDataBox" class="input-box" style="height: 55px; margin-top: 5px; font-family: monospace;" placeholder="Paste data here..." oninput="updateBulkCount()"></textarea>
+            <textarea id="bulkDataBox" class="input-box" style="height: 55px;" placeholder="Paste data lines here..." oninput="updateBulkCount()"></textarea>
             <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
                 <span style="font-size: 10px;">START FROM ROW:</span>
-                <input type="number" id="bulk-start-row" class="input-box" style="width:50px; text-align:center;" value="1">
-                <button class="btn-tool" style="background:green; flex:1" onclick="uploadBulkData()">IMPORT TO SPECIFIC ROW</button>
+                <input type="number" id="bulk-start-row" class="input-box" style="width:50px;" value="1">
+                <button class="btn-tool" style="background:green; flex:1" onclick="uploadBulkData()">IMPORT DATA</button>
             </div>
         </div>
 
         <div class="bulk-card">
             <div style="display:flex; gap:5px; align-items:center;">
-                <input type="text" id="fill-val" class="input-box" style="flex:2" placeholder="Fill Pass/Data">
+                <input type="text" id="fill-val" class="input-box" style="flex:2" placeholder="Fill Value">
                 <span style="font-size: 9px;">ROW:</span>
                 <input type="number" id="fill-from" class="input-box" style="width:35px" value="1">
                 <span>-</span>
                 <input type="number" id="fill-to" class="input-box" style="width:35px" value="10">
-                <button onclick="applyRangeAction('fill')" class="btn-apply">APPLY</button>
+                <button onclick="applyRangeAction('fill')" class="btn-tool" style="background:var(--p-color); width: 60px;">APPLY</button>
             </div>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 10px;">
                 <button class="btn-clean" style="background:#f59e0b;" onclick="applyRangeAction('pass')">Clear Pass</button>
                 <button class="btn-clean" style="background:#f59e0b;" onclick="applyRangeAction('cookie')">Clear Cook</button>
                 <button class="btn-clean" style="background:#ef4444;" onclick="applyRangeAction('delete')">Delete Rows</button>
+                <button class="btn-clean" style="background:#1a73e8;" onclick="addRow()">+ Add Row</button>
             </div>
         </div>
 
-        <div class="table-wrap" style="height: calc(100vh - 410px);">
+        <div class="table-wrap" style="height: calc(100vh - 360px);">
             <table>
-                <thead>
-                    <tr>
-                        <th style="width:25px;">#</th>
-                        <th style="width:45px;">UID</th>
-                        <th style="width:45px;">Pass</th>
-                        <th style="width:45px;">2FA</th>
-                        <th style="width:45px;">Cook</th>
-                        <th>Full Mail</th>
-                        <th style="width:55px;">Status</th>
-                        <th style="width:30px;">X</th>
-                    </tr>
-                </thead>
+                <thead><tr><th style="width:25px;">#</th><th style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr></thead>
                 <tbody id="manage-table-body"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- কন্টেক্সট মেনু -->
-    <div id="user-context-menu" style="position:fixed; background:var(--card); border:1px solid var(--border); border-radius:8px; display:none; z-index:2000; box-shadow:0 5px 15px rgba(0,0,0,0.3); min-width:160px;">
-        <div class="menu-item" style="padding:10px; border-bottom:1px solid var(--border); cursor:pointer; font-size:12px;" onclick="enableRangeMode()">Select Range</div>
-        <div class="menu-item" style="padding:10px; cursor:pointer; font-size:12px; color:red;" onclick="deleteSelectedRows()">Delete Selected</div>
+    <!-- মেনু -->
+    <div id="user-context-menu">
+        <div class="menu-item" onclick="enableRangeMode()">Select Range</div>
+        <div class="menu-item" style="color:red;" onclick="deleteSelectedRows()">Delete Selected</div>
     </div>
 
 <script>
-    // --- ফায়ারবেস কনফিগারেশন ---
+    // --- ফায়ারবেস কনফিগারেশন (আপনার ডাটাবেজ কনফিগ) ---
     const firebaseConfig = {
         apiKey: "AIzaSyAWe-hm45aoVdAuGajFP2aWUrXbWah29B0",
         authDomain: "user-sheet-control.firebaseapp.com",
@@ -228,8 +213,7 @@
     const db = firebase.database();
     const API_FETCH_URL = "https://code.yamin.bd/api.php?action=fetch";
 
-    let activeUser = "", selectedRowId = null, extractedUid = "", rowKeys = [], localData = {};
-    let isRangeMode = false, startPoint = null, selectedSet = new Set();
+    let activeUser = "", selectedRowId = null, extractedUid = "", rowKeys = [], localData = {}, isRangeMode = false, startPoint = null, selectedSet = new Set();
 
     function toggleTheme() {
         const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -238,6 +222,7 @@
     }
     if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
 
+    // মেইন পেজ লোড - শুধুমাত্র রিড মোডে (সেভ বা ডিলিট বাটন নেই)
     window.onload = () => {
         db.ref('users').on('value', (snap) => {
             let html = '';
@@ -274,17 +259,14 @@
                 <td>${i}</td><td>${row.uid||""}</td><td>${row.pass||""}</td><td>${row.tfa||""}</td><td>${row.cookie||""}</td>
                 <td class="c-mail ${hClass}" onclick="onMailClick(this, '${key}', '${row.fullMail}')">${row.fullMail || ""}</td>
                 <td style="color:#dc2626;">${row.status||""}</td>
-                <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${key}')"></i></td>
+                <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="safeClearRow('${key}')"></i></td>
             </tr>`;
-
             mHtml += `<tr>
                 <td>${i}</td>
                 ${['uid','pass','tfa','cookie','fullMail','status'].map(f => `
-                    <td class="${sClass}" onclick="handleManageSelect(event, '${key}', ${i-1})">
-                        <input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}', '${f}', this.value)">
-                    </td>
+                    <td class="${sClass}" onclick="handleManageSelect(event, '${key}', ${i-1})"><input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}', '${f}', this.value)"></td>
                 `).join('')}
-                <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${key}')"></i></td>
+                <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="safeDeleteRow('${key}')"></i></td>
             </tr>`;
             i++;
         });
@@ -292,63 +274,45 @@
         document.getElementById('manage-table-body').innerHTML = mHtml;
     }
 
-    function openManagement() { document.getElementById('main-dashboard').classList.add('hidden'); document.getElementById('manage-ui').style.display = 'block'; }
-    function closeManagement() { document.getElementById('manage-ui').style.display = 'none'; document.getElementById('main-dashboard').classList.remove('hidden'); }
-
-    // --- বাল্ক ইম্পোর্ট উইথ স্টার্টিং রো (FIXED) ---
-    function updateBulkCount() {
-        const text = document.getElementById('bulkDataBox').value.trim();
-        const count = text ? text.split('\n').filter(l => l.trim() !== "").length : 0;
-        document.getElementById('bulk-count').innerText = "Mails: " + count;
+    // --- ব্যাকআপ ও নিরাপদ ডিলিট লজিক ---
+    async function backupData(rId) {
+        const row = localData[rId]; if(!row) return;
+        const ts = new Date().getTime();
+        await db.ref(`backups/${activeUser}/${ts}`).set(row);
     }
 
-    async function uploadBulkData() {
-        const text = document.getElementById('bulkDataBox').value.trim();
-        const startRow = parseInt(document.getElementById('bulk-start-row').value) - 1;
-        if(!text) return alert("Paste data first!");
-        if(startRow < 0) return alert("Start row must be 1 or more!");
-
-        const lines = text.split('\n').filter(l => l.trim() !== "");
-        let updates = {};
-        
-        lines.forEach((line, index) => {
-            let targetIdx = startRow + index;
-            let key;
-            if (targetIdx < rowKeys.length) {
-                key = rowKeys[targetIdx]; // বিদ্যমান রো ওভাররাইট
-            } else {
-                key = db.ref(`data/${activeUser}`).push().key; // নতুন রো তৈরি
-            }
-            updates[`data/${activeUser}/${key}`] = { uid:"", pass:"", tfa:"", cookie:"", fullMail:line.trim(), status:"", color:"#ffffff" };
-        });
-
-        db.ref().update(updates).then(() => {
-            document.getElementById('bulkDataBox').value = "";
-            document.getElementById('bulk-count').innerText = "Mails: 0";
-            showToast("Bulk Sync Done!");
-        });
+    async function safeDeleteRow(rId) {
+        if(!confirm("Delete? A secure backup will be created.")) return;
+        await backupData(rId);
+        db.ref(`data/${activeUser}/${rId}`).remove();
     }
 
-    // --- রেঞ্জ অ্যাকশনস ---
+    async function safeClearRow(rId) {
+        if(!confirm("Clear? A secure backup will be created.")) return;
+        await backupData(rId);
+        db.ref(`data/${activeUser}/${rId}`).update({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:""});
+    }
+
     async function applyRangeAction(mode) {
         const from = parseInt(document.getElementById('fill-from').value)-1, to = parseInt(document.getElementById('fill-to').value)-1;
         if(from < 0 || to >= rowKeys.length || from > to) return alert("Invalid Range!");
+        if(!confirm(`Proceed with ${mode.toUpperCase()} with backup?`)) return;
         let ups = {};
         for(let j=from; j<=to; j++) {
             let k = rowKeys[j];
             if(mode==='fill') ups[`data/${activeUser}/${k}/pass`] = document.getElementById('fill-val').value;
             else if(mode==='pass') ups[`data/${activeUser}/${k}/pass`] = "";
             else if(mode==='cookie') ups[`data/${activeUser}/${k}/cookie`] = "";
-            else if(mode==='delete') db.ref(`data/${activeUser}/${k}`).remove();
+            else if(mode==='delete') { await backupData(k); db.ref(`data/${activeUser}/${k}`).remove(); }
         }
         if(mode!=='delete') await db.ref().update(ups);
         showToast("Done!");
     }
 
-    // --- কোর ফাংশনস ---
+    // --- কোর লজিক ---
+    function openManagement() { document.getElementById('main-dashboard').classList.add('hidden'); document.getElementById('manage-ui').style.display = 'block'; }
+    function closeManagement() { document.getElementById('manage-ui').style.display = 'none'; document.getElementById('main-dashboard').classList.remove('hidden'); }
     function saveEdit(rId, f, v) { db.ref(`data/${activeUser}/${rId}`).update({ [f]: v }).then(() => showToast("Saved!")); }
-    function clearRow(rId) { if(confirm("Clear content?")) db.ref(`data/${activeUser}/${rId}`).update({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:""}); }
-    function deleteRow(rId) { if(confirm("Delete row?")) db.ref(`data/${activeUser}/${rId}`).remove(); }
     function onMailClick(el, rId, fullText) {
         document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell')); el.classList.add('active-mail-cell');
         selectedRowId = rId; document.getElementById('otp-area').style.display = 'none'; document.getElementById('otp-input-box').value = fullText;
@@ -372,19 +336,13 @@
 
     // --- সিলেকশন লজিক ---
     function handleManageSelect(e, key, rIdx) {
-        if (!isRangeMode) {
-            selectedSet.clear(); startPoint = {r: rIdx, key: key}; selectedSet.add(key); showActionMenu(e); renderTables();
-        } else {
-            selectedSet.clear(); let s = Math.min(startPoint.r, rIdx), end = Math.max(startPoint.r, rIdx);
-            for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]);
-            showActionMenu(e); renderTables();
-        }
+        if (!isRangeMode) { selectedSet.clear(); startPoint = {r: rIdx, key: key}; selectedSet.add(key); showActionMenu(e); renderTables(); }
+        else { selectedSet.clear(); let s = Math.min(startPoint.r, rIdx), end = Math.max(startPoint.r, rIdx); for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]); showActionMenu(e); renderTables(); }
     }
     function showActionMenu(e) { const m = document.getElementById('user-context-menu'); m.style.display = 'block'; m.style.left = Math.min(e.clientX, window.innerWidth - 180) + 'px'; m.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px'; }
     function hideMenu() { document.getElementById('user-context-menu').style.display = 'none'; }
     function enableRangeMode() { isRangeMode = true; hideMenu(); showToast("Range Mode On"); }
-    function deleteSelectedRows() { if(confirm("Delete selected?")) { selectedSet.forEach(k => db.ref(`data/${activeUser}/${k}`).remove()); isRangeMode = false; selectedSet.clear(); hideMenu(); } }
-    function stopSelection() {}
+    async function deleteSelectedRows() { if(confirm("Delete selected with backup?")) { for(const k of selectedSet) await backupData(k); selectedSet.forEach(k => db.ref(`data/${activeUser}/${k}`).remove()); isRangeMode = false; selectedSet.clear(); hideMenu(); } }
 
     // --- ইউটিলিটি ---
     function parseCookie() { const input = document.getElementById('cookie-input').value; const match = input.match(/c_user=([0-9]+)/); extractedUid = match ? match[1] : ""; }
@@ -408,7 +366,7 @@
     async function generateNames() {
         const type = document.getElementById('country-select').value; const area = document.getElementById('name-result-area'); area.innerHTML = "...";
         if(type === 'custom') {
-            const bases = ["Samiul", "Islam", "Khan", "Akter", "Ahmed", "Rahman", "Mitu", "Sumi", "Saidul", "Hasan"]; area.innerHTML = "";
+            const bases = ["Samiul", "Islam", "Khan", "Ahmed", "Rahman", "Hasan", "Azmir"]; area.innerHTML = "";
             for(let k=0; k<5; k++) { let finalName = bases[Math.floor(Math.random() * bases.length)] + "_" + Math.random().toString(36).substring(7); addNameCard(finalName, area); } return;
         }
         try {
@@ -423,6 +381,17 @@
     }
     function addNameCard(n, a) { const d = document.createElement('div'); d.className = "name-card"; d.onclick = () => { navigator.clipboard.writeText(n); showToast("Copied!"); d.style.opacity = "0"; setTimeout(() => d.remove(), 300); }; d.innerHTML = `<span>${n}</span><i class="fa-solid fa-copy"></i>`; a.appendChild(d); }
     function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500); }
+    function stopSelection() {}
+    async function uploadBulkData() {
+        const text = document.getElementById('bulkDataBox').value.trim();
+        const start = parseInt(document.getElementById('bulk-start-row').value) - 1;
+        if(!text) return;
+        let ups = {}; text.split('\n').forEach((l, idx) => {
+            let target = start + idx; let k = (target < rowKeys.length) ? rowKeys[target] : db.ref(`data/${activeUser}`).push().key;
+            ups[`data/${activeUser}/${k}`] = { uid:"", pass:"", tfa:"", cookie:"", fullMail:l.trim(), status:"", color:"#ffffff" };
+        });
+        db.ref().update(ups).then(() => { document.getElementById('bulkDataBox').value = ""; showToast("Imported!"); });
+    }
     function addRow() { db.ref(`data/${activeUser}`).push({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:"", color:"#ffffff"}); }
 </script>
 </body>
