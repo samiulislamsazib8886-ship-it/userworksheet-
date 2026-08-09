@@ -3,381 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MailCode Pro - Ultimate Native Sync</title>
+    <title>MailCode Pro - User Hybrid Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Firebase & SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
     <style>
         :root { 
-            --p-color: #4f46e5; 
-            --insta-gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: #e2e8f0;
-            --f-sz: 9.3px; --highlight: #4f46e5; 
-            --selected: rgba(79, 70, 229, 0.2);
+            --p-color: #4f46e5; --insta-gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: #e2e8f0; --f-sz: 9.3px; --highlight: #4f46e5; --selected: rgba(79, 70, 229, 0.2);
         }
-
-        /* চোখের জন্য আরামদায়ক ডার্ক থিম */
         [data-theme="dark"] {
-            --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155;
-            --selected: rgba(255, 255, 255, 0.1);
+            --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155; --selected: rgba(255, 255, 255, 0.1);
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-weight: 700; }
         body { background: var(--bg); padding: 5px; color: var(--text); overflow-x: hidden; transition: 0.3s; }
-
-        /* ট্যাব ও হেডার সেটিংস */
         .tab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
         .person-btn { padding: 18px; border: none; border-radius: 12px; color: white; font-size: 13px; cursor: pointer; transition: 0.2s; }
-
         .top-panel { position: sticky; top: 0; background: var(--bg); padding-bottom: 5px; z-index: 100; transition: 0.3s; }
         .triple-header { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px; scrollbar-width: none; }
-        .header-card { 
-            background: var(--card); border-radius: 10px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-            min-width: 185px; flex: 1; height: 140px; display: flex; flex-direction: column; justify-content: space-between;
-        }
-
+        .header-card { background: var(--card); border-radius: 10px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); min-width: 185px; flex: 1; height: 140px; display: flex; flex-direction: column; justify-content: space-between; }
         .input-box { width: 100%; padding: 6px; border-radius: 5px; border: 1.5px solid var(--border); font-size: 9px; background: var(--bg); color: var(--text); outline: none; }
         .btn-tool { width: 100%; border: none; padding: 7px; border-radius: 6px; color: white; font-size: 11px; cursor: pointer; }
-        
         #otp-area { background: #0f172a; color: #10b981; border-radius: 5px; text-align: center; padding: 4px; display: none; }
         #otp-val { font-size: 19px; letter-spacing: 4px; }
         .tfa-display { font-size: 16px; color: #0891b2; text-align: center; background: #e0f2f1; border-radius: 4px; padding: 2px; }
-
         .name-res-area { font-size: 9.5px; overflow-y: auto; flex: 1; margin-top: 2px; }
         .name-card { background: var(--border); padding: 5px 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; cursor: pointer; transition: 0.3s; }
-
         .user-info-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--card); border-radius: 10px; margin-bottom: 5px; border: 1px solid var(--border); }
         .active-user-name { font-size: 13px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--text); }
         .theme-toggle { cursor: pointer; font-size: 18px; color: var(--p-color); padding: 5px; }
-
-        /* টেবিল ডিজাইন - ডার্ক মোডেও আরামদায়ক */
         .table-wrap { background: var(--card); border-radius: 10px; overflow: auto; border: 1px solid var(--border); height: calc(100vh - 195px); }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 1000px; background: var(--card); }
         th, td { font-size: var(--f-sz); padding: 8px 2px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; color: var(--text); }
         th { background: #1e293b; color: white; position: sticky; top: 0; z-index: 50; }
         td:first-child, th:first-child { position: sticky; left: 0; z-index: 51; background: var(--card); width: 30px; border-right: 2px solid var(--border); }
-
         .c-mail { color: var(--p-color); cursor: pointer; text-align: left; padding-left: 4px; }
         .active-mail-cell { background-color: var(--highlight) !important; color: white !important; border-radius: 4px; }
-        
-        /* ম্যানেজ মোড ইউআই */
         #manage-ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 200; padding: 10px; display: none; overflow-y: auto; }
         .manage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--p-color); padding-bottom: 10px; color: var(--text); }
-        
         .bulk-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; }
         .bulk-counter { position: absolute; right: 15px; top: 12px; font-size: 10px; background: #333; color: #fff; padding: 2px 8px; border-radius: 10px; }
-        
         .edit-input { width: 100%; height: 100%; border: none; padding: 0 5px; font-size: 11px; font-weight: 700; background: transparent; outline: none; color: var(--text); }
         td.selected-cell { background-color: var(--selected) !important; border: 1px solid var(--p-color); }
-
-        /* হিস্টোরি বাটনসমূহ */
+        .btn-clean { padding: 8px; border: none; border-radius: 6px; font-size: 10px; color: white; cursor: pointer; flex: 1; min-width: 80px; }
         .history-controls { display: flex; gap: 10px; margin-top: 8px; }
         .btn-history { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 12px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        #user-context-menu { position: fixed; background: var(--card); border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.3); display: none; z-index: 2000; border: 1px solid var(--border); min-width: 160px; }
+        #user-context-menu { position: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 2000; box-shadow: 0 5px 25px rgba(0,0,0,0.3); min-width: 160px; }
         .menu-item { padding: 12px 15px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); color: var(--text); }
-        
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 10px 20px; border-radius: 30px; font-size: 11px; z-index: 3000; display: none; }
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 9999; color: var(--text); }
         .hidden { display: none !important; }
     </style>
 </head>
 <body onpointerup="stopSelection()">
-
     <div id="loading-screen"><h3>ESTABLISHING SECURE CONNECTION...</h3></div>
     <div id="toast">Action Success!</div>
-
-    <!-- সিলেকশন ভিউ -->
     <div id="selection-view">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding: 15px;">
-            <h2>DATABASE MONITOR</h2>
-            <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
-        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding: 15px;"><h2>DATABASE MONITOR</h2><div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div></div>
         <div id="tabs-container" class="tab-grid" style="padding: 10px;"></div>
     </div>
-
-    <!-- ড্যাশবোর্ড ভিউ -->
     <div id="main-dashboard" class="hidden">
         <div class="top-panel">
             <div class="triple-header">
-                <div class="header-card">
-                    <div style="color:var(--p-color); font-size:11px;">OTP Fetcher</div>
-                    <input type="text" id="otp-input-box" class="input-box" readonly placeholder="Select row...">
-                    <button onclick="fetchOTPCode()" id="btn-fetch" class="btn-tool" style="background:var(--p-color)">GET CODE</button>
-                    <div id="otp-area"><div id="otp-val" onclick="copyValue(this.innerText, 'OTP')">------</div></div>
-                </div>
-                <div class="header-card">
-                    <div style="color:#0891b2; font-size:11px;">Cookie & 2FA</div>
-                    <input type="text" id="cookie-input" class="input-box" placeholder="Cookie..." oninput="parseCookie()">
-                    <input type="text" id="tfa-input" class="input-box" placeholder="2FA Secret..." oninput="generateLive2FA()">
-                    <div id="tfa-code-display" class="tfa-display" onclick="copyValue(this.innerText, '2FA')">------</div>
-                    <button id="send-btn" class="btn-tool" style="background:#10b981;" onclick="updateFirebase()">SEND ALL</button>
-                </div>
-                <div class="header-card">
-                    <div style="background:var(--insta-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; font-size:11px;">Insta Names</div>
-                    <select id="country-select" class="input-box" style="height:28px;">
-                        <option value="us">USA</option>
-                        <option value="th">Thailand (ไทย)</option>
-                        <option value="cn">China (中文)</option>
-                        <option value="ir">Arabic (عربي)</option>
-                        <option value="in">India (हिंदी)</option>
-                        <option value="tr">Turkey</option>
-                        <option value="bd">Bangladesh</option>
-                        <option value="custom">CUSTOM (Hajibaji)</option>
-                    </select>
-                    <button class="btn-tool" style="background:var(--insta-gradient);" onclick="generateNames()">GENERATE</button>
-                    <div id="name-result-area" class="name-res-area"></div>
-                </div>
+                <div class="header-card"><div style="color:var(--p-color); font-size:11px;">OTP Fetcher</div><input type="text" id="otp-input-box" class="input-box" readonly placeholder="Select row..."><button onclick="fetchOTPCode()" id="btn-fetch" class="btn-tool" style="background:var(--p-color)">GET CODE</button><div id="otp-area"><div id="otp-val" onclick="copyValue(this.innerText, 'OTP')">------</div></div></div>
+                <div class="header-card"><div style="color:#0891b2; font-size:11px;">Cookie & 2FA</div><input type="text" id="cookie-input" class="input-box" placeholder="Cookie..." oninput="parseCookie()"><input type="text" id="tfa-input" class="input-box" placeholder="2FA Secret..." oninput="generateLive2FA()"><div id="tfa-code-display" class="tfa-display" onclick="copyValue(this.innerText, '2FA')">------</div><button id="send-btn" class="btn-tool" style="background:#10b981;" onclick="updateFirebaseAndSheet()">SEND ALL</button></div>
+                <div class="header-card"><div style="background:var(--insta-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; font-size:11px;">Insta Names</div><select id="country-select" class="input-box" style="height:28px;"><option value="us">USA</option><option value="th">Thailand (ไทย)</option><option value="cn">China (中文)</option><option value="ir">Arabic (عربي)</option><option value="in">India (हिंदी)</option><option value="tr">Turkey</option><option value="bd">Bangladesh</option><option value="custom">CUSTOM</option></select><button class="btn-tool" style="background:var(--insta-gradient);" onclick="generateNames()">GENERATE</button><div id="name-result-area" class="name-res-area"></div></div>
             </div>
-            <div class="user-info-bar">
-                <button onclick="location.reload()" style="background:none; border:none; color:#64748b;"><i class="fa-solid fa-arrow-left-long fa-2xl"></i></button>
-                <div class="active-user-name" onclick="openManagement()">
-                    <span id="display-user-name">USERNAME</span>
-                    <button style="background:var(--p-color); color:white; border:none; padding:4px 12px; border-radius:8px; font-size:11px; margin-left:10px;">MANAGE</button>
-                </div>
-                <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
-            </div>
+            <div class="user-info-bar"><button onclick="location.reload()" style="background:none; border:none; color:#64748b;"><i class="fa-solid fa-arrow-left-long fa-2xl"></i></button><div class="active-user-name" onclick="openManagement()"><span id="display-user-name">USERNAME</span><button style="background:var(--p-color); color:white; border:none; padding:4px 12px; border-radius:8px; font-size:11px; margin-left:10px;">MANAGE</button></div><div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div></div>
         </div>
-        <div class="table-wrap">
-            <table id="user-table">
-                <thead>
-                    <tr><th style="width:25px;">#</th><th style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr>
-                </thead>
-                <tbody id="user-table-body"></tbody>
-            </table>
-        </div>
+        <div class="table-wrap"><table id="user-table"><thead><tr><th style="width:25px;">#</th><th style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr></thead><tbody id="user-table-body"></tbody></table></div>
     </div>
-
-    <!-- ম্যানেজ ইউআই -->
     <div id="manage-ui">
-        <div class="manage-header">
-            <div style="font-size: 15px;"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div>
-            <button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:8px 20px;">BACK</button>
-        </div>
-        <div class="bulk-card">
-            <div class="bulk-counter" id="bulk-count">Mails: 0</div>
-            <textarea id="bulkDataBox" class="input-box" style="height: 55px;" placeholder="Email|Pass|Cookie|Token..." oninput="updateBulkCount()"></textarea>
-            <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
-                <span style="font-size: 10px;">ROW:</span>
-                <input type="number" id="bulk-start-row" class="input-box" style="width:50px;" value="1">
-                <button class="btn-tool" style="background:green; flex:1" onclick="uploadBulkData()">IMPORT</button>
-            </div>
-            <div class="history-controls">
-                <button onclick="undoAction()" class="btn-history" style="background:#64748b;"><i class="fa-solid fa-rotate-left"></i> RETURN</button>
-                <button onclick="redoAction()" class="btn-history" style="background:#475569;"><i class="fa-solid fa-rotate-right"></i> FORWARD</button>
-            </div>
-        </div>
-        <div class="bulk-card">
-            <div style="display:flex; gap:5px; align-items:center;">
-                <input type="text" id="fill-val" class="input-box" style="flex:2" placeholder="Value to Fill">
-                <input type="number" id="fill-from" class="input-box" style="width:35px" value="1">
-                <span>-</span>
-                <input type="number" id="fill-to" class="input-box" style="width:35px" value="10">
-                <button onclick="applyRangeAction('fill')" class="btn-tool" style="background:var(--p-color); width: 60px;">APPLY</button>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 10px;">
-                <button class="btn-clean" style="background:#f59e0b;" onclick="applyRangeAction('pass')">Clear Pass</button>
-                <button class="btn-clean" style="background:#ef4444;" onclick="applyRangeAction('delete')">Delete Rows</button>
-                <button class="btn-clean" style="background:#1a73e8;" onclick="addRow()">+ Add Row</button>
-            </div>
-        </div>
-        <div class="table-wrap" style="height: calc(100vh - 430px);">
-            <table>
-                <thead><tr><th style="width:25px;">#</th><th style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr></thead>
-                <tbody id="manage-table-body"></tbody>
-            </table>
-        </div>
+        <div class="manage-header"><div style="font-size: 15px;"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div><button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:8px 20px;">BACK</button></div>
+        <div class="bulk-card"><div class="bulk-counter" id="bulk-count">Mails: 0</div><span style="font-size: 11px; color: var(--p-color);">BULK IMPORT</span><textarea id="bulkDataBox" class="input-box" style="height: 55px;" placeholder="Email|Pass|Cookie|Token..." oninput="updateBulkCount()"></textarea><div style="display:flex; gap:10px; align-items:center; margin-top:8px;"><span style="font-size: 10px;">ROW:</span><input type="number" id="bulk-start-row" class="input-box" style="width:50px;" value="1"><button class="btn-tool" style="background:green; flex:1" onclick="uploadBulkData()">IMPORT</button></div><div class="history-controls"><button onclick="undoAction()" class="btn-history" style="background:#64748b;"><i class="fa-solid fa-rotate-left"></i> RETURN</button><button onclick="redoAction()" class="btn-history" style="background:#475569;"><i class="fa-solid fa-rotate-right"></i> FORWARD</button></div></div>
+        <div class="bulk-card"><div style="display:flex; gap:5px; align-items:center;"><input type="text" id="fill-val" class="input-box" style="flex:2" placeholder="Value to Fill"><input type="number" id="fill-from" class="input-box" style="width:35px" value="1"><span>-</span><input type="number" id="fill-to" class="input-box" style="width:35px" value="10"><button onclick="applyRangeAction('fill')" class="btn-tool" style="background:var(--p-color); width: 60px;">APPLY</button></div><div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 10px;"><button class="btn-clean" style="background:#ef4444;" onclick="applyRangeAction('delete')">Delete Rows</button><button class="btn-clean" style="background:#1a73e8;" onclick="addRow()">+ Add Row</button></div></div>
+        <div class="table-wrap"><table><thead><tr><th style="width:25px;">#</th><th style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr></thead><tbody id="manage-table-body"></tbody></table></div>
     </div>
-
-    <!-- কনটেক্সট মেনু -->
-    <div id="user-context-menu">
-        <div class="menu-item" onclick="enableRangeMode()">Select Range</div>
-        <div class="menu-item" onclick="copySelectedVertical()"><i class="fa-solid fa-copy"></i> Copy UID (Vertical)</div>
-        <div class="menu-item" style="color:red;" onclick="deleteSelectedRows()">Delete Selected</div>
-    </div>
-
+    <div id="user-context-menu"><div class="menu-item" onclick="enableRangeMode()">Select Range</div><div class="menu-item" onclick="copySelectedVertical()"><i class="fa-solid fa-copy"></i> Copy UID (Vertical)</div><div class="menu-item" style="color:red;" onclick="deleteSelectedRows()">Delete Selected</div></div>
 <script>
-    // --- ফায়ারবেস কনফিগারেশন ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyAWe-hm45aoVdAuGajFP2aWUrXbWah29B0",
-        authDomain: "user-sheet-control.firebaseapp.com",
-        databaseURL: "https://user-sheet-control-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "user-sheet-control",
-        storageBucket: "user-sheet-control.firebasestorage.app",
-        messagingSenderId: "1003962005887",
-        appId: "1:1003962005887:web:cc9048bc5d1413449a024a"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const firebaseConfig = { apiKey: "AIzaSyAWe-hm45aoVdAuGajFP2aWUrXbWah29B0", authDomain: "user-sheet-control.firebaseapp.com", databaseURL: "https://user-sheet-control-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "user-sheet-control", storageBucket: "user-sheet-control.firebasestorage.app", messagingSenderId: "1003962005887", appId: "1:1003962005887:web:cc9048bc5d1413449a024a" };
+    const GAS_SYNC_URL = "https://script.google.com/macros/s/AKfycbxE2vBNH5N7X7rK9Dow6XAvcGWj6gvSWQ7u8tRA6OC0sjw7EvZX5SNDmf7VpICgehdC/exec"; 
+    firebase.initializeApp(firebaseConfig); const db = firebase.database();
     const API_FETCH_URL = "https://code.yamin.bd/api.php?action=fetch";
-
-    let activeUser = "", selectedRowId = null, rowKeys = [], localData = {}, historyStack = [], redoStack = [];
-    let isRangeMode = false, startPoint = null, selectedSet = new Set();
-
-    function toggleTheme() {
-        const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.body.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-    }
+    let activeUser = "", selectedRowId = null, extractedUid = "", rowKeys = [], localData = {}, historyStack = [], redoStack = [], isRangeMode = false, startPoint = null, selectedSet = new Set();
+    function archiveToGoogleSheet(u, d) { fetch(GAS_SYNC_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'append', user: u, data: d }) }); }
+    function toggleTheme() { const n = document.body.getAttribute('data-theme')==='dark'?'light':'dark'; document.body.setAttribute('data-theme', n); localStorage.setItem('theme', n); }
     if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
-
-    window.onload = () => {
-        db.ref('users').on('value', (snap) => {
-            let html = '';
-            snap.forEach((child) => {
-                html += `<button class="person-btn" style="background:${child.val().color || '#4f46e5'}" onclick="selectUser('${child.key}')">${child.key}</button>`;
-            });
-            document.getElementById('tabs-container').innerHTML = html;
-            document.getElementById('loading-screen').style.display = 'none';
-        });
-    };
-
-    function selectUser(name) {
-        activeUser = name;
-        document.getElementById('display-user-name').innerText = name;
-        document.getElementById('selection-view').classList.add('hidden');
-        document.getElementById('main-dashboard').classList.remove('hidden');
-        db.ref('data/' + activeUser).on('value', (snap) => {
-            localData = snap.val() || {};
-            rowKeys = Object.keys(localData);
-            renderTables();
-        });
-    }
-
+    window.onload = () => { db.ref('users').on('value', snap => { let html = ''; snap.forEach(c => { html += `<button class="person-btn" style="background:${c.val().color || '#4f46e5'}" onclick="selectUser('${c.key}')">${c.key}</button>`; }); document.getElementById('tabs-container').innerHTML = html; document.getElementById('loading-screen').style.display = 'none'; }); };
+    function selectUser(n) { activeUser = n; document.getElementById('display-user-name').innerText = n; document.getElementById('selection-view').classList.add('hidden'); document.getElementById('main-dashboard').classList.remove('hidden'); db.ref('data/'+n).on('value', snap => { localData = snap.val()||{}; rowKeys = Object.keys(localData); renderTables(); }); }
     function renderTables() {
-        let fHtml = '', mHtml = ''; let i = 1;
-        const isDark = document.body.getAttribute('data-theme') === 'dark';
-        rowKeys.forEach((key) => {
-            let row = localData[key];
-            let hClass = (key === selectedRowId) ? 'active-mail-cell' : '';
-            let sClass = selectedSet.has(key) ? 'selected-cell' : '';
-            let rowBg = row.color || 'transparent';
-            if (isDark && rowBg === '#ffffff') rowBg = 'transparent';
-
-            fHtml += `<tr style="background-color: ${rowBg};">
-                <td>${i}</td><td>${row.uid||""}</td><td>${row.pass||""}</td><td>${row.tfa||""}</td><td>${row.cookie||""}</td>
-                <td class="c-mail ${hClass}" onclick="onMailClick(this, '${key}', '${row.fullMail}')">${row.fullMail || ""}</td>
-                <td style="color:#dc2626;">${row.status||""}</td>
-                <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${key}')"></i></td>
-            </tr>`;
-            mHtml += `<tr>
-                <td>${i}</td>
-                ${['uid','pass','tfa','cookie','fullMail','status'].map(f => `
-                    <td class="${sClass}" onclick="handleManageSelect(event, '${key}', ${i-1})"><input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}', '${f}', this.value)"></td>
-                `).join('')}
-                <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${key}')"></i></td>
-            </tr>`;
+        let fH = '', mH = ''; let i = 1; const isD = document.body.getAttribute('data-theme') === 'dark';
+        rowKeys.forEach(k => {
+            let r = localData[k]; let hC = (k === selectedRowId) ? 'active-mail-cell' : ''; let sC = selectedSet.has(k) ? 'selected-cell' : ''; let rowBg = r.color || 'transparent'; if (isD && rowBg === '#ffffff') rowBg = 'transparent';
+            fH += `<tr style="background-color: ${rowBg};"><td>${i}</td><td>${r.uid||""}</td><td>${r.pass||""}</td><td>${r.tfa||""}</td><td>${r.cookie||""}</td><td class="c-mail ${hC}" onclick="onMailClick(this, '${k}', '${r.fullMail}')">${r.fullMail || ""}</td><td style="color:#dc2626;">${r.status||""}</td><td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${k}')"></i></td></tr>`;
+            mH += `<tr><td>${i}</td>${['uid','pass','tfa','cookie','fullMail','status'].map(f => `<td class="${sC}" onclick="handleManageSelect(event, '${k}', ${i-1})"><input class="edit-input" value="${r[f]||''}" onchange="saveEdit('${k}', '${f}', this.value)"></td>`).join('')}<td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${k}')"></i></td></tr>`;
             i++;
         });
-        document.getElementById('user-table-body').innerHTML = fHtml;
-        document.getElementById('manage-table-body').innerHTML = mHtml;
+        document.getElementById('user-table-body').innerHTML = fH; document.getElementById('manage-table-body').innerHTML = mH;
     }
-
-    // --- নাম জেনারেটর (মাস্টার আপডেট: থাই, চীন, আরবি নেটিভ স্ক্রিপ্ট) ---
-    async function generateNames() {
-        const type = document.getElementById('country-select').value;
-        const area = document.getElementById('name-result-area');
-        area.innerHTML = "Generating...";
-
-        if(type === 'custom') {
-            const b = ["Samiul", "Islam", "Khan", "Ahmed", "Azmir"]; area.innerHTML = "";
-            for(let k=0; k<5; k++) addNameCard(b[Math.floor(Math.random()*5)] + "_" + Math.random().toString(36).substring(7), area); return;
-        }
-
-        try {
-            // নেটিভ ল্যাঙ্গুয়েজ ম্যাপ (First + Last Name)
-            const nativeNames = {
-                th: [["สมชาย", "แซ่ตั้ง"], ["สมศักดิ์", "ใจดี"], ["พรชัย", "สุวรรณ"], ["นารี", "รัตน"], ["มาลัย", "พงศ์"], ["กัญญา", "ศิริ"]],
-                cn: [["王", "伟"], ["李", "芳"], ["张", "强"], ["刘", "洋"], ["陈", "静"], ["赵", "敏"], ["孙", "宁"], ["周", "磊"]],
-                ir: [["محمد", "أحمد"], ["فاطمة", "علي"], ["علي", "حسن"], ["ليلى", "سلطان"], ["مريم", "إبراهيم"], ["يوسف", "منصور"]]
-            };
-
-            if(nativeNames[type]) {
-                area.innerHTML = "";
-                for(let k=0; k<5; k++) {
-                    let pair = nativeNames[type][Math.floor(Math.random() * nativeNames[type].length)];
-                    addNameCard(pair[0] + " " + pair[1], area);
-                }
-                return;
-            }
-
-            const res = await fetch(`https://randomuser.me/api/?results=5&nat=${type}`);
-            const data = await res.json(); area.innerHTML = "";
-            data.results.forEach(u => addNameCard(u.name.first + " " + u.name.last, area));
-        } catch(e) { area.innerHTML = "Error!"; }
-    }
-
-    function addNameCard(n, a) {
-        const d = document.createElement('div'); d.className = "name-card";
-        d.onclick = () => { navigator.clipboard.writeText(n); showToast("Copied!"); d.style.opacity = "0"; setTimeout(() => d.remove(), 300); };
-        d.innerHTML = `<span>${n}</span><i class="fa-solid fa-copy"></i>`; a.appendChild(d);
-    }
-
-    // --- সিলেকশন ও ম্যানেজমেন্ট ---
-    function handleManageSelect(e, key, rIdx) {
-        if (!isRangeMode) { selectedSet.clear(); startPoint = {r: rIdx, key: key}; selectedSet.add(key); showActionMenu(e); renderTables(); }
-        else { selectedSet.clear(); let s = Math.min(startPoint.r, rIdx), end = Math.max(startPoint.r, rIdx); for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]); showActionMenu(e); renderTables(); }
-    }
-    function copySelectedVertical() {
-        let t = ""; selectedSet.forEach(k => t += (localData[k].uid || "") + "\n");
-        navigator.clipboard.writeText(t.trim()); showToast("UIDs Copied!"); resetSelection();
-    }
-    function saveHistory() { historyStack.push(JSON.parse(JSON.stringify(localData))); redoStack = []; }
-    function undoAction() { if(historyStack.length) { redoStack.push(JSON.parse(JSON.stringify(localData))); db.ref(`data/${activeUser}`).set(historyStack.pop()); } }
-    function redoAction() { if(redoStack.length) { historyStack.push(JSON.parse(JSON.stringify(localData))); db.ref(`data/${activeUser}`).set(redoStack.pop()); } }
-
-    // --- কোর লজিকস ---
     function openManagement() { document.getElementById('main-dashboard').classList.add('hidden'); document.getElementById('manage-ui').style.display = 'block'; }
     function closeManagement() { document.getElementById('manage-ui').style.display = 'none'; document.getElementById('main-dashboard').classList.remove('hidden'); }
-    function saveEdit(rId, f, v) { db.ref(`data/${activeUser}/${rId}`).update({ [f]: v }).then(() => showToast("Saved!")); }
-    function clearRow(rId) { if(confirm("Clear content?")) db.ref(`data/${activeUser}/${rId}`).update({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:""}); }
-    function deleteRow(rId) { if(confirm("Delete row?")) db.ref(`data/${activeUser}/${rId}`).remove(); }
-    function addRow() { db.ref(`data/${activeUser}`).push({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:"", color:"#ffffff"}); }
-    function updateBulkCount() { const t = document.getElementById('bulkDataBox').value.trim(); document.getElementById('bulk-count').innerText = "Mails: " + (t?t.split('\n').length:0); }
-    async function uploadBulkData() {
-        saveHistory(); const text = document.getElementById('bulkDataBox').value.trim(); const start = parseInt(document.getElementById('bulk-start-row').value) - 1;
-        if(!text) return; let ups = {}; text.split('\n').forEach((l, idx) => { let target = start + idx; let k = (target < rowKeys.length) ? rowKeys[target] : db.ref(`data/${activeUser}`).push().key; ups[`data/${activeUser}/${k}`] = { uid:"", pass:"", tfa:"", cookie:"", fullMail:l.trim(), status:"", color:"#ffffff" }; });
-        db.ref().update(ups).then(() => { document.getElementById('bulkDataBox').value = ""; showToast("Imported!"); });
-    }
-    async function applyRangeAction(mode) {
-        saveHistory(); const from = parseInt(document.getElementById('fill-from').value)-1, to = parseInt(document.getElementById('fill-to').value)-1;
-        if(from < 0 || to >= rowKeys.length || from > to) return alert("Range Error!");
-        let ups = {}; for(let j=from; j<=to; j++) { let k = rowKeys[j]; if(mode==='fill') ups[`data/${activeUser}/${k}/pass`] = document.getElementById('fill-val').value; else if(mode==='delete') db.ref(`data/${activeUser}/${k}`).remove(); }
-        if(mode==='fill') await db.ref().update(ups); showToast("Done!");
-    }
-    function onMailClick(el, rId, fullText) {
-        document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell')); el.classList.add('active-mail-cell');
-        selectedRowId = rId; document.getElementById('otp-area').style.display = 'none'; document.getElementById('otp-input-box').value = fullText;
-        if(fullText) copyValue(fullText.split('|')[0].trim(), "Email");
-    }
-    async function fetchOTPCode() {
-        const val = document.getElementById('otp-input-box').value; if(!val) return; const btn = document.getElementById('btn-fetch'); btn.innerText = "...";
-        try { const res = await fetch(API_FETCH_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ email: val.split('|')[0], password: val.split('|')[1], refresh_token: val.split('|')[2] || "", client_id: val.split('|')[3] || "" }) });
-            const data = await res.json(); if(data.status) { document.getElementById('otp-area').style.display = 'block'; document.getElementById('otp-val').innerText = data.code; copyValue(data.code, "OTP"); }
-        } catch(e) {} finally { btn.innerText = "GET CODE"; }
-    }
-    function updateFirebase() {
-        if (!selectedRowId) return; db.ref(`data/${activeUser}/${selectedRowId}`).update({ uid: extractedUid || "", tfa: document.getElementById('tfa-input').value, cookie: document.getElementById('cookie-input').value }).then(() => {
-            showToast("Sync OK!"); document.getElementById('cookie-input').value = ""; document.getElementById('tfa-input').value = ""; document.getElementById('tfa-code-display').innerText = "------";
-        });
-    }
+    function saveEdit(rId, f, v) { db.ref(`data/${activeUser}/${rId}`).update({ [f]: v }).then(() => { showToast("Saved!"); archiveToGoogleSheet(activeUser, localData[rId]); }); }
+    async function backupRow(rId) { const ts = new Date().getTime(); await db.ref(`backups/${activeUser}/${ts}`).set(localData[rId]); }
+    function clearRow(rId) { if(confirm("Clear?")) { backupRow(rId); db.ref(`data/${activeUser}/${rId}`).update({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:""}); archiveToGoogleSheet(activeUser, localData[rId]); } }
+    function deleteRow(rId) { if(confirm("Delete?")) { backupRow(rId); db.ref(`data/${activeUser}/${rId}`).remove(); } }
+    function addRow() { db.ref(`data/${activeUser}`).push({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:"", color:"#ffffff"}).then(()=>archiveToGoogleSheet(activeUser, {fullMail:"New Row Added"})); }
+    async function uploadBulkData() { saveHistory(); const text = document.getElementById('bulkDataBox').value.trim(); const start = parseInt(document.getElementById('bulk-start-row').value) - 1; if(!text) return; let ups = {}; let arch = []; text.split('\n').forEach((l, idx) => { let target = start + idx; let k = (target < rowKeys.length) ? rowKeys[target] : db.ref(`data/${activeUser}`).push().key; let rowObj = { uid:"", pass:"", tfa:"", cookie:"", fullMail:l.trim(), status:"", color:"#ffffff" }; ups[`data/${activeUser}/${k}`] = rowObj; arch.push(rowObj); }); db.ref().update(ups).then(() => { document.getElementById('bulkDataBox').value = ""; showToast("Synced!"); archiveToGoogleSheet(activeUser, arch); }); }
+    async function applyRangeAction(mode) { saveHistory(); const from = parseInt(document.getElementById('fill-from').value)-1, to = parseInt(document.getElementById('fill-to').value)-1; if(from < 0 || to >= rowKeys.length || from > to) return alert("Range Error!"); let ups = {}; for(let j=from; j<=to; j++) { let k = rowKeys[j]; if(mode==='fill') ups[`data/${activeUser}/${k}/pass`] = document.getElementById('fill-val').value; else if(mode==='delete') { backupRow(k); db.ref(`data/${activeUser}/${k}`).remove(); } } if(mode==='fill') await db.ref().update(ups); showToast("Done!"); }
+    function onMailClick(el, rId, fullText) { document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell')); el.classList.add('active-mail-cell'); selectedRowId = rId; document.getElementById('otp-area').style.display = 'none'; document.getElementById('otp-input-box').value = fullText; if(fullText) copyValue(fullText.split('|')[0].trim(), "Email"); }
+    async function fetchOTPCode() { const val = document.getElementById('otp-input-box').value; if(!val) return; const btn = document.getElementById('btn-fetch'); btn.innerText = "..."; const p = val.split('|').map(i => i.trim()); try { const res = await fetch(API_FETCH_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ email: p[0], password: p[1], refresh_token: p[2] || "", client_id: p[3] || "" }) }); const data = await res.json(); if(data.status) { document.getElementById('otp-area').style.display = 'block'; document.getElementById('otp-val').innerText = data.code; copyValue(data.code, "OTP"); } } finally { btn.innerText = "GET CODE"; } }
+    function updateFirebaseAndSheet() { if (!selectedRowId) return; const cV = document.getElementById('cookie-input').value, tV = document.getElementById('tfa-input').value; const syncD = { uid: extractedUid || "", tfa: tV, cookie: cV }; db.ref(`data/${activeUser}/${selectedRowId}`).update(syncD).then(() => { showToast("Sync!"); archiveToGoogleSheet(activeUser, {...localData[selectedRowId], ...syncD}); document.getElementById('cookie-input').value = ""; document.getElementById('tfa-input').value = ""; document.getElementById('tfa-code-display').innerText = "------"; }); }
     function parseCookie() { const input = document.getElementById('cookie-input').value; const match = input.match(/c_user=([0-9]+)/); extractedUid = match ? match[1] : ""; }
     function generateLive2FA() {
         const secret = document.getElementById('tfa-input').value.trim(); if (secret.length < 10) return;
         try { const keyBytes = base32Decode(secret); const time = Math.floor(Date.now() / 30000); const timeBytes = new Uint8Array(8); let tv = time; for (let i = 7; i >= 0; i--) { timeBytes[i] = tv & 0xff; tv = Math.floor(tv / 256); } const hmac = CryptoJS.HmacSHA1(CryptoJS.lib.WordArray.create(timeBytes), CryptoJS.lib.WordArray.create(keyBytes)); const hb = []; for (let i = 0; i < hmac.words.length; i++) hb.push((hmac.words[i] >>> 24) & 0xff, (hmac.words[i] >>> 16) & 0xff, (hmac.words[i] >>> 8) & 0xff, hmac.words[i] & 0xff); const offset = hb[hb.length - 1] & 0x0f; const code = ((hb[offset] & 0x7f) << 24 | (hb[offset+1] & 0xff) << 16 | (hb[offset+2] & 0xff) << 8 | (hb[offset+3] & 0xff)) % 1000000; document.getElementById('tfa-code-display').innerText = code.toString().padStart(6, '0'); } catch (e) { document.getElementById('tfa-code-display').innerText = "ERR"; }
     }
-    function base32Decode(encoded) { const b32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits = '', bytes = []; encoded = encoded.replace(/\s/g, '').toUpperCase(); for (let i = 0; i < encoded.length; i++) { const val = b32.indexOf(encoded.charAt(i)); if (val !== -1) bits += val.toString(2).padStart(5, '0'); } for (let i = 0; i + 8 <= bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2)); return new Uint8Array(bytes); }
-    function copyValue(text, type) { if(!text || text === "------") return; navigator.clipboard.writeText(text); showToast(type + " Copied!"); }
+    function base32Decode(e) { const b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits = '', bytes = []; e = e.replace(/\s/g, '').toUpperCase(); for (let i = 0; i < e.length; i++) { const v = b.indexOf(e.charAt(i)); if (v !== -1) bits += v.toString(2).padStart(5, '0'); } for (let i = 0; i + 8 <= bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2)); return new Uint8Array(bytes); }
+    function copyValue(t, ty) { if(!t || t === "------") return; navigator.clipboard.writeText(t); showToast(ty + " Copied!"); }
+    async function generateNames() {
+        const type = document.getElementById('country-select').value; const area = document.getElementById('name-result-area'); area.innerHTML = "...";
+        if(type === 'custom') { const bases = ["Samiul", "Islam", "Khan", "Ahmed", "Azmir"]; area.innerHTML = ""; for(let k=0; k<5; k++) { addNameCard(bases[Math.floor(Math.random()*5)] + "_" + Math.random().toString(36).substring(7), area); } return; }
+        const nN = { th: [["สมชาย", "แซ่ตั้ง"], ["นารี", "รัตน"]], cn: [["王", "伟"], ["李", "芳"]], ir: [["محمد", "أحمد"], ["فاطمة", "علي"]] };
+        if(nN[type]) { area.innerHTML = ""; for(let k=0; k<5; k++) { let p = nN[type][Math.floor(Math.random() * nN[type].length)]; addNameCard(p[0] + " " + p[1], area); } return; }
+        try { const res = await fetch(`https://randomuser.me/api/?results=5&nat=${type==='cn'||type==='ir'||type==='th'?'us':type}`); const data = await res.json(); area.innerHTML = ""; data.results.forEach(u => addNameCard(u.name.first + " " + u.name.last, area)); } catch(e) {}
+    }
+    function addNameCard(n, a) { const d = document.createElement('div'); d.className = "name-card"; d.onclick = () => { navigator.clipboard.writeText(n); showToast("Copied!"); d.style.opacity = "0"; setTimeout(() => d.remove(), 300); }; d.innerHTML = `<span>${n}</span><i class="fa-solid fa-copy"></i>`; a.appendChild(d); }
     function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500); }
+    function handleManageSelect(e, k, rI) { if (!isRangeMode) { selectedSet.clear(); startPoint = {r: rI, key: k}; selectedSet.add(k); showActionMenu(e); renderTables(); } else { selectedSet.clear(); let s = Math.min(startPoint.r, rI), end = Math.max(startPoint.r, rI); for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]); showActionMenu(e); renderTables(); } }
     function showActionMenu(e) { const m = document.getElementById('user-context-menu'); m.style.display = 'block'; m.style.left = Math.min(e.clientX, window.innerWidth - 180) + 'px'; m.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px'; }
     function hideMenu() { document.getElementById('user-context-menu').style.display = 'none'; }
     function enableRangeMode() { isRangeMode = true; hideMenu(); showToast("Range Mode On"); }
+    function copySelectedVertical() { let t = ""; selectedSet.forEach(k => t += (localData[k].uid || "") + "\n"); navigator.clipboard.writeText(t.trim()); showToast("UIDs Copied!"); resetSelection(); }
     function resetSelection() { isRangeMode = false; startPoint = null; selectedSet.clear(); hideMenu(); renderTables(); }
-    function deleteSelectedRows() { if(confirm("Delete selected?")) { selectedSet.forEach(k => db.ref(`data/${activeUser}/${k}`).remove()); resetSelection(); } }
+    async function deleteSelectedRows() { if(confirm("Delete selected?")) { for(const k of selectedSet) await backupRow(k); selectedSet.forEach(k => db.ref(`data/${activeUser}/${k}`).remove()); resetSelection(); } }
     function stopSelection() {}
+    function updateBulkCount() { const t = document.getElementById('bulkDataBox').value.trim(); document.getElementById('bulk-count').innerText = "Mails: " + (t?t.split('\n').length:0); }
+    function saveHistory() { historyStack.push(JSON.parse(JSON.stringify(localData))); redoStack = []; }
+    async function undoAction() { if(historyStack.length) { redoStack.push(JSON.parse(JSON.stringify(localData))); await db.ref(`data/${activeUser}`).set(historyStack.pop()); } }
+    async function redoAction() { if(redoStack.length) { historyStack.push(JSON.parse(JSON.stringify(localData))); await db.ref(`data/${activeUser}`).set(redoStack.pop()); } }
 </script>
 </body>
 </html>
