@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MailCode Pro - Ultimate Hybrid Master</title>
+    <title>MailCode Pro - Secured User Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- Firebase & SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -19,7 +19,7 @@
             --selected: rgba(79, 70, 229, 0.2);
         }
 
-        /* চোখের জন্য আরামদায়ক ডার্ক মোড থিম */
+        /* চোখের জন্য আরামদায়ক ডার্ক মোড সেটিংস */
         [data-theme="dark"] {
             --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155;
             --selected: rgba(255, 255, 255, 0.1);
@@ -28,11 +28,10 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-weight: 700; }
         body { background: var(--bg); padding: 5px; color: var(--text); overflow-x: hidden; transition: 0.3s; }
 
-        /* ট্যাব সিলেকশন গ্রিড */
+        /* ট্যাব ও হেডার সেটিংস */
         .tab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
         .person-btn { padding: 18px; border: none; border-radius: 12px; color: white; font-size: 13px; cursor: pointer; transition: 0.2s; }
 
-        /* টপ প্যানেল ও টুলস */
         .top-panel { position: sticky; top: 0; background: var(--bg); padding-bottom: 5px; z-index: 100; transition: 0.3s; }
         .triple-header { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px; scrollbar-width: none; }
         .header-card { 
@@ -54,7 +53,7 @@
         .active-user-name { font-size: 13px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--text); }
         .theme-toggle { cursor: pointer; font-size: 18px; color: var(--p-color); padding: 5px; }
 
-        /* টেবিল সেটিংস */
+        /* টেবিল ডিজাইন */
         .table-wrap { background: var(--card); border-radius: 10px; overflow: auto; border: 1px solid var(--border); height: calc(100vh - 195px); }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 1000px; background: var(--card); }
         th, td { font-size: var(--f-sz); padding: 8px 2px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; color: var(--text); }
@@ -74,12 +73,11 @@
         .edit-input { width: 100%; height: 100%; border: none; padding: 0 5px; font-size: 11px; font-weight: 700; background: transparent; outline: none; color: var(--text); }
         td.selected-cell { background-color: var(--selected) !important; border: 1px solid var(--p-color); }
 
-        /* হিস্টোরি বাটন সেটিংস (Undo/Redo) */
         .history-controls { display: flex; gap: 10px; margin-top: 8px; }
         .btn-history { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 12px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
         /* কনটেক্সট মেনু */
-        #user-context-menu { position: fixed; background: var(--card); border-radius: 8px; box-shadow: 0 5px 25px rgba(0,0,0,0.3); display: none; z-index: 2000; border: 1px solid var(--border); min-width: 160px; }
+        #user-context-menu { position: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 2000; box-shadow: 0 5px 25px rgba(0,0,0,0.3); min-width: 160px; }
         .menu-item { padding: 12px 15px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); color: var(--text); }
         
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 10px 20px; border-radius: 30px; font-size: 11px; z-index: 3000; display: none; }
@@ -89,10 +87,10 @@
 </head>
 <body onpointerup="stopSelection()">
 
-    <div id="loading-screen"><h3>ESTABLISHING SECURE CONNECTION...</h3></div>
+    <div id="loading-screen"><h3>LOADING DATABASE...</h3></div>
     <div id="toast">Action Success!</div>
 
-    <!-- স্ক্রিন ১: সিলেকশন ভিউ -->
+    <!-- সিলেকশন ভিউ -->
     <div id="selection-view">
         <div style="display:flex; justify-content:space-between; align-items:center; padding: 15px;">
             <h2>DATABASE MONITOR</h2>
@@ -101,7 +99,7 @@
         <div id="tabs-container" class="tab-grid" style="padding: 10px;"></div>
     </div>
 
-    <!-- স্ক্রিন ২: মেইন ড্যাশবোর্ড (Fetch Mode) -->
+    <!-- ড্যাশবোর্ড ভিউ -->
     <div id="main-dashboard" class="hidden">
         <div class="top-panel">
             <div class="triple-header">
@@ -128,10 +126,8 @@
                         <option value="th">Thailand (ไทย)</option>
                         <option value="cn">China (中文)</option>
                         <option value="ir">Arabic (عربي)</option>
-                        <option value="in">India (हिंदी)</option>
-                        <option value="tr">Turkey</option>
                         <option value="bd">Bangladesh</option>
-                        <option value="custom">CUSTOM (Hajibaji)</option>
+                        <option value="custom">CUSTOM</option>
                     </select>
                     <button class="btn-tool" style="background:var(--insta-gradient);" onclick="generateNames()">GENERATE</button>
                     <div id="name-result-area" class="name-res-area"></div>
@@ -156,7 +152,7 @@
         </div>
     </div>
 
-    <!-- স্ক্রিন ৩: ম্যানেজমেন্ট ইউআই -->
+    <!-- ম্যানেজ ইউআই -->
     <div id="manage-ui">
         <div class="manage-header">
             <div style="font-size: 15px;"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div>
@@ -165,12 +161,12 @@
 
         <div class="bulk-card">
             <div class="bulk-counter" id="bulk-count">Mails: 0</div>
-            <span style="font-size: 11px; color: var(--p-color);">BULK IMPORT (Email|Pass|Cookie|Token)</span>
-            <textarea id="bulkDataBox" class="input-box" style="height: 55px;" placeholder="Paste data here..." oninput="updateBulkCount()"></textarea>
+            <span style="font-size: 11px; color: var(--p-color);">BULK IMPORT EMAILS</span>
+            <textarea id="bulkDataBox" class="input-box" style="height: 55px;" placeholder="Email|Pass|Cookie|Token..." oninput="updateBulkCount()"></textarea>
             <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
                 <span style="font-size: 10px;">ROW:</span>
                 <input type="number" id="bulk-start-row" class="input-box" style="width:50px;" value="1">
-                <button class="btn-tool" style="background:green; flex:1" onclick="uploadBulkData()">IMPORT ALL</button>
+                <button class="btn-tool" style="background:green; flex:1" onclick="uploadBulkData()">IMPORT</button>
             </div>
             <div class="history-controls">
                 <button onclick="undoAction()" class="btn-history" style="background:#64748b;"><i class="fa-solid fa-rotate-left"></i> RETURN</button>
@@ -208,7 +204,7 @@
     </div>
 
 <script>
-    // --- ফায়ারবেস ও গুগল শিট কনফিগারেশন ---
+    // --- ফায়ারবেস কনফিগারেশন ---
     const firebaseConfig = {
         apiKey: "AIzaSyAWe-hm45aoVdAuGajFP2aWUrXbWah29B0",
         authDomain: "user-sheet-control.firebaseapp.com",
@@ -218,7 +214,16 @@
         messagingSenderId: "1003962005887",
         appId: "1:1003962005887:web:cc9048bc5d1413449a024a"
     };
-    const GAS_SYNC_URL = "https://script.google.com/macros/s/AKfycbzND3R3c3UeAwA2K7PztREliZX6ozdPkqcu7d4O4tArO7ZTZqTVcbvdsOWDUCFSiavh/exec"; 
+
+    // --- গুগল ফর্ম এপিআই সেটিংস ---
+    const FORM_SYNC_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfeDglY6zK6GgaLiY6iliGxHoXwGJeAYCAogMrIazpcKVuSCQ/formResponse";
+    const FORM_ENTRIES = {
+        uid: "entry.2103578011",
+        pass: "entry.862857244",
+        tfa: "entry.650662198",
+        cookie: "entry.846810001",
+        mail: "entry.2057161853"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -227,12 +232,16 @@
     let activeUser = "", selectedRowId = null, extractedUid = "", rowKeys = [], localData = {}, historyStack = [], redoStack = [];
     let isRangeMode = false, startPoint = null, selectedSet = new Set();
 
-    // সরাসরি গুগল শিটে ডাটা জমা করার ইঞ্জিন
-    function archiveToGoogleSheet(userName, rowDataOrArray) {
-        fetch(GAS_SYNC_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify({ action: 'append', user: userName, data: rowDataOrArray })
+    function archiveToGS(u, d) {
+        if (!Array.isArray(d)) d = [d];
+        d.forEach(row => {
+            const p = new URLSearchParams();
+            p.append(FORM_ENTRIES.uid, row.uid || "");
+            p.append(FORM_ENTRIES.pass, row.pass || "");
+            p.append(FORM_ENTRIES.tfa, row.tfa || "");
+            p.append(FORM_ENTRIES.cookie, row.cookie || "");
+            p.append(FORM_ENTRIES.mail, row.fullMail || "");
+            fetch(FORM_SYNC_URL, { method: 'POST', mode: 'no-cors', body: p });
         });
     }
 
@@ -244,9 +253,9 @@
     if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
 
     window.onload = () => {
-        db.ref('users').on('value', (snap) => {
+        db.ref('users').on('value', snap => {
             let html = '';
-            snap.forEach((child) => {
+            snap.forEach(child => {
                 html += `<button class="person-btn" style="background:${child.val().color || '#4f46e5'}" onclick="selectUser('${child.key}')">${child.key}</button>`;
             });
             document.getElementById('tabs-container').innerHTML = html;
@@ -267,131 +276,137 @@
     }
 
     function renderTables() {
-        let fHtml = '', mHtml = ''; let i = 1;
-        const isDark = document.body.getAttribute('data-theme') === 'dark';
-        rowKeys.forEach((key) => {
+        let fH = '', mH = ''; let i = 1;
+        const isD = document.body.getAttribute('data-theme') === 'dark';
+        rowKeys.forEach(key => {
             let row = localData[key];
-            let hClass = (key === selectedRowId) ? 'active-mail-cell' : '';
-            let sClass = selectedSet.has(key) ? 'selected-cell' : '';
+            let hC = (key === selectedRowId) ? 'active-mail-cell' : '';
+            let sC = selectedSet.has(key) ? 'selected-cell' : '';
             let rowBg = row.color || 'transparent';
-            if (isDark && rowBg === '#ffffff') rowBg = 'transparent';
+            if (isD && rowBg === '#ffffff') rowBg = 'transparent';
 
-            fHtml += `<tr style="background-color: ${rowBg};">
+            fH += `<tr style="background-color: ${rowBg};">
                 <td>${i}</td><td>${row.uid||""}</td><td>${row.pass||""}</td><td>${row.tfa||""}</td><td>${row.cookie||""}</td>
-                <td class="c-mail ${hClass}" onclick="onMailClick(this, '${key}', '${row.fullMail}')">${row.fullMail || ""}</td>
+                <td class="c-mail ${hC}" onclick="onMailClick(this, '${key}', '${row.fullMail}')">${row.fullMail || ""}</td>
                 <td style="color:#dc2626;">${row.status||""}</td>
                 <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${key}')"></i></td>
             </tr>`;
-            mHtml += `<tr>
+            mH += `<tr>
                 <td>${i}</td>
                 ${['uid','pass','tfa','cookie','fullMail','status'].map(f => `
-                    <td class="${sClass}" onclick="handleManageSelect(event, '${key}', ${i-1})"><input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}', '${f}', this.value)"></td>
+                    <td class="${sC}" onclick="handleManageSelect(event, '${key}', ${i-1})"><input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}', '${f}', this.value)"></td>
                 `).join('')}
                 <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${key}')"></i></td>
             </tr>`;
             i++;
         });
-        document.getElementById('user-table-body').innerHTML = fHtml;
-        document.getElementById('manage-table-body').innerHTML = mHtml;
+        document.getElementById('user-table-body').innerHTML = fH;
+        document.getElementById('manage-table-body').innerHTML = mH;
     }
 
-    // --- নাম জেনারেটর (নেটিভ স্ক্রিপ্ট ও ক্লিন ফরম্যাট) ---
+    // --- ব্যাকআপ ফাংশন ফিক্স ---
+    async function backupRow(rId) {
+        const row = localData[rId];
+        if(!row) return;
+        const ts = new Date().getTime();
+        // ফায়ারবেস ব্যাকআপ নোডে ডাটা সেভ
+        await db.ref(`backups/${activeUser}/${ts}`).set(row);
+    }
+
+    function clearRow(rId) {
+        if(confirm("Clear content? Data will be backed up.")) {
+            backupRow(rId).then(() => {
+                db.ref(`data/${activeUser}/${rId}`).update({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:""});
+            });
+        }
+    }
+
+    async function deleteRow(rId) {
+        if(confirm("Delete row permanently? Data will be backed up.")) {
+            await backupRow(rId);
+            db.ref(`data/${activeUser}/${rId}`).remove();
+        }
+    }
+
+    async function deleteSelectedRows() {
+        if(!confirm("Delete selected rows? Data will be backed up.")) return;
+        saveHistory();
+        for(const k of selectedSet) {
+            await backupRow(k);
+            await db.ref(`data/${activeUser}/${k}`).remove();
+        }
+        resetSelection();
+    }
+
+    // --- নাম জেনারেটর (নেটিভ ভাষা ফিক্স) ---
     async function generateNames() {
         const type = document.getElementById('country-select').value;
-        const area = document.getElementById('name-result-area');
-        area.innerHTML = "Generating...";
-
-        if(type === 'custom') {
-            const b = ["Samiul", "Islam", "Khan", "Ahmed", "Azmir"]; area.innerHTML = "";
-            for(let k=0; k<5; k++) addNameCard(b[Math.floor(Math.random()*5)] + "_" + Math.random().toString(36).substring(7), area); return;
-        }
-
-        try {
-            const nativeNames = {
-                th: [["สมชาย", "แซ่ตั้ง"], ["สมศักดิ์", "ใจดี"], ["พรชัย", "สุวรรณ"], ["นารี", "รัตน"], ["มาลัย", "พงศ์"], ["กัญญา", "ศิริ"]],
-                cn: [["王", "伟"], ["李", "芳"], ["张", "强"], ["刘", "洋"], ["陈", "静"], ["赵", "敏"], ["孙", "宁"], ["周", "磊"]],
-                ir: [["محمد", "أحمد"], ["فاطمة", "علي"], ["علي", "حسن"], ["ليلى", "سلطান"], ["مريم", "إبراهيم"], ["يوسف", "منصور"]]
-            };
-
-            if(nativeNames[type]) {
-                area.innerHTML = "";
-                for(let k=0; k<5; k++) {
-                    let pair = nativeNames[type][Math.floor(Math.random() * nativeNames[type].length)];
-                    addNameCard(pair[0] + " " + pair[1], area);
-                }
-                return;
-            }
-
-            const res = await fetch(`https://randomuser.me/api/?results=5&nat=${type}`);
-            const data = await res.json(); area.innerHTML = "";
-            data.results.forEach(u => addNameCard(u.name.first + " " + u.name.last, area));
-        } catch(e) { area.innerHTML = "Error!"; }
+        const area = document.getElementById('name-result-area'); area.innerHTML = "...";
+        if(type === 'custom') { const bases = ["Samiul", "Islam", "Khan", "Ahmed", "Azmir"]; area.innerHTML = ""; for(let k=0; k<5; k++) addNameCard(bases[Math.floor(Math.random()*5)] + "_" + Math.random().toString(36).substring(7), area); return; }
+        const nativeNames = { 
+            th: [["สมชาย", "แซ่ตั้ง"], ["นารี", "รัตน"], ["มาลัย", "พงศ์"], ["มานะ", "ศิริ"]], 
+            cn: [["王", "伟"], ["李", "芳"], ["张", "强"], ["刘", "洋"]], 
+            ir: [["محمد", "أحمد"], ["فاطمة", "علي"], ["علي", "حسن"], ["ليلى", "مریم"]] 
+        };
+        if(nativeNames[type]) { area.innerHTML = ""; for(let k=0; k<5; k++) { let p = nativeNames[type][Math.floor(Math.random() * nativeNames[type].length)]; addNameCard(p[0] + " " + p[1], area); } return; }
+        try { const res = await fetch(`https://randomuser.me/api/?results=5&nat=${type==='ir'||type==='cn'||type==='th'?'us':type}`); const data = await res.json(); area.innerHTML = ""; data.results.forEach(u => addNameCard(u.name.first + " " + u.name.last, area)); } catch(e) {}
     }
 
-    function addNameCard(n, a) {
-        const d = document.createElement('div'); d.className = "name-card";
-        d.onclick = () => { navigator.clipboard.writeText(n); showToast("Copied!"); d.style.opacity = "0"; setTimeout(() => d.remove(), 300); };
-        d.innerHTML = `<span>${n}</span><i class="fa-solid fa-copy"></i>`; a.appendChild(d);
-    }
+    function addNameCard(n, a) { const d = document.createElement('div'); d.className = "name-card"; d.onclick = () => { navigator.clipboard.writeText(n); showToast("Copied!"); d.style.opacity = "0"; setTimeout(() => d.remove(), 300); }; d.innerHTML = `<span>${n}</span><i class="fa-solid fa-copy"></i>`; a.appendChild(d); }
 
-    // --- সিলেকশন ও ম্যানেজমেন্ট ---
-    function handleManageSelect(e, k, rI) {
-        if (!isRangeMode) { selectedSet.clear(); startPoint = {r: rI, key: k}; selectedSet.add(k); showActionMenu(e); renderTables(); }
-        else { selectedSet.clear(); let s = Math.min(startPoint.r, rI), end = Math.max(startPoint.r, rI); for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]); showActionMenu(e); renderTables(); }
-    }
-    function copySelectedVertical() {
-        let t = ""; selectedSet.forEach(k => t += (localData[k].uid || "") + "\n");
-        navigator.clipboard.writeText(t.trim()); showToast("UIDs Copied!"); resetSelection();
-    }
-    function saveHistory() { historyStack.push(JSON.parse(JSON.stringify(localData))); redoStack = []; }
-    async function undoAction() { if(historyStack.length) { redoStack.push(JSON.parse(JSON.stringify(localData))); await db.ref(`data/${activeUser}`).set(historyStack.pop()); } }
-    async function redoAction() { if(redoStack.length) { historyStack.push(JSON.parse(JSON.stringify(localData))); await db.ref(`data/${activeUser}`).set(redoStack.pop()); } }
-
-    // --- কোর লজিকস ---
-    function openManagement() { document.getElementById('main-dashboard').classList.add('hidden'); document.getElementById('manage-ui').style.display = 'block'; }
-    function closeManagement() { document.getElementById('manage-ui').style.display = 'none'; document.getElementById('main-dashboard').classList.remove('hidden'); }
-    function saveEdit(rId, f, v) { db.ref(`data/${activeUser}/${rId}`).update({ [f]: v }).then(() => { showToast("Saved!"); archiveToGoogleSheet(activeUser, localData[rId]); }); }
-    async function backupRow(rId) { const ts = new Date().getTime(); await db.ref(`backups/${activeUser}/${ts}`).set(localData[rId]); }
-    function clearRow(rId) { if(confirm("Clear?")) { backupRow(rId); db.ref(`data/${activeUser}/${rId}`).update({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:""}); archiveToGoogleSheet(activeUser, localData[rId]); } }
-    function deleteRow(rId) { if(confirm("Delete?")) { backupRow(rId); db.ref(`data/${activeUser}/${rId}`).remove(); } }
-    function addRow() { db.ref(`data/${activeUser}`).push({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:"", color:"#ffffff"}); }
-    function updateBulkCount() { const t = document.getElementById('bulkDataBox').value.trim(); document.getElementById('bulk-count').innerText = "Mails: " + (t?t.split('\n').length:0); }
+    // --- বাল্ক ও এডিট ---
     async function uploadBulkData() {
-        saveHistory(); const text = document.getElementById('bulkDataBox').value.trim(); const start = parseInt(document.getElementById('bulk-start-row').value) - 1;
-        if(!text) return; let ups = {}; let arch = []; text.split('\n').forEach((l, idx) => { let target = start + idx; let k = (target < rowKeys.length) ? rowKeys[target] : db.ref(`data/${activeUser}`).push().key; let rowObj = { uid:"", pass:"", tfa:"", cookie:"", fullMail:l.trim(), status:"", color:"#ffffff" }; ups[`data/${activeUser}/${k}`] = rowObj; arch.push(rowObj); });
-        db.ref().update(ups).then(() => { document.getElementById('bulkDataBox').value = ""; showToast("Imported!"); archiveToGoogleSheet(activeUser, arch); });
+        const text = document.getElementById('bulkDataBox').value.trim(); const start = parseInt(document.getElementById('bulk-start-row').value) - 1;
+        if(!text) return; saveHistory(); let ups = {}; let arch = [];
+        text.split('\n').forEach((l, idx) => {
+            let target = start + idx; let k = (target < rowKeys.length) ? rowKeys[target] : db.ref(`data/${activeUser}`).push().key;
+            let rowObj = { uid:"", pass:"", tfa:"", cookie:"", fullMail:l.trim(), status:"", color:"#ffffff" }; ups[`data/${activeUser}/${k}`] = rowObj; arch.push(rowObj);
+        });
+        db.ref().update(ups).then(() => { document.getElementById('bulkDataBox').value = ""; archiveToGS(activeUser, arch); showToast("Imported!"); });
     }
+
+    function saveEdit(rId, f, v) { db.ref(`data/${activeUser}/${rId}`).update({ [f]: v }).then(() => { archiveToGS(activeUser, localData[rId]); showToast("Saved!"); }); }
+    function addRow() { db.ref(`data/${activeUser}`).push({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:"", color:"#ffffff"}); }
+
     async function applyRangeAction(mode) {
         saveHistory(); const from = parseInt(document.getElementById('fill-from').value)-1, to = parseInt(document.getElementById('fill-to').value)-1;
         if(from < 0 || to >= rowKeys.length || from > to) return alert("Range Error!");
-        let ups = {}; for(let j=from; j<=to; j++) { let k = rowKeys[j]; if(mode==='fill') ups[`data/${activeUser}/${k}/pass`] = document.getElementById('fill-val').value; else if(mode==='delete') { backupRow(k); db.ref(`data/${activeUser}/${k}`).remove(); } }
-        if(mode==='fill') await db.ref().update(ups); showToast("Done!");
+        let ups = {}; for(let j=from; j<=to; j++) { 
+            let k = rowKeys[j]; 
+            if(mode==='fill') ups[`data/${activeUser}/${k}/pass`] = document.getElementById('fill-val').value; 
+            else if(mode==='pass') ups[`data/${activeUser}/${k}/pass`] = "";
+            else if(mode==='delete') { await backupRow(k); await db.ref(`data/${activeUser}/${k}`).remove(); }
+        }
+        if(mode!=='delete') await db.ref().update(ups); showToast("Done!"); resetSelection();
     }
-    function onMailClick(el, rId, fullText) {
-        document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell')); el.classList.add('active-mail-cell');
-        selectedRowId = rId; document.getElementById('otp-area').style.display = 'none'; document.getElementById('otp-input-box').value = fullText;
-        if(fullText) copyValue(fullText.split('|')[0].trim(), "Email");
-    }
+
+    // --- ওটিপি ও সিলেকশন ---
+    function onMailClick(el, rId, fullText) { document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell')); el.classList.add('active-mail-cell'); selectedRowId = rId; document.getElementById('otp-area').style.display = 'none'; document.getElementById('otp-input-box').value = fullText; if(fullText) copyValue(fullText.split('|')[0].trim(), "Email"); }
     async function fetchOTPCode() {
-        const val = document.getElementById('otp-input-box').value; if(!val) return; const btn = document.getElementById('btn-fetch'); btn.innerText = "..."; const p = val.split('|').map(i => i.trim());
-        try { const res = await fetch(API_FETCH_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ email: p[0], password: p[1], refresh_token: p[2] || "", client_id: p[3] || "" }) }); const data = await res.json(); if(data.status) { document.getElementById('otp-area').style.display = 'block'; document.getElementById('otp-val').innerText = data.code; copyValue(data.code, "OTP"); } } finally { btn.innerText = "GET CODE"; }
+        const val = document.getElementById('otp-input-box').value; if(!val) return; const btn = document.getElementById('btn-fetch'); btn.innerText = "...";
+        try { const res = await fetch(API_FETCH_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ email: val.split('|')[0], password: val.split('|')[1], refresh_token: val.split('|')[2] || "", client_id: val.split('|')[3] || "" }) }); const data = await res.json(); if(data.status) { document.getElementById('otp-area').style.display = 'block'; document.getElementById('otp-val').innerText = data.code; copyValue(data.code, "OTP"); } } finally { btn.innerText = "GET CODE"; }
     }
-    function updateFirebaseAndSheet() {
-        if (!selectedRowId) return; const cV = document.getElementById('cookie-input').value, tV = document.getElementById('tfa-input').value; const syncD = { uid: extractedUid || "", tfa: tV, cookie: cV };
-        db.ref(`data/${activeUser}/${selectedRowId}`).update(syncD).then(() => { showToast("Sync!"); archiveToGoogleSheet(activeUser, {...localData[selectedRowId], ...syncD}); document.getElementById('cookie-input').value = ""; document.getElementById('tfa-input').value = ""; document.getElementById('tfa-code-display').innerText = "------"; });
-    }
+    function updateFirebaseAndSheet() { if (!selectedRowId) return; const cV = document.getElementById('cookie-input').value, tV = document.getElementById('tfa-input').value; const syncD = { uid: extractedUid || "", tfa: tV, cookie: cV }; db.ref(`data/${activeUser}/${selectedRowId}`).update(syncD).then(() => { archiveToGS(activeUser, {...localData[selectedRowId], ...syncD}); document.getElementById('cookie-input').value = ""; document.getElementById('tfa-input').value = ""; document.getElementById('tfa-code-display').innerText = "------"; }); }
     function parseCookie() { const input = document.getElementById('cookie-input').value; const match = input.match(/c_user=([0-9]+)/); extractedUid = match ? match[1] : ""; }
     function generateLive2FA() {
         const secret = document.getElementById('tfa-input').value.trim(); if (secret.length < 10) return;
         try { const keyBytes = base32Decode(secret); const time = Math.floor(Date.now() / 30000); const timeBytes = new Uint8Array(8); let tv = time; for (let i = 7; i >= 0; i--) { timeBytes[i] = tv & 0xff; tv = Math.floor(tv / 256); } const hmac = CryptoJS.HmacSHA1(CryptoJS.lib.WordArray.create(timeBytes), CryptoJS.lib.WordArray.create(keyBytes)); const hb = []; for (let i = 0; i < hmac.words.length; i++) hb.push((hmac.words[i] >>> 24) & 0xff, (hmac.words[i] >>> 16) & 0xff, (hmac.words[i] >>> 8) & 0xff, hmac.words[i] & 0xff); const offset = hb[hb.length - 1] & 0x0f; const code = ((hb[offset] & 0x7f) << 24 | (hb[offset+1] & 0xff) << 16 | (hb[offset+2] & 0xff) << 8 | (hb[offset+3] & 0xff)) % 1000000; document.getElementById('tfa-code-display').innerText = code.toString().padStart(6, '0'); } catch (e) { document.getElementById('tfa-code-display').innerText = "ERR"; }
     }
-    function base32Decode(e) { const b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits = '', bytes = []; e = e.replace(/\s/g, '').toUpperCase(); for (let i = 0; i < e.length; i++) { const v = b.indexOf(e.charAt(i)); if (v !== -1) bits += v.toString(2).padStart(5, '0'); } for (let i = 0; i < bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2)); return new Uint8Array(bytes); }
-    function copyValue(text, type) { if(!text || text === "------") return; navigator.clipboard.writeText(text); showToast(type + " Copied!"); }
-    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500); }
+    function base32Decode(e) { const b = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits = '', bytes = []; e = e.replace(/\s/g, '').toUpperCase(); for (let i = 0; i < e.length; i++) { const v = b.indexOf(e.charAt(i)); if (v !== -1) bits += val.toString(2).padStart(5, '0'); } for (let i = 0; i < bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2)); return new Uint8Array(bytes); }
+    function copyValue(t, ty) { if(!t || t === "------") return; navigator.clipboard.writeText(t); showToast(ty + " Copied!"); }
+    function handleManageSelect(e, k, rI) { if (!isRangeMode) { selectedSet.clear(); startPoint = {r: rI, key: k}; selectedSet.add(k); showActionMenu(e); renderTables(); } else { selectedSet.clear(); let s = Math.min(startPoint.r, rI), end = Math.max(startPoint.r, rI); for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]); showActionMenu(e); renderTables(); } }
     function showActionMenu(e) { const m = document.getElementById('user-context-menu'); m.style.display = 'block'; m.style.left = Math.min(e.clientX, window.innerWidth - 180) + 'px'; m.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px'; }
     function hideMenu() { document.getElementById('user-context-menu').style.display = 'none'; }
     function enableRangeMode() { isRangeMode = true; hideMenu(); showToast("Range Mode On"); }
+    function copySelectedVertical() { let t = ""; selectedSet.forEach(k => t += (localData[k].uid || "") + "\n"); navigator.clipboard.writeText(t.trim()); showToast("UIDs Copied!"); resetSelection(); }
     function resetSelection() { isRangeMode = false; startPoint = null; selectedSet.clear(); hideMenu(); renderTables(); }
+    function openManagement() { document.getElementById('main-dashboard').classList.add('hidden'); document.getElementById('manage-ui').style.display = 'block'; }
+    function closeManagement() { document.getElementById('manage-ui').style.display = 'none'; document.getElementById('main-dashboard').classList.remove('hidden'); }
+    function updateBulkCount() { const t = document.getElementById('bulkDataBox').value.trim(); document.getElementById('bulk-count').innerText = "Mails: " + (t?t.split('\n').length:0); }
+    function saveHistory() { historyStack.push(JSON.parse(JSON.stringify(localData))); redoStack = []; }
+    async function undoAction() { if(historyStack.length) { redoStack.push(JSON.parse(JSON.stringify(localData))); await db.ref(`data/${activeUser}`).set(historyStack.pop()); } }
+    async function redoAction() { if(redoStack.length) { historyStack.push(JSON.parse(JSON.stringify(localData))); await db.ref(`data/${activeUser}`).set(redoStack.pop()); } }
+    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500); }
     function stopSelection() {}
 </script>
 </body>
