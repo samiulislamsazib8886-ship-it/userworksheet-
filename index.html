@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MailCode Pro - Ultimate Hybrid Sync</title>
+    <title>MailCode Pro - Ultimate Hybrid Sync Master</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- Firebase & SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -16,27 +16,28 @@
             --insta-gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
             --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: #e2e8f0;
             --f-sz: 9.3px; --highlight: #4f46e5; 
-            --selected: rgba(79, 70, 229, 0.2);
+            --selected: rgba(79, 70, 229, 0.25);
         }
 
-        /* ডার্ক মুড সেটিংস */
+        /* ডার্ক মোড সেটিংস */
         [data-theme="dark"] {
             --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155;
-            --selected: rgba(255, 255, 255, 0.1);
+            --selected: rgba(255, 255, 255, 0.15);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-weight: 700; }
         body { background: var(--bg); padding: 5px; color: var(--text); overflow-x: hidden; transition: 0.3s; }
 
-        /* ট্যাব ও হেডার */
+        /* ট্যাব ও সিলেকশন */
         .tab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
-        .person-btn { padding: 18px; border: none; border-radius: 12px; color: white; font-size: 13px; cursor: pointer; }
+        .person-btn { padding: 18px; border: none; border-radius: 12px; color: white; font-size: 13px; cursor: pointer; transition: 0.2s; }
 
+        /* হেডার কার্ডস */
         .top-panel { position: sticky; top: 0; background: var(--bg); padding-bottom: 5px; z-index: 100; transition: 0.3s; }
         .triple-header { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px; scrollbar-width: none; }
         .header-card { 
-            background: var(--card); border-radius: 10px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-            min-width: 185px; flex: 1; height: 135px; display: flex; flex-direction: column; justify-content: space-between;
+            background: var(--card); border-radius: 10px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+            min-width: 185px; flex: 1; height: 140px; display: flex; flex-direction: column; justify-content: space-between;
         }
 
         .input-box { width: 100%; padding: 6px; border-radius: 5px; border: 1.5px solid var(--border); font-size: 9px; background: var(--bg); color: var(--text); outline: none; }
@@ -46,14 +47,14 @@
         #otp-val { font-size: 19px; letter-spacing: 4px; }
         .tfa-display { font-size: 16px; color: #0891b2; text-align: center; background: #e0f2f1; border-radius: 4px; padding: 2px; }
 
-        .name-res-area { font-size: 8.5px; overflow-y: auto; flex: 1; margin-top: 2px; }
-        .name-card { background: var(--border); padding: 4px 6px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; cursor: pointer; transition: 0.3s; }
+        .name-res-area { font-size: 9.5px; overflow-y: auto; flex: 1; margin-top: 2px; }
+        .name-card { background: var(--border); padding: 5px 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; cursor: pointer; transition: 0.3s; }
 
         .user-info-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--card); border-radius: 10px; margin-bottom: 5px; border: 1px solid var(--border); }
         .active-user-name { font-size: 13px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--text); }
         .theme-toggle { cursor: pointer; font-size: 18px; color: var(--p-color); padding: 5px; }
 
-        /* টেবিল ডিজাইন */
+        /* টেবিল সেটিংস */
         .table-wrap { background: var(--card); border-radius: 10px; overflow: auto; border: 1px solid var(--border); height: calc(100vh - 195px); }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 1000px; background: var(--card); }
         th, td { font-size: var(--f-sz); padding: 8px 2px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; color: var(--text); }
@@ -63,7 +64,7 @@
         .c-mail { color: var(--p-color); cursor: pointer; text-align: left; padding-left: 4px; }
         .active-mail-cell { background-color: var(--highlight) !important; color: white !important; border-radius: 4px; }
         
-        /* ম্যানেজ মোড ইউআই সেটিংস */
+        /* ম্যানেজ মোড সেটিংস */
         #manage-ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 200; padding: 10px; display: none; overflow-y: auto; }
         .manage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--p-color); padding-bottom: 10px; color: var(--text); }
         
@@ -73,13 +74,11 @@
         .edit-input { width: 100%; height: 100%; border: none; padding: 0 5px; font-size: 11px; font-weight: 700; background: transparent; outline: none; color: var(--text); }
         td.selected-cell { background-color: var(--selected) !important; border: 1.5px solid var(--p-color); }
 
-        /* হিস্টোরি বাটন সেটিংস */
-        .history-controls { display: flex; gap: 10px; margin-top: 8px; }
-        .btn-history { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 12px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        /* কন্টেক্সট মেনু */
+        .btn-clean { padding: 8px; border: none; border-radius: 6px; font-size: 10px; color: white; cursor: pointer; flex: 1; min-width: 80px; }
+        
+        /* কনটেক্সট মেনু */
         #user-context-menu { position: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 2000; box-shadow: 0 5px 25px rgba(0,0,0,0.3); min-width: 160px; }
-        .menu-item { padding: 12px 15px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee; color: var(--text); }
+        .menu-item { padding: 12px 15px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); color: var(--text); }
         .menu-item:last-child { border-bottom: none; }
         
         #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 10px 20px; border-radius: 30px; font-size: 11px; z-index: 3000; display: none; }
@@ -89,10 +88,10 @@
 </head>
 <body onpointerup="stopSelection()">
 
-    <div id="loading-screen"><h3>ESTABLISHING SECURE CONNECTION...</h3></div>
+    <div id="loading-screen"><h3>LOADING DATABASE...</h3></div>
     <div id="toast">Action Success!</div>
 
-    <!-- সিলেকশন ভিউ -->
+    <!-- স্ক্রিন ১: সিলেকশন ভিউ -->
     <div id="selection-view">
         <div style="display:flex; justify-content:space-between; align-items:center; padding: 15px;">
             <h2>DATABASE MONITOR</h2>
@@ -101,11 +100,11 @@
         <div id="tabs-container" class="tab-grid" style="padding: 10px;"></div>
     </div>
 
-    <!-- ড্যাশবোর্ড ভিউ -->
+    <!-- স্ক্রিন ২: মেইন ড্যাশবোর্ড -->
     <div id="main-dashboard" class="hidden">
         <div class="top-panel">
             <div class="triple-header">
-                <!-- টুল ১: OTP -->
+                <!-- টুল ১: ওটিপি -->
                 <div class="header-card">
                     <div style="color:var(--p-color); font-size:11px;">OTP Fetcher</div>
                     <input type="text" id="otp-input-box" class="input-box" readonly placeholder="Select row...">
@@ -131,7 +130,7 @@
                         <option value="in">India (हिंदी)</option>
                         <option value="tr">Turkey</option>
                         <option value="bd">Bangladesh</option>
-                        <option value="custom">CUSTOM (Hajibaji)</option>
+                        <option value="custom">CUSTOM</option>
                     </select>
                     <button class="btn-tool" style="background:var(--insta-gradient);" onclick="generateNames()">GENERATE</button>
                     <div id="name-result-area" class="name-res-area"></div>
@@ -165,8 +164,8 @@
 
         <div class="bulk-card">
             <div class="bulk-counter" id="bulk-count">Mails: 0</div>
-            <span style="font-size: 11px; color: var(--p-color);">BULK IMPORT EMAILS</span>
-            <textarea id="bulkDataBox" class="input-box" style="height: 55px;" placeholder="Email|Pass|Cookie|Token..." oninput="updateBulkCount()"></textarea>
+            <span style="font-size: 11px; color: var(--p-color);">BULK IMPORT (Email|Pass|Cookie|Token)</span>
+            <textarea id="bulkDataBox" class="input-box" style="height: 55px;" placeholder="Paste data here..." oninput="updateBulkCount()"></textarea>
             <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
                 <span style="font-size: 10px;">ROW:</span>
                 <input type="number" id="bulk-start-row" class="input-box" style="width:50px;" value="1">
@@ -201,12 +200,12 @@
         </div>
     </div>
 
-    <!-- কন্টেক্সট মেনু (উইথ ক্লোজ বাটন) -->
+    <!-- কনটেক্সট মেনু (উইথ ক্লোজ বাটন) -->
     <div id="user-context-menu">
         <div class="menu-item" onclick="enableRangeMode()"><i class="fa-solid fa-object-group"></i> Select Range</div>
         <div class="menu-item" onclick="copySelectedVertical()"><i class="fa-solid fa-copy"></i> Copy UID (Vertical)</div>
         <div class="menu-item" style="color:red;" onclick="deleteSelectedRows()"><i class="fa-solid fa-trash"></i> Delete Selected</div>
-        <div class="menu-item" style="color:#666;" onclick="resetSelection()"><i class="fa-solid fa-xmark"></i> Close & Reset</div>
+        <div class="menu-item" style="color:#666; border-top: 1px solid #ddd;" onclick="resetSelection()"><i class="fa-solid fa-xmark"></i> Close & Reset</div>
     </div>
 
 <script>
@@ -276,22 +275,22 @@
     }
 
     function renderTables() {
-        let fHtml = '', mHtml = ''; let i = 1;
+        let fH = '', mH = ''; let i = 1;
         const isD = document.body.getAttribute('data-theme') === 'dark';
-        rowKeys.forEach((key) => {
+        rowKeys.forEach(key => {
             let row = localData[key];
             let hC = (key === selectedRowId) ? 'active-mail-cell' : '';
             let sC = selectedSet.has(key) ? 'selected-cell' : '';
             let rowBg = row.color || 'transparent';
             if (isD && rowBg === '#ffffff') rowBg = 'transparent';
 
-            fHtml += `<tr style="background-color: ${rowBg};">
+            fH += `<tr style="background-color: ${rowBg};">
                 <td>${i}</td><td>${row.uid||""}</td><td>${row.pass||""}</td><td>${row.tfa||""}</td><td>${row.cookie||""}</td>
                 <td class="c-mail ${hC}" onclick="onMailClick(this, '${key}', '${row.fullMail}')">${row.fullMail || ""}</td>
                 <td style="color:#dc2626;">${row.status||""}</td>
                 <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${key}')"></i></td>
             </tr>`;
-            mHtml += `<tr>
+            mH += `<tr>
                 <td>${i}</td>
                 ${['uid','pass','tfa','cookie','fullMail','status'].map(f => `
                     <td class="${sC}" onclick="handleManageSelect(event, '${key}', ${i-1})"><input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}', '${f}', this.value)"></td>
@@ -300,8 +299,8 @@
             </tr>`;
             i++;
         });
-        document.getElementById('user-table-body').innerHTML = fHtml;
-        document.getElementById('manage-table-body').innerHTML = mHtml;
+        document.getElementById('user-table-body').innerHTML = fH;
+        document.getElementById('manage-table-body').innerHTML = mH;
     }
 
     // --- সিলেকশন রিসেট লজিক (NEW) ---
@@ -313,7 +312,7 @@
         renderTables();
     }
 
-    // --- নাম জেনারেটর (RESTORED INDIA & NATIVE SCRIPTS) ---
+    // --- নাম জেনারেটর (RESTORED HINDI API & NATIVE SCRIPTS) ---
     async function generateNames() {
         const type = document.getElementById('country-select').value;
         const area = document.getElementById('name-result-area');
@@ -325,10 +324,12 @@
         }
 
         try {
+            // ইন্ডিয়ান এবং অন্যান্য সাধারণ নামের জন্য randomuser.me (Original API)
+            // চীন, থাই এবং আরবির জন্য ফিক্সড নেটিভ ডাটা
             const nativeNames = {
-                th: [["สมชาย", "แซ่ตั้ง"], ["สมศักดิ์", "ใจดี"], ["พรชัย", "สุวรรณ"], ["นารี", "รัตน"], ["มาลัย", "พงศ์"], ["กัญญา", "ศิริ"]],
-                cn: [["王", "伟"], ["李", "芳"], ["张", "强"], ["刘", "洋"], ["陈", "静"], ["赵", "敏"], ["孙", "宁"], ["周", "磊"]],
-                ir: [["محمد", "أحمد"], ["فاطمة", "علي"], ["علي", "حسن"], ["ليلى", "سلطان"], ["مريم", "إبراهيم"], ["يوسف", "منصور"]]
+                th: [["สมชาย", "แซ่ตั้ง"], ["นารี", "รัตน"], ["มาลัย", "พงศ์"], ["มานะ", "ศิริ"]],
+                cn: [["王", "伟"], ["李", "芳"], ["张", "强"], ["刘", "洋"]],
+                ir: [["محمد", "أحمد"], ["فاطمة", "علي"], ["علي", "حسن"], ["ليلى", "مریم"]]
             };
 
             if(nativeNames[type]) {
@@ -340,6 +341,7 @@
                 return;
             }
 
+            // ইন্ডিয়া (in) এবং অন্যদের জন্য এপিআই কল
             const res = await fetch(`https://randomuser.me/api/?results=5&nat=${type}`);
             const data = await res.json(); area.innerHTML = "";
             data.results.forEach(u => addNameCard(u.name.first + " " + u.name.last, area));
@@ -364,7 +366,6 @@
         db.ref().update(ups).then(() => { document.getElementById('bulkDataBox').value = ""; archiveToGS(activeUser, arch); showToast("Imported!"); });
     }
 
-    // --- কোর ফাংশনস ---
     function saveEdit(rId, f, v) { db.ref(`data/${activeUser}/${rId}`).update({ [f]: v }).then(() => { archiveToGS(activeUser, localData[rId]); showToast("Saved!"); }); }
     async function backupRow(rId) { const ts = new Date().getTime(); await db.ref(`backups/${activeUser}/${ts}`).set(localData[rId]); }
     function clearRow(rId) { if(confirm("Clear?")) { backupRow(rId); db.ref(`data/${activeUser}/${rId}`).update({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:""}); } }
@@ -385,6 +386,7 @@
         resetSelection();
     }
 
+    // --- ওটিপি ও সিলেকশন ---
     function onMailClick(el, rId, fullText) {
         document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell')); el.classList.add('active-mail-cell');
         selectedRowId = rId; document.getElementById('otp-area').style.display = 'none'; document.getElementById('otp-input-box').value = fullText;
@@ -398,7 +400,7 @@
 
     function updateFirebaseAndSheet() {
         if (!selectedRowId) return; const cV = document.getElementById('cookie-input').value, tV = document.getElementById('tfa-input').value; const syncD = { uid: extractedUid || "", tfa: tV, cookie: cV };
-        db.ref(`data/${activeUser}/${selectedRowId}`).update(syncD).then(() => { showToast("Sync!"); archiveToGS(activeUser, {...localData[selectedRowId], ...syncD}); document.getElementById('cookie-input').value = ""; document.getElementById('tfa-input').value = ""; document.getElementById('tfa-code-display').innerText = "------"; });
+        db.ref(`data/${activeUser}/${selectedRowId}`).update(syncD).then(() => { archiveToGS(activeUser, {...localData[selectedRowId], ...syncD}); document.getElementById('cookie-input').value = ""; document.getElementById('tfa-input').value = ""; document.getElementById('tfa-code-display').innerText = "------"; });
     }
 
     function parseCookie() { const input = document.getElementById('cookie-input').value; const match = input.match(/c_user=([0-9]+)/); extractedUid = match ? match[1] : ""; }
@@ -414,9 +416,9 @@
     function copyValue(text, type) { if(!text || text === "------") return; navigator.clipboard.writeText(text); showToast(type + " Copied!"); }
     function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500); }
 
-    function handleManageSelect(e, k, rI) {
-        if (!isRangeMode) { selectedSet.clear(); startPoint = {r: rI, key: k}; selectedSet.add(k); showActionMenu(e); renderTables(); }
-        else { selectedSet.clear(); let s = Math.min(startPoint.r, rI), end = Math.max(startPoint.r, rI); for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]); showActionMenu(e); renderTables(); }
+    function handleManageSelect(e, k, rIdx) {
+        if (!isRangeMode) { selectedSet.clear(); startPoint = {r: rIdx, key: k}; selectedSet.add(k); showActionMenu(e); renderTables(); }
+        else { selectedSet.clear(); let s = Math.min(startPoint.r, rIdx), end = Math.max(startPoint.r, rIdx); for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]); showActionMenu(e); renderTables(); }
     }
     function showActionMenu(e) { const m = document.getElementById('user-context-menu'); m.style.display = 'block'; m.style.left = Math.min(e.clientX, window.innerWidth - 180) + 'px'; m.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px'; }
     function hideMenu() { document.getElementById('user-context-menu').style.display = 'none'; }
