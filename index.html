@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MailCode Pro · User Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Firebase & SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-
     <style>
         :root {
             --p-color: #4f46e5;
@@ -18,39 +16,37 @@
             --card: #ffffff;
             --text: #1e293b;
             --border: #e2e8f0;
-            --f-sz: 9.3px;
+            --f-sz: 11px;
             --highlight: #4f46e5;
             --selected: rgba(79, 70, 229, 0.25);
             --fb-color: #1877f2;
             --ig-color: #e4405f;
         }
-
         [data-theme="dark"] {
             --bg: #0f172a;
             --card: #1e293b;
             --text: #f1f5f9;
             --border: #334155;
-            --selected: rgba(255, 255, 255, 0.15);
+            --selected: rgba(255,255,255,0.15);
             --fb-color: #3b82f6;
             --ig-color: #e4405f;
         }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: 700;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-weight: 600;
         }
         body {
             background: var(--bg);
-            padding: 5px;
+            padding: 8px;
             color: var(--text);
             overflow-x: hidden;
             transition: 0.3s;
         }
 
-        /* LOGIN OVERLAY with Login/Signup toggle */
+        /* LOGIN OVERLAY */
         #login-overlay {
             position: fixed;
             inset: 0;
@@ -63,30 +59,29 @@
         }
         #login-box {
             background: var(--card);
-            border-radius: 24px;
-            padding: 35px 30px;
+            border-radius: 28px;
+            padding: 40px 35px;
             width: 100%;
             max-width: 420px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             text-align: center;
-            transition: 0.3s;
         }
         #login-box h2 {
             color: var(--p-color);
-            font-size: 24px;
-            margin-bottom: 4px;
+            font-size: 26px;
+            margin-bottom: 6px;
         }
         #login-box .sub {
             color: #64748b;
-            font-size: 14px;
+            font-size: 15px;
             margin-bottom: 20px;
         }
         .input-field {
             width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            font-size: 14px;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            font-size: 15px;
             margin-bottom: 14px;
             background: var(--bg);
             color: var(--text);
@@ -94,14 +89,14 @@
         }
         .input-field:focus {
             border-color: var(--p-color);
-            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
         .btn {
-            padding: 12px;
+            padding: 14px;
             border: none;
             border-radius: 30px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             transition: 0.15s;
             background: var(--p-color);
@@ -115,13 +110,9 @@
         .toggle-link {
             color: var(--p-color);
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             margin-top: 12px;
             display: inline-block;
-            font-weight: 600;
-        }
-        .toggle-link:hover {
-            text-decoration: underline;
         }
         .error-msg {
             color: #dc2626;
@@ -132,33 +123,33 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 13px;
+            font-size: 14px;
             color: #64748b;
             margin-bottom: 14px;
             justify-content: center;
         }
         .remember-me input {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
         }
         .form-toggle {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
+            border-bottom: 1.5px solid var(--border);
+            padding-bottom: 12px;
         }
         .form-toggle .tab-btn {
             background: transparent;
             border: none;
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
             color: var(--text);
             opacity: 0.5;
             cursor: pointer;
-            padding: 4px 16px;
+            padding: 4px 18px;
             border-radius: 20px;
             transition: 0.2s;
         }
@@ -167,37 +158,34 @@
             background: var(--p-color);
             color: white;
         }
-        .form-toggle .tab-btn:hover {
-            opacity: 0.8;
-        }
 
-        /* SOCIAL TOGGLE - smaller */
+        /* SOCIAL TOGGLE */
         .social-toggle {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             align-items: center;
         }
         .social-btn {
-            padding: 3px 10px;
+            padding: 4px 12px;
             border: none;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 11px;
+            font-size: 12px;
             cursor: pointer;
             transition: 0.15s;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             color: white;
             opacity: 0.6;
             line-height: 1.4;
         }
         .social-btn i {
-            font-size: 12px;
+            font-size: 13px;
         }
         .social-btn.active {
             opacity: 1;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
         }
         .social-btn.fb {
             background: var(--fb-color);
@@ -209,84 +197,119 @@
             transform: scale(0.95);
         }
 
-        /* DASHBOARD (Original MailCode Pro style with 3 tools) */
+        /* DASHBOARD - refined compact cards */
         .top-panel {
             position: sticky;
             top: 0;
             background: var(--bg);
-            padding-bottom: 5px;
+            padding-bottom: 8px;
             z-index: 100;
             transition: 0.3s;
         }
         .triple-header {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             overflow-x: auto;
             padding: 4px 2px;
             scrollbar-width: none;
         }
         .header-card {
             background: var(--card);
-            border-radius: 10px;
-            padding: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            min-width: 185px;
+            border-radius: 12px;
+            padding: 10px 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            min-width: 180px;
             flex: 1;
-            height: 140px;
+            height: 145px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            border: 1px solid var(--border);
+        }
+        .header-card .title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--p-color);
+            letter-spacing: 0.2px;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .header-card .title i {
+            font-size: 12px;
         }
         .input-box {
             width: 100%;
-            padding: 6px;
-            border-radius: 5px;
+            padding: 5px 8px;
+            border-radius: 6px;
             border: 1.5px solid var(--border);
-            font-size: 9px;
+            font-size: 10px;
             background: var(--bg);
             color: var(--text);
             outline: none;
+            height: 26px;
+            transition: 0.2s;
+        }
+        .input-box:focus {
+            border-color: var(--p-color);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
         }
         .btn-tool {
             width: 100%;
             border: none;
-            padding: 7px;
+            padding: 5px;
             border-radius: 6px;
             color: white;
-            font-size: 11px;
+            font-size: 10px;
+            font-weight: 700;
             cursor: pointer;
+            height: 26px;
+            line-height: 1;
+            transition: 0.15s;
+        }
+        .btn-tool:hover {
+            transform: scale(0.97);
+            opacity: 0.9;
         }
         #otp-area {
             background: #0f172a;
             color: #10b981;
-            border-radius: 5px;
+            border-radius: 6px;
             text-align: center;
-            padding: 4px;
+            padding: 2px;
             display: none;
+            font-size: 16px;
+            letter-spacing: 2px;
+            height: 24px;
+            line-height: 24px;
         }
         #otp-val {
-            font-size: 19px;
-            letter-spacing: 4px;
+            font-size: 16px;
+            letter-spacing: 2px;
         }
         .tfa-display {
             font-size: 16px;
             color: #0891b2;
             text-align: center;
             background: #e0f2f1;
-            border-radius: 4px;
+            border-radius: 6px;
             padding: 2px;
             cursor: pointer;
+            height: 24px;
+            line-height: 24px;
         }
 
         .name-res-area {
-            font-size: 9.5px;
+            font-size: 9px;
             overflow-y: auto;
             flex: 1;
             margin-top: 2px;
+            max-height: 36px;
         }
         .name-card {
             background: var(--border);
-            padding: 5px 8px;
+            padding: 2px 8px;
             border-radius: 4px;
             display: flex;
             justify-content: space-between;
@@ -294,22 +317,23 @@
             margin-bottom: 2px;
             cursor: pointer;
             transition: 0.3s;
+            font-size: 9px;
         }
 
         .user-info-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 4px 8px;
+            padding: 5px 12px;
             background: var(--card);
-            border-radius: 10px;
-            margin-bottom: 5px;
+            border-radius: 12px;
+            margin-bottom: 8px;
             border: 1px solid var(--border);
             flex-wrap: wrap;
             gap: 4px;
         }
         .active-user-name {
-            font-size: 12px;
+            font-size: 13px;
             text-transform: uppercase;
             display: flex;
             align-items: center;
@@ -320,27 +344,25 @@
             cursor: pointer;
             font-size: 16px;
             color: var(--p-color);
-            padding: 3px;
+            padding: 2px;
         }
 
         .table-wrap {
             background: var(--card);
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: auto;
             border: 1px solid var(--border);
-            height: calc(100vh - 195px);
+            height: calc(100vh - 225px);
         }
         table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
-            min-width: 1000px;
+            font-size: 11px;
             background: var(--card);
         }
-        th,
-        td {
-            font-size: var(--f-sz);
-            padding: 8px 2px;
+        th, td {
+            padding: 6px 4px;
             text-align: center;
             border-bottom: 1px solid var(--border);
             white-space: nowrap;
@@ -355,42 +377,74 @@
             position: sticky;
             top: 0;
             z-index: 50;
+            font-size: 10px;
+            padding: 8px 4px;
         }
-        td:first-child,
-        th:first-child {
+        td:first-child, th:first-child {
             position: sticky;
             left: 0;
             z-index: 51;
             background: var(--card);
-            width: 30px;
+            width: 32px;
             border-right: 2px solid var(--border);
         }
+        /* Column widths */
+        th:nth-child(2) { width: 12%; }
+        th:nth-child(3) { width: 10%; }
+        th:nth-child(4) { width: 10%; }
+        th:nth-child(5) { width: 12%; }
+        th:nth-child(6) { width: 30%; }
+        th:nth-child(7) { width: 10%; }
+        th:nth-child(8) { width: 6%; }
 
         .c-mail {
             color: var(--p-color);
             cursor: pointer;
             text-align: left;
-            padding-left: 4px;
+            padding-left: 6px;
         }
         .active-mail-cell {
             background-color: var(--highlight) !important;
             color: white !important;
-            border-radius: 4px;
+            border-radius: 6px;
+        }
+
+        .edit-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 3px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            background: transparent;
+            outline: none;
+            color: var(--text);
+            pointer-events: none;
+            cursor: default;
+        }
+        .c-mail .edit-input {
+            pointer-events: none;
+            cursor: pointer;
+        }
+
+        td.selected-cell {
+            background-color: var(--selected) !important;
+            border: 1.5px solid var(--p-color);
         }
 
         #user-context-menu {
             position: fixed;
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 10px;
             display: none;
             z-index: 2000;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-            min-width: 160px;
+            min-width: 170px;
         }
         .menu-item {
-            padding: 12px 15px;
-            font-size: 14px;
+            padding: 10px 16px;
+            font-size: 13px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -404,14 +458,14 @@
 
         #toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 11px;
+            padding: 10px 22px;
+            border-radius: 40px;
+            font-size: 12px;
             z-index: 3000;
             display: none;
         }
@@ -427,6 +481,7 @@
             align-items: center;
             z-index: 9999;
             color: var(--text);
+            font-size: 20px;
         }
         .hidden {
             display: none !important;
@@ -434,7 +489,6 @@
 
         /* MANAGEMENT UI */
         #manage-ui {
-            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -442,21 +496,22 @@
             height: 100%;
             background: var(--bg);
             z-index: 200;
-            padding: 10px;
+            padding: 12px;
+            display: none;
             overflow-y: auto;
         }
         .manage-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             border-bottom: 2px solid var(--p-color);
             padding-bottom: 10px;
+            color: var(--text);
         }
         .manage-header .title {
-            font-size: 15px;
+            font-size: 17px;
             font-weight: 700;
-            color: var(--text);
         }
         .bulk-card {
             background: var(--card);
@@ -464,20 +519,49 @@
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 10px;
+            position: relative;
         }
-        .bulk-card .bulk-title {
-            font-size: 11px;
-            color: var(--p-color);
-            margin-bottom: 6px;
-            font-weight: 700;
+        .bulk-counter {
+            position: absolute;
+            right: 14px;
+            top: 10px;
+            font-size: 10px;
+            background: #333;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 10px;
+        }
+        .btn-clean {
+            padding: 6px;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            color: white;
+            cursor: pointer;
+            flex: 1;
+            min-width: 60px;
+        }
+        .history-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .btn-history {
+            padding: 5px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            color: white;
+            cursor: pointer;
+            background: #64748b;
         }
         .bulk-card textarea {
             width: 100%;
-            height: 55px;
+            height: 45px;
             resize: vertical;
-            font-size: 9px;
-            padding: 4px;
-            border-radius: 4px;
+            font-size: 10px;
+            padding: 5px;
+            border-radius: 6px;
             border: 1px solid var(--border);
             background: var(--bg);
             color: var(--text);
@@ -486,18 +570,17 @@
         }
         .bulk-card .bulk-row {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             margin-top: 6px;
             flex-wrap: wrap;
         }
         .bulk-card .bulk-row label {
             font-size: 10px;
-            color: var(--text);
         }
         .bulk-card .bulk-row input {
-            width: 50px;
-            padding: 4px;
+            width: 44px;
+            padding: 3px;
             border-radius: 4px;
             border: 1px solid var(--border);
             font-size: 10px;
@@ -507,7 +590,7 @@
         }
         .bulk-card .bulk-row .btn-tool {
             width: auto;
-            padding: 4px 14px;
+            padding: 5px 14px;
             background: green;
             color: white;
             border: none;
@@ -515,61 +598,15 @@
             font-size: 11px;
             cursor: pointer;
         }
-        .edit-input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            padding: 0 5px;
-            font-size: 11px;
-            font-weight: 700;
-            background: transparent;
-            outline: none;
-            color: var(--text);
-        }
-        td.selected-cell {
-            background-color: var(--selected) !important;
-            border: 1.5px solid var(--p-color);
-        }
-        .btn-clean {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 10px;
-            color: white;
-            cursor: pointer;
-            flex: 1;
-            min-width: 70px;
-        }
-        .history-controls {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-        .btn-history {
-            padding: 5px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 10px;
-            color: white;
-            cursor: pointer;
-            background: #64748b;
-        }
-
-        /* remove bulk area from dashboard */
-        .bulk-user-area {
-            display: none;
-        }
-
-        /* table inside manage */
         #manage-ui .table-wrap {
-            height: calc(100vh - 340px);
+            height: calc(100vh - 320px);
         }
         #manage-ui table td input {
             font-size: 10px;
+            pointer-events: none;
+            cursor: default;
         }
 
-        /* Instagram username field visibility */
         .ig-username-field {
             display: none;
         }
@@ -583,17 +620,39 @@
                 justify-content: center;
             }
             .social-btn {
-                font-size: 10px;
-                padding: 2px 8px;
+                font-size: 11px;
+                padding: 3px 10px;
             }
             .social-btn i {
-                font-size: 10px;
-            }
-            .active-user-name {
                 font-size: 11px;
             }
-            #login-box {
-                padding: 20px 15px;
+            .active-user-name {
+                font-size: 12px;
+            }
+            .header-card {
+                min-width: 140px;
+                height: 135px;
+                padding: 8px 10px;
+            }
+            .header-card .title {
+                font-size: 10px;
+            }
+            .triple-header {
+                gap: 6px;
+            }
+            .input-box {
+                font-size: 9px;
+                height: 24px;
+                padding: 4px 6px;
+            }
+            .btn-tool {
+                font-size: 9px;
+                height: 24px;
+            }
+            #otp-area, .tfa-display {
+                font-size: 14px;
+                height: 22px;
+                line-height: 22px;
             }
         }
     </style>
@@ -603,19 +662,15 @@
     <div id="loading-screen"><h3>LOADING...</h3></div>
     <div id="toast">Action Success!</div>
 
-    <!-- LOGIN OVERLAY with Login & Signup tabs -->
+    <!-- LOGIN OVERLAY -->
     <div id="login-overlay">
         <div id="login-box">
             <h2><i class="fa-regular fa-envelope"></i> MailCode Pro</h2>
             <p class="sub">Sign in to your account</p>
-
-            <!-- Toggle Login / Signup -->
             <div class="form-toggle">
                 <button class="tab-btn active" id="loginTabBtn" onclick="showLoginForm()">Login</button>
                 <button class="tab-btn" id="signupTabBtn" onclick="showSignupForm()">Sign Up</button>
             </div>
-
-            <!-- Login Form -->
             <div id="login-form">
                 <input type="text" id="login-username" class="input-field" placeholder="Username">
                 <input type="password" id="login-password" class="input-field" placeholder="Password">
@@ -626,8 +681,6 @@
                 <button class="btn" onclick="loginUser()">Login</button>
                 <div id="login-error" class="error-msg"></div>
             </div>
-
-            <!-- Signup Form -->
             <div id="signup-form" style="display:none;">
                 <input type="text" id="signup-name" class="input-field" placeholder="Full Name">
                 <input type="text" id="signup-username" class="input-field" placeholder="Username">
@@ -638,10 +691,9 @@
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD (only shown after login) -->
+    <!-- MAIN DASHBOARD -->
     <div id="main-dashboard" class="hidden">
         <div class="top-panel">
-            <!-- User Info Bar with Social Toggle (smaller) and Logout -->
             <div class="user-info-bar">
                 <div class="social-toggle">
                     <button class="social-btn fb active" id="btnFacebook" onclick="setSocial('facebook')">
@@ -654,38 +706,35 @@
                 <div class="active-user-name">
                     <span id="display-user-name">USERNAME</span>
                 </div>
-                <div style="display:flex; gap:4px; align-items:center; flex-wrap:wrap;">
-                    <button class="btn-tool" style="background:var(--p-color); width:auto; padding:3px 10px; font-size:10px;" onclick="openManagement()">MANAGE</button>
-                    <button onclick="logout()" style="background:none; border:none; color:#64748b; font-size:14px; padding:2px 6px;"><i class="fa-solid fa-sign-out-alt"></i></button>
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                    <button class="btn-tool" style="background:var(--p-color); width:auto; padding:4px 14px; font-size:11px; height:auto;" onclick="openManagement()">MANAGE</button>
+                    <button onclick="logout()" style="background:none; border:none; color:#64748b; font-size:18px; padding:4px 8px;"><i class="fa-solid fa-sign-out-alt"></i></button>
                     <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
                 </div>
             </div>
 
-            <!-- 3 TOOLS: OTP, Cookie/2FA, Insta Names -->
             <div class="triple-header">
-                <!-- OTP Fetcher -->
+                <!-- OTP -->
                 <div class="header-card">
-                    <div style="color:var(--p-color); font-size:11px;">OTP Fetcher</div>
+                    <div class="title"><i class="fa-regular fa-key"></i> OTP Fetcher</div>
                     <input type="text" id="otp-input-box" class="input-box" readonly placeholder="Select row...">
                     <button onclick="fetchOTPCode()" id="btn-fetch" class="btn-tool" style="background:var(--p-color)">GET CODE</button>
                     <div id="otp-area"><div id="otp-val" onclick="copyValue(this.innerText, 'OTP')">------</div></div>
                 </div>
-                <!-- Cookie & 2FA (with Instagram Username field) -->
+                <!-- Cookie & 2FA -->
                 <div class="header-card">
-                    <div style="color:#0891b2; font-size:11px;">Cookie & 2FA</div>
+                    <div class="title"><i class="fa-regular fa-cookie"></i> Cookie & 2FA</div>
                     <input type="text" id="cookie-input" class="input-box" placeholder="Cookie..." oninput="parseCookie()">
                     <input type="text" id="tfa-input" class="input-box" placeholder="2FA Secret..." oninput="generateLive2FA()">
-                    <!-- Instagram Username field (hidden by default) -->
                     <div id="ig-username-container" class="ig-username-field">
                         <input type="text" id="username-input" class="input-box" placeholder="Instagram Username..." oninput="updateUsername()">
                     </div>
-                    <div id="tfa-code-display" class="tfa-display" onclick="copyValue(this.innerText, '2FA')">------</div>
                     <button id="send-btn" class="btn-tool" style="background:#10b981;" onclick="updateFirebaseAndSheet()">SEND ALL</button>
                 </div>
-                <!-- Instagram Names Generator -->
+                <!-- Insta Names Generator -->
                 <div class="header-card">
-                    <div style="background:var(--insta-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; font-size:11px;">Insta Names</div>
-                    <select id="country-select" class="input-box" style="height:28px;">
+                    <div class="title" style="background:var(--insta-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"><i class="fa-brands fa-instagram"></i> Insta Names</div>
+                    <select id="country-select" class="input-box" style="height:26px; font-size:10px;">
                         <option value="us">USA</option>
                         <option value="th">Thailand (ไทย)</option>
                         <option value="cn">China (中文)</option>
@@ -699,21 +748,21 @@
                     <div id="name-result-area" class="name-res-area"></div>
                 </div>
             </div>
-
-            <!-- TABLE (bulk removed from here) -->
         </div>
+
+        <!-- Table -->
         <div class="table-wrap">
             <table id="user-table">
                 <thead>
                     <tr>
-                        <th style="width:25px;">#</th>
-                        <th id="mainIdHeader" style="width:45px;">UID</th>
-                        <th style="width:45px;">Pass</th>
-                        <th style="width:45px;">2FA</th>
-                        <th style="width:45px;">Cook</th>
+                        <th>#</th>
+                        <th id="mainIdHeader">UID</th>
+                        <th>Pass</th>
+                        <th>2FA</th>
+                        <th>Cook</th>
                         <th>Full Mail</th>
-                        <th style="width:55px;">Status</th>
-                        <th style="width:30px;">X</th>
+                        <th>Status</th>
+                        <th style="width:55px;">Action</th>
                     </tr>
                 </thead>
                 <tbody id="user-table-body"></tbody>
@@ -721,49 +770,43 @@
         </div>
     </div>
 
-    <!-- MANAGEMENT UI (with Bulk Import inside) -->
+    <!-- MANAGEMENT UI -->
     <div id="manage-ui">
         <div class="manage-header">
             <div class="title"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div>
-            <button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:6px 18px;">BACK</button>
+            <button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:6px 20px; height:auto;">BACK</button>
         </div>
-
-        <!-- Bulk Import Card (moved here) -->
         <div class="bulk-card">
-            <div class="bulk-title"><i class="fa-solid fa-upload"></i> BULK IMPORT (Email|Pass|Cookie|Token)</div>
+            <div class="bulk-counter" id="bulk-count">Mails: 0</div>
+            <span style="font-size:11px; color:var(--p-color); font-weight:700;">BULK IMPORT (Email|Pass|Cookie|Token)</span>
             <textarea id="bulkDataBox" placeholder="Paste data here..." oninput="updateBulkCount()"></textarea>
             <div class="bulk-row">
                 <label>ROW:</label>
                 <input type="number" id="bulk-start-row" value="1">
                 <button class="btn-tool" style="background:green;" onclick="uploadBulkData()">IMPORT</button>
-                <span id="bulk-count" style="font-size:10px; color:#64748b;">Mails: 0</span>
             </div>
             <div class="history-controls">
                 <button onclick="undoAction()" class="btn-history"><i class="fa-solid fa-rotate-left"></i> RETURN</button>
                 <button onclick="redoAction()" class="btn-history"><i class="fa-solid fa-rotate-right"></i> FORWARD</button>
             </div>
         </div>
-
-        <!-- Range Actions -->
         <div class="bulk-card">
-            <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
-                <input type="text" id="fill-val" class="input-box" style="flex:2; min-width:80px;" placeholder="Value to Fill">
-                <input type="number" id="fill-from" class="input-box" style="width:35px;" value="1">
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                <input type="text" id="fill-val" class="input-box" style="flex:2; min-width:70px;" placeholder="Value to Fill">
+                <input type="number" id="fill-from" class="input-box" style="width:40px;" value="1">
                 <span style="font-size:11px;">-</span>
-                <input type="number" id="fill-to" class="input-box" style="width:35px;" value="10">
+                <input type="number" id="fill-to" class="input-box" style="width:40px;" value="10">
                 <button onclick="applyRangeAction('fill')" class="btn-tool" style="background:var(--p-color); width:60px;">APPLY</button>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 10px;">
+            <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:6px; margin-top:8px;">
                 <button class="btn-clean" style="background:#f59e0b;" onclick="applyRangeAction('pass')">Clear Pass</button>
                 <button class="btn-clean" style="background:#ef4444;" onclick="applyRangeAction('delete')">Delete Rows</button>
                 <button class="btn-clean" style="background:#1a73e8;" onclick="addRow()">+ Add Row</button>
             </div>
         </div>
-
-        <!-- Manage Table -->
-        <div class="table-wrap">
+        <div class="table-wrap" style="height:calc(100vh - 320px);">
             <table>
-                <thead><tr><th style="width:25px;">#</th><th id="manageIdHeader" style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr></thead>
+                <thead><tr><th>#</th><th id="manageIdHeader">UID</th><th>Pass</th><th>2FA</th><th>Cook</th><th>Full Mail</th><th>Status</th><th style="width:55px;">Action</th></tr></thead>
                 <tbody id="manage-table-body"></tbody>
             </table>
         </div>
@@ -803,24 +846,16 @@
 
         // ===== GLOBALS =====
         let currentUser = null;
-        let selectedRowId = null,
-            extractedUid = "";
-        let rowKeys = [],
-            localData = {};
-        let isRangeMode = false,
-            startPoint = null,
-            selectedSet = new Set(); // stores "key|field" for cell selection
-        let historyStack = [],
-            redoStack = [];
+        let selectedRowId = null, extractedUid = "";
+        let rowKeys = [], localData = {};
+        let isRangeMode = false, startPoint = null, selectedSet = new Set();
+        let historyStack = [], redoStack = [];
         let socialMode = 'facebook';
-        let masterPool = [];
+        let dataListener = null;
 
         // ===== AUTH =====
-        function hashPassword(pw) {
-            return btoa(pw + 'salt');
-        }
+        function hashPassword(pw) { return btoa(pw + 'salt'); }
 
-        // Show/hide login/signup forms
         function showLoginForm() {
             document.getElementById('login-form').style.display = 'block';
             document.getElementById('signup-form').style.display = 'none';
@@ -838,7 +873,6 @@
             document.getElementById('signup-error').innerText = '';
         }
 
-        // Signup (with auto-approve check)
         async function signupUser() {
             const name = document.getElementById('signup-name').value.trim();
             const username = document.getElementById('signup-username').value.trim();
@@ -847,40 +881,28 @@
                 document.getElementById('signup-error').innerText = 'All fields required';
                 return;
             }
-            // Check existing
             const snap = await db.ref('users/' + username).once('value');
             if (snap.exists()) {
                 document.getElementById('signup-error').innerText = 'Username already taken';
                 return;
             }
-
-            // Check auto-approve setting
             const autoApproveSnap = await db.ref('settings/autoApprove').once('value');
             const autoApprove = autoApproveSnap.val() === true;
-
-            // Create user
             await db.ref('users/' + username).set({
                 name: name,
                 password: hashPassword(password),
-                approved: autoApprove, // true if auto approve is ON
+                approved: autoApprove,
                 role: 'user'
             });
-            await db.ref('data/' + username).set({});
-
-            const msg = autoApprove ?
-                'Account created and auto-approved! You can now login.' :
-                'Signup successful! Wait for admin approval.';
-            alert(msg);
+            await db.ref('data/' + username + '/facebook').set({});
+            await db.ref('data/' + username + '/instagram').set({});
+            alert(autoApprove ? 'Account created and auto-approved! You can now login.' : 'Signup successful! Wait for admin approval.');
             showLoginForm();
             document.getElementById('signup-username').value = '';
             document.getElementById('signup-password').value = '';
             document.getElementById('signup-name').value = '';
-            if (autoApprove) {
-                // Optionally auto-login? But we'll just show login form.
-            }
         }
 
-        // Check session
         function checkSession() {
             const saved = localStorage.getItem('userPanelUser');
             if (saved) {
@@ -889,8 +911,8 @@
                 document.getElementById('main-dashboard').classList.remove('hidden');
                 document.getElementById('display-user-name').innerText = currentUser.toUpperCase();
                 document.getElementById('loading-screen').style.display = 'none';
-                loadUserData();
                 loadSocialMode();
+                attachDataListener();
                 return true;
             }
             return false;
@@ -917,7 +939,6 @@
                 document.getElementById('login-error').innerText = 'Account not approved by admin.';
                 return;
             }
-            // Login success
             currentUser = username;
             if (document.getElementById('rememberMe').checked) {
                 localStorage.setItem('userPanelUser', username);
@@ -928,18 +949,15 @@
             document.getElementById('main-dashboard').classList.remove('hidden');
             document.getElementById('display-user-name').innerText = username.toUpperCase();
             document.getElementById('loading-screen').style.display = 'none';
-            loadUserData();
             loadSocialMode();
+            attachDataListener();
             document.getElementById('login-error').innerText = '';
         }
 
         function logout() {
             currentUser = null;
             localStorage.removeItem('userPanelUser');
-            if (window.dataListener) {
-                db.ref('data/' + currentUser).off();
-                window.dataListener = null;
-            }
+            if (dataListener) { dataListener.off(); dataListener = null; }
             document.getElementById('main-dashboard').classList.add('hidden');
             document.getElementById('login-overlay').style.display = 'flex';
             document.getElementById('login-username').value = '';
@@ -958,14 +976,12 @@
             localStorage.setItem('userSocialMode', mode);
             document.getElementById('btnFacebook').classList.toggle('active', mode === 'facebook');
             document.getElementById('btnInstagram').classList.toggle('active', mode === 'instagram');
-            // Show/hide Instagram username field
             const igContainer = document.getElementById('ig-username-container');
             if (mode === 'instagram') {
                 igContainer.classList.add('active');
             } else {
                 igContainer.classList.remove('active');
             }
-            // Update headers
             const mainHeader = document.getElementById('mainIdHeader');
             const manageHeader = document.getElementById('manageIdHeader');
             if (mode === 'facebook') {
@@ -975,36 +991,36 @@
                 mainHeader.innerText = 'Username';
                 if (manageHeader) manageHeader.innerText = 'Username';
             }
-            if (currentUser) {
-                renderTable();
-                renderManageTable();
-            }
+            attachDataListener();
             showToast('Switched to ' + mode.charAt(0).toUpperCase() + mode.slice(1));
         }
 
         function loadSocialMode() {
             const saved = localStorage.getItem('userSocialMode');
-            if (saved) {
+            if (saved && (saved === 'facebook' || saved === 'instagram')) {
                 setSocial(saved);
             } else {
                 setSocial('facebook');
             }
         }
 
-        // ===== LOAD USER DATA =====
-        function loadUserData() {
+        // ===== DATA LISTENER =====
+        function attachDataListener() {
             if (!currentUser) return;
-            const ref = db.ref('data/' + currentUser);
-            window.dataListener = ref.on('value', snap => {
+            if (dataListener) { dataListener.off(); dataListener = null; }
+            const path = `data/${currentUser}/${socialMode}`;
+            const ref = db.ref(path);
+            dataListener = ref.on('value', snap => {
                 localData = snap.val() || {};
                 rowKeys = Object.keys(localData);
                 renderTable();
                 renderManageTable();
-                document.getElementById('bulk-count').innerText = 'Mails: ' + rowKeys.length;
+                updateBulkCount();
+                loadBackups();
             });
         }
 
-        // ===== RENDER FUNCTIONS =====
+        // ===== RENDER TABLES =====
         function renderTable() {
             let html = '';
             let i = 1;
@@ -1017,20 +1033,21 @@
                 const idValue = row.uid || '';
                 html += `<tr style="background-color:${rowBg};">
                     <td>${i}</td>
-                    ${['uid','pass','tfa','cookie','fullMail','status','color'].map(f => {
+                    ${['uid','pass','tfa','cookie','fullMail','status'].map(f => {
                         let isSel = selectedSet.has(`${key}|${f}`);
                         let cellContent = (f === 'uid') ? idValue : (row[f] || '');
                         if (f === 'fullMail') {
-                            return `<td class="${isSel?'selected-cell':''} c-mail ${hC}" style="background-color:${rowBg};" onclick="handleCellClick(event,${i-1},'${key}','${f}')">
-                                <input class="edit-input" style="width:100%;height:100%;border:none;padding:2px 4px;font-size:9px;background:transparent;outline:none;color:var(--text);" value="${cellContent}" onchange="saveEdit('${key}','${f}',this.value)" onfocus="this.parentElement.click()">
+                            return `<td class="${isSel?'selected-cell':''} c-mail ${hC}" style="background-color:${rowBg};" onclick="onMailClick(this, '${key}', '${cellContent}')">
+                                <input class="edit-input" style="width:100%;height:100%;border:none;padding:3px 4px;font-size:11px;font-weight:600;background:transparent;outline:none;color:var(--text);cursor:pointer;pointer-events:none;" value="${cellContent}" readonly>
                             </td>`;
                         } else {
                             return `<td class="${isSel?'selected-cell':''}" style="background-color:${rowBg};" onclick="handleCellClick(event,${i-1},'${key}','${f}')">
-                                <input class="edit-input" style="width:100%;height:100%;border:none;padding:2px 4px;font-size:9px;background:transparent;outline:none;color:var(--text);" value="${cellContent}" onchange="saveEdit('${key}','${f}',this.value)" onfocus="this.parentElement.click()">
+                                <input class="edit-input" style="width:100%;height:100%;border:none;padding:3px 4px;font-size:11px;font-weight:600;background:transparent;outline:none;color:var(--text);cursor:default;" value="${cellContent}" readonly>
                             </td>`;
                         }
                     }).join('')}
-                    <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${key}')"></i></td>
+                    <!-- Action column: Eraser icon clears row content; trash icon (in context menu) deletes -->
+                    <td><i class="fa-solid fa-eraser" style="color:#f59e0b;cursor:pointer;font-size:13px;" onclick="clearRow('${key}')" title="Clear row content"></i></td>
                 </tr>`;
                 i++;
             });
@@ -1046,7 +1063,6 @@
                 let rowBg = row.color || 'transparent';
                 if (isD && rowBg === '#ffffff') rowBg = 'transparent';
                 const idValue = row.uid || '';
-                // Fields: uid, pass, tfa, cookie, fullMail, status (no color in manage)
                 const fields = ['uid','pass','tfa','cookie','fullMail','status'];
                 html += `<tr style="background-color:${rowBg};">
                     <td>${i}</td>
@@ -1054,19 +1070,20 @@
                         let isSel = selectedSet.has(`${key}|${f}`);
                         let cellContent = (f === 'uid') ? idValue : (row[f] || '');
                         return `<td class="${isSel?'selected-cell':''}" style="background-color:${rowBg};" onclick="handleManageCellClick(event,${i-1},'${key}','${f}')">
-                            <input class="edit-input" value="${cellContent}" onchange="saveEdit('${key}','${f}',this.value)" onfocus="this.parentElement.click()">
+                            <input class="edit-input" value="${cellContent}" readonly style="cursor:default;font-size:10px;padding:2px 4px;">
                         </td>`;
                     }).join('')}
-                    <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${key}')"></i></td>
+                    <td><i class="fa-solid fa-eraser" style="color:#f59e0b;cursor:pointer;font-size:13px;" onclick="clearRow('${key}')" title="Clear row content"></i></td>
                 </tr>`;
                 i++;
             });
             document.getElementById('manage-table-body').innerHTML = html;
         }
 
-        // ===== EDIT / SAVE =====
+        // ===== SAVE / EDIT (only via tools) =====
         function saveEdit(id, f, v) {
-            db.ref(`data/${currentUser}/${id}`).update({ [f]: v }).then(() => {
+            const path = `data/${currentUser}/${socialMode}/${id}`;
+            db.ref(path).update({ [f]: v }).then(() => {
                 archiveToGS(localData[id]);
                 showToast('Saved!');
             });
@@ -1093,8 +1110,21 @@
             selectedRowId = rId;
             document.getElementById('otp-area').style.display = 'none';
             document.getElementById('otp-input-box').value = fullText;
-            if (fullText) copyValue(fullText.split('|')[0].trim(), "Email");
-            // Also load existing data into the inputs if any
+            if (fullText) {
+                // Copy the entire content (not just email part)
+                navigator.clipboard.writeText(fullText).then(() => {
+                    showToast('Full mail + token copied!');
+                }).catch(() => {
+                    // fallback
+                    const textArea = document.createElement('textarea');
+                    textArea.value = fullText;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    textArea.remove();
+                    showToast('Full mail + token copied!');
+                });
+            }
             const row = localData[rId];
             if (row) {
                 document.getElementById('cookie-input').value = row.cookie || '';
@@ -1102,8 +1132,8 @@
                 if (socialMode === 'instagram') {
                     document.getElementById('username-input').value = row.uid || '';
                 }
-                parseCookie(); // to set extractedUid if needed
-                generateLive2FA(); // generate 2FA if secret present
+                parseCookie();
+                generateLive2FA();
             }
         }
 
@@ -1176,8 +1206,7 @@
 
         function base32Decode(encoded) {
             const b32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-            let bits = '',
-                bytes = [];
+            let bits = '', bytes = [];
             encoded = encoded.replace(/\s/g, '').toUpperCase();
             for (let i = 0; i < encoded.length; i++) {
                 const val = b32.indexOf(encoded.charAt(i));
@@ -1195,14 +1224,12 @@
             showToast(type + ' Copied!');
         }
 
-        // Update Instagram username (auto-save)
         function updateUsername() {
             if (!selectedRowId) return;
             const val = document.getElementById('username-input').value.trim();
-            // Update the uid field of the selected row
-            db.ref(`data/${currentUser}/${selectedRowId}/uid`).set(val).then(() => {
+            const path = `data/${currentUser}/${socialMode}/${selectedRowId}`;
+            db.ref(path).update({ uid: val }).then(() => {
                 archiveToGS(localData[selectedRowId]);
-                // No toast to avoid spam, but we could show a subtle message
             });
         }
 
@@ -1210,13 +1237,13 @@
             if (!selectedRowId) return;
             const cV = document.getElementById('cookie-input').value;
             const tV = document.getElementById('tfa-input').value;
-            // If Instagram mode, also get username
-            let uidVal = extractedUid; // from cookie parse, fallback
+            let uidVal = extractedUid;
             if (socialMode === 'instagram') {
                 uidVal = document.getElementById('username-input').value.trim() || uidVal;
             }
             const syncD = { uid: uidVal, tfa: tV, cookie: cV };
-            db.ref(`data/${currentUser}/${selectedRowId}`).update(syncD).then(() => {
+            const path = `data/${currentUser}/${socialMode}/${selectedRowId}`;
+            db.ref(path).update(syncD).then(() => {
                 archiveToGS({ ...localData[selectedRowId], ...syncD });
                 document.getElementById('cookie-input').value = '';
                 document.getElementById('tfa-input').value = '';
@@ -1243,24 +1270,9 @@
             }
             try {
                 const nativeNames = {
-                    th: [
-                        ['สมชาย', 'แซ่ตั้ง'],
-                        ['นารี', 'รัตน'],
-                        ['มาลัย', 'พงศ์'],
-                        ['มานะ', 'ศิริ']
-                    ],
-                    cn: [
-                        ['王', '伟'],
-                        ['李', '芳'],
-                        ['张', '强'],
-                        ['刘', '洋']
-                    ],
-                    ir: [
-                        ['محمد', 'أحمد'],
-                        ['فاطمة', 'علي'],
-                        ['علي', 'حسن'],
-                        ['ليلى', 'مریم']
-                    ]
+                    th: [['สมชาย','แซ่ตั้ง'],['นารี','รัตน'],['มาลัย','พงศ์'],['มานะ','ศิริ']],
+                    cn: [['王','伟'],['李','芳'],['张','强'],['刘','洋']],
+                    ir: [['محمد','أحمد'],['فاطمة','علي'],['علي','حسن'],['ليلى','مریم']]
                 };
                 if (nativeNames[type]) {
                     area.innerHTML = '';
@@ -1292,45 +1304,44 @@
             a.appendChild(d);
         }
 
-        // ===== BULK COUNT (updated on input) =====
+        // ===== BULK COUNT =====
         function updateBulkCount() {
             const text = document.getElementById('bulkDataBox').value.trim();
             const count = text ? text.split('\n').length : 0;
             document.getElementById('bulk-count').innerText = 'Mails: ' + count;
         }
 
-        // ===== BULK IMPORT (inside manage) =====
+        // ===== BULK IMPORT =====
         async function uploadBulkData() {
             const text = document.getElementById('bulkDataBox').value.trim();
             const start = parseInt(document.getElementById('bulk-start-row').value) - 1;
             if (!text) return alert('Paste data!');
             const lines = text.split('\n').filter(l => l.trim() !== '');
-            let ups = {},
-                arch = [];
-            // Get current keys to determine insertion points
-            const snap = await db.ref('data/' + currentUser).once('value');
+            let ups = {}, arch = [];
+            const path = `data/${currentUser}/${socialMode}`;
+            const snap = await db.ref(path).once('value');
             const currentData = snap.val() || {};
             const currentKeys = Object.keys(currentData);
             lines.forEach((l, idx) => {
                 let target = start + idx;
-                let k = (target < currentKeys.length) ? currentKeys[target] : db.ref(`data/${currentUser}`).push().key;
+                let k = (target < currentKeys.length) ? currentKeys[target] : db.ref(path).push().key;
                 let obj = { uid: '', pass: '', tfa: '', cookie: '', fullMail: l.trim(), status: '', color: '#ffffff' };
-                ups[`data/${currentUser}/${k}`] = obj;
+                ups[`${path}/${k}`] = obj;
                 arch.push(obj);
             });
             await db.ref().update(ups);
             document.getElementById('bulkDataBox').value = '';
             archiveToGS(arch);
-            updateBulkCount(); // reset count
+            updateBulkCount();
             showToast('Imported!');
         }
 
-        // ===== MANAGEMENT (overlay) =====
+        // ===== MANAGEMENT OVERLAY =====
         function openManagement() {
             document.getElementById('main-dashboard').classList.add('hidden');
             document.getElementById('manage-ui').style.display = 'block';
             renderManageTable();
-            updateBulkCount(); // update count when opening
+            updateBulkCount();
         }
 
         function closeManagement() {
@@ -1345,19 +1356,20 @@
             const to = parseInt(document.getElementById('fill-to').value) - 1;
             if (from < 0 || to >= rowKeys.length || from > to) return alert('Range Error!');
             saveHistory();
+            const path = `data/${currentUser}/${socialMode}`;
             if (mode === 'delete') {
                 for (let j = from; j <= to; j++) {
                     const key = rowKeys[j];
                     await backupRow(key);
-                    await db.ref(`data/${currentUser}/${key}`).remove();
+                    await db.ref(`${path}/${key}`).remove();
                 }
             } else {
                 let ups = {};
                 const val = document.getElementById('fill-val').value;
                 for (let j = from; j <= to; j++) {
                     const key = rowKeys[j];
-                    if (mode === 'fill') ups[`data/${currentUser}/${key}/pass`] = val;
-                    else if (mode === 'pass') ups[`data/${currentUser}/${key}/pass`] = '';
+                    if (mode === 'fill') ups[`${path}/${key}/pass`] = val;
+                    else if (mode === 'pass') ups[`${path}/${key}/pass`] = '';
                 }
                 await db.ref().update(ups);
             }
@@ -1374,7 +1386,7 @@
         async function undoAction() {
             if (historyStack.length) {
                 redoStack.push(JSON.parse(JSON.stringify(localData)));
-                await db.ref(`data/${currentUser}`).set(historyStack.pop());
+                await db.ref(`data/${currentUser}/${socialMode}`).set(historyStack.pop());
                 showToast('Undo');
             }
         }
@@ -1382,35 +1394,41 @@
         async function redoAction() {
             if (redoStack.length) {
                 historyStack.push(JSON.parse(JSON.stringify(localData)));
-                await db.ref(`data/${currentUser}`).set(redoStack.pop());
+                await db.ref(`data/${currentUser}/${socialMode}`).set(redoStack.pop());
                 showToast('Redo');
             }
         }
 
         // ===== ROW OPERATIONS =====
         function backupRow(rId) {
-            db.ref(`backups/${currentUser}/${Date.now()}`).set(localData[rId]);
+            db.ref(`backups/${currentUser}/${socialMode}/${Date.now()}`).set(localData[rId]);
         }
 
+        // Clear row content (keep row)
         function clearRow(rId) {
-            if (confirm('Clear row?')) {
+            if (confirm('Clear all content of this row? (row will remain)')) {
                 backupRow(rId);
-                db.ref(`data/${currentUser}/${rId}`).update({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' });
+                const path = `data/${currentUser}/${socialMode}/${rId}`;
+                db.ref(path).update({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' });
+                showToast('Row cleared');
             }
         }
 
+        // Delete row entirely (only used in context menu or range delete)
         function deleteRow(rId) {
-            if (confirm('Delete row?')) {
+            if (confirm('Delete this row permanently?')) {
                 backupRow(rId);
-                db.ref(`data/${currentUser}/${rId}`).remove();
+                const path = `data/${currentUser}/${socialMode}/${rId}`;
+                db.ref(path).remove();
+                showToast('Row deleted');
             }
         }
 
         function addRow() {
-            db.ref(`data/${currentUser}`).push({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' });
+            db.ref(`data/${currentUser}/${socialMode}`).push({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' });
         }
 
-        // ===== SELECTION & CONTEXT MENU (Main table) =====
+        // ===== SELECTION & CONTEXT MENU =====
         function handleCellClick(e, rIdx, key, f) {
             if (!isRangeMode) {
                 selectedSet.clear();
@@ -1426,13 +1444,10 @@
 
         function applyRangeSelection(rE, fE) {
             selectedSet.clear();
-            const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status', 'color'];
-            let fS = flds.indexOf(startPoint.f),
-                fE2 = flds.indexOf(fE);
-            let rS = Math.min(startPoint.r, rE),
-                rEx = Math.max(startPoint.r, rE);
-            let cS = Math.min(fS, fE2),
-                cEx = Math.max(fS, fE2);
+            const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status'];
+            let fS = flds.indexOf(startPoint.f), fE2 = flds.indexOf(fE);
+            let rS = Math.min(startPoint.r, rE), rEx = Math.max(startPoint.r, rE);
+            let cS = Math.min(fS, fE2), cEx = Math.max(fS, fE2);
             for (let i = rS; i <= rEx; i++) {
                 for (let j = cS; j <= cEx; j++) {
                     selectedSet.add(`${rowKeys[i]}|${flds[j]}`);
@@ -1441,7 +1456,6 @@
             renderTable();
         }
 
-        // ===== SELECTION FOR MANAGE TABLE =====
         function handleManageCellClick(e, rIdx, key, f) {
             if (!isRangeMode) {
                 selectedSet.clear();
@@ -1458,12 +1472,9 @@
         function applyManageRangeSelection(rE, fE) {
             selectedSet.clear();
             const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status'];
-            let fS = flds.indexOf(startPoint.f),
-                fE2 = flds.indexOf(fE);
-            let rS = Math.min(startPoint.r, rE),
-                rEx = Math.max(startPoint.r, rE);
-            let cS = Math.min(fS, fE2),
-                cEx = Math.max(fS, fE2);
+            let fS = flds.indexOf(startPoint.f), fE2 = flds.indexOf(fE);
+            let rS = Math.min(startPoint.r, rE), rEx = Math.max(startPoint.r, rE);
+            let cS = Math.min(fS, fE2), cEx = Math.max(fS, fE2);
             for (let i = rS; i <= rEx; i++) {
                 for (let j = cS; j <= cEx; j++) {
                     selectedSet.add(`${rowKeys[i]}|${flds[j]}`);
@@ -1472,7 +1483,6 @@
             renderManageTable();
         }
 
-        // ===== CONTEXT MENU ACTIONS =====
         function showMenu(e) {
             const m = document.getElementById('user-context-menu');
             m.style.display = 'block';
@@ -1509,9 +1519,10 @@
                 let [k] = item.split('|');
                 rows.add(k);
             });
+            const path = `data/${currentUser}/${socialMode}`;
             for (const k of rows) {
                 await backupRow(k);
-                db.ref(`data/${currentUser}/${k}`).remove();
+                await db.ref(`${path}/${k}`).remove();
             }
             resetSelection();
             showToast('Deleted ' + rows.size + ' rows.');
@@ -1524,6 +1535,27 @@
             hideMenu();
             renderTable();
             renderManageTable();
+        }
+
+        // ===== BACKUPS =====
+        function loadBackups() {
+            const path = `backups/${currentUser}/${socialMode}`;
+            db.ref(path).limitToLast(8).on('value', snap => {
+                let h = '';
+                snap.forEach(c => {
+                    h += `<tr style="background:#fef9f0;"><td>${new Date(parseInt(c.key)).toLocaleString()}</td><td>${c.val().fullMail||'Data'}</td><td><button class="btn" style="background:green;padding:2px 12px;" onclick="restore('${c.key}')">Restore</button></td></tr>`;
+                });
+                document.getElementById('backup-body').innerHTML = h;
+            });
+        }
+
+        function restore(id) {
+            const path = `data/${currentUser}/${socialMode}`;
+            db.ref(`backups/${currentUser}/${socialMode}/${id}`).once('value', s => {
+                db.ref(path).push(s.val()).then(() => {
+                    db.ref(`backups/${currentUser}/${socialMode}/${id}`).remove();
+                });
+            });
         }
 
         // ===== TOAST & THEME =====
@@ -1548,7 +1580,7 @@
             document.getElementById('loading-screen').style.display = 'none';
             if (!checkSession()) {
                 document.getElementById('login-overlay').style.display = 'flex';
-                showLoginForm(); // default to login
+                showLoginForm();
             }
             if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
         };
