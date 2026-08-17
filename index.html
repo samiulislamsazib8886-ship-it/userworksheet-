@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MailCode Pro - Ultimate Hybrid Sync Master</title>
+    <title>MailCode Pro · User Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- Firebase & SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -11,115 +11,678 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
-        :root { 
-            --p-color: #4f46e5; 
+        :root {
+            --p-color: #4f46e5;
             --insta-gradient: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --border: #e2e8f0;
-            --f-sz: 9.3px; --highlight: #4f46e5; 
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --f-sz: 9.3px;
+            --highlight: #4f46e5;
             --selected: rgba(79, 70, 229, 0.25);
+            --fb-color: #1877f2;
+            --ig-color: #e4405f;
         }
 
-        /* ডার্ক মোড সেটিংস */
         [data-theme="dark"] {
-            --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --border: #334155;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f1f5f9;
+            --border: #334155;
             --selected: rgba(255, 255, 255, 0.15);
+            --fb-color: #3b82f6;
+            --ig-color: #e4405f;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif; font-weight: 700; }
-        body { background: var(--bg); padding: 5px; color: var(--text); overflow-x: hidden; transition: 0.3s; }
-
-        /* ট্যাব ও সিলেকশন */
-        .tab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
-        .person-btn { padding: 18px; border: none; border-radius: 12px; color: white; font-size: 13px; cursor: pointer; transition: 0.2s; }
-
-        /* হেডার কার্ডস */
-        .top-panel { position: sticky; top: 0; background: var(--bg); padding-bottom: 5px; z-index: 100; transition: 0.3s; }
-        .triple-header { display: flex; gap: 6px; overflow-x: auto; padding: 4px 2px; scrollbar-width: none; }
-        .header-card { 
-            background: var(--card); border-radius: 10px; padding: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-            min-width: 185px; flex: 1; height: 140px; display: flex; flex-direction: column; justify-content: space-between;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+        }
+        body {
+            background: var(--bg);
+            padding: 5px;
+            color: var(--text);
+            overflow-x: hidden;
+            transition: 0.3s;
         }
 
-        .input-box { width: 100%; padding: 6px; border-radius: 5px; border: 1.5px solid var(--border); font-size: 9px; background: var(--bg); color: var(--text); outline: none; }
-        .btn-tool { width: 100%; border: none; padding: 7px; border-radius: 6px; color: white; font-size: 11px; cursor: pointer; }
-        
-        #otp-area { background: #0f172a; color: #10b981; border-radius: 5px; text-align: center; padding: 4px; display: none; }
-        #otp-val { font-size: 19px; letter-spacing: 4px; }
-        .tfa-display { font-size: 16px; color: #0891b2; text-align: center; background: #e0f2f1; border-radius: 4px; padding: 2px; }
+        /* LOGIN OVERLAY with Login/Signup toggle */
+        #login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #login-box {
+            background: var(--card);
+            border-radius: 24px;
+            padding: 35px 30px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: 0.3s;
+        }
+        #login-box h2 {
+            color: var(--p-color);
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        #login-box .sub {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            margin-bottom: 14px;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+        }
+        .input-field:focus {
+            border-color: var(--p-color);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.15s;
+            background: var(--p-color);
+            color: white;
+            width: 100%;
+        }
+        .btn:hover {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+        .toggle-link {
+            color: var(--p-color);
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 12px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+        .error-msg {
+            color: #dc2626;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 14px;
+            justify-content: center;
+        }
+        .remember-me input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .form-toggle {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .form-toggle .tab-btn {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            opacity: 0.5;
+            cursor: pointer;
+            padding: 4px 16px;
+            border-radius: 20px;
+            transition: 0.2s;
+        }
+        .form-toggle .tab-btn.active {
+            opacity: 1;
+            background: var(--p-color);
+            color: white;
+        }
+        .form-toggle .tab-btn:hover {
+            opacity: 0.8;
+        }
 
-        .name-res-area { font-size: 9.5px; overflow-y: auto; flex: 1; margin-top: 2px; }
-        .name-card { background: var(--border); padding: 5px 8px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; cursor: pointer; transition: 0.3s; }
+        /* SOCIAL TOGGLE - smaller */
+        .social-toggle {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .social-btn {
+            padding: 3px 10px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: white;
+            opacity: 0.6;
+            line-height: 1.4;
+        }
+        .social-btn i {
+            font-size: 12px;
+        }
+        .social-btn.active {
+            opacity: 1;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+        .social-btn.fb {
+            background: var(--fb-color);
+        }
+        .social-btn.ig {
+            background: var(--ig-color);
+        }
+        .social-btn:hover {
+            transform: scale(0.95);
+        }
 
-        .user-info-bar { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--card); border-radius: 10px; margin-bottom: 5px; border: 1px solid var(--border); }
-        .active-user-name { font-size: 13px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--text); }
-        .theme-toggle { cursor: pointer; font-size: 18px; color: var(--p-color); padding: 5px; }
+        /* DASHBOARD (Original MailCode Pro style with 3 tools) */
+        .top-panel {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            padding-bottom: 5px;
+            z-index: 100;
+            transition: 0.3s;
+        }
+        .triple-header {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 4px 2px;
+            scrollbar-width: none;
+        }
+        .header-card {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-width: 185px;
+            flex: 1;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .input-box {
+            width: 100%;
+            padding: 6px;
+            border-radius: 5px;
+            border: 1.5px solid var(--border);
+            font-size: 9px;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+        }
+        .btn-tool {
+            width: 100%;
+            border: none;
+            padding: 7px;
+            border-radius: 6px;
+            color: white;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        #otp-area {
+            background: #0f172a;
+            color: #10b981;
+            border-radius: 5px;
+            text-align: center;
+            padding: 4px;
+            display: none;
+        }
+        #otp-val {
+            font-size: 19px;
+            letter-spacing: 4px;
+        }
+        .tfa-display {
+            font-size: 16px;
+            color: #0891b2;
+            text-align: center;
+            background: #e0f2f1;
+            border-radius: 4px;
+            padding: 2px;
+            cursor: pointer;
+        }
 
-        /* টেবিল সেটিংস */
-        .table-wrap { background: var(--card); border-radius: 10px; overflow: auto; border: 1px solid var(--border); height: calc(100vh - 195px); }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 1000px; background: var(--card); }
-        th, td { font-size: var(--f-sz); padding: 8px 2px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; position: relative; color: var(--text); }
-        th { background: #1e293b; color: white; position: sticky; top: 0; z-index: 50; }
-        td:first-child, th:first-child { position: sticky; left: 0; z-index: 51; background: var(--card); width: 30px; border-right: 2px solid var(--border); }
+        .name-res-area {
+            font-size: 9.5px;
+            overflow-y: auto;
+            flex: 1;
+            margin-top: 2px;
+        }
+        .name-card {
+            background: var(--border);
+            padding: 5px 8px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-        .c-mail { color: var(--p-color); cursor: pointer; text-align: left; padding-left: 4px; }
-        .active-mail-cell { background-color: var(--highlight) !important; color: white !important; border-radius: 4px; }
-        
-        /* ম্যানেজ মোড সেটিংস */
-        #manage-ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 200; padding: 10px; display: none; overflow-y: auto; }
-        .manage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--p-color); padding-bottom: 10px; color: var(--text); }
-        
-        .bulk-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; position: relative; }
-        .bulk-counter { position: absolute; right: 15px; top: 12px; font-size: 10px; background: #333; color: #fff; padding: 2px 8px; border-radius: 10px; }
-        
-        .edit-input { width: 100%; height: 100%; border: none; padding: 0 5px; font-size: 11px; font-weight: 700; background: transparent; outline: none; color: var(--text); }
-        td.selected-cell { background-color: var(--selected) !important; border: 1.5px solid var(--p-color); }
+        .user-info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 8px;
+            background: var(--card);
+            border-radius: 10px;
+            margin-bottom: 5px;
+            border: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .active-user-name {
+            font-size: 12px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text);
+        }
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--p-color);
+            padding: 3px;
+        }
 
-        .btn-clean { padding: 8px; border: none; border-radius: 6px; font-size: 10px; color: white; cursor: pointer; flex: 1; min-width: 80px; }
-        
-        /* কনটেক্সট মেনু */
-        #user-context-menu { position: fixed; background: var(--card); border: 1px solid var(--border); border-radius: 8px; display: none; z-index: 2000; box-shadow: 0 5px 25px rgba(0,0,0,0.3); min-width: 160px; }
-        .menu-item { padding: 12px 15px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); color: var(--text); }
-        .menu-item:last-child { border-bottom: none; }
-        
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); color: white; padding: 10px 20px; border-radius: 30px; font-size: 11px; z-index: 3000; display: none; }
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 9999; color: var(--text); }
-        .hidden { display: none !important; }
+        .table-wrap {
+            background: var(--card);
+            border-radius: 10px;
+            overflow: auto;
+            border: 1px solid var(--border);
+            height: calc(100vh - 195px);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            min-width: 1000px;
+            background: var(--card);
+        }
+        th,
+        td {
+            font-size: var(--f-sz);
+            padding: 8px 2px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+            color: var(--text);
+        }
+        th {
+            background: #1e293b;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        td:first-child,
+        th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 51;
+            background: var(--card);
+            width: 30px;
+            border-right: 2px solid var(--border);
+        }
+
+        .c-mail {
+            color: var(--p-color);
+            cursor: pointer;
+            text-align: left;
+            padding-left: 4px;
+        }
+        .active-mail-cell {
+            background-color: var(--highlight) !important;
+            color: white !important;
+            border-radius: 4px;
+        }
+
+        #user-context-menu {
+            position: fixed;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: none;
+            z-index: 2000;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+            min-width: 160px;
+        }
+        .menu-item {
+            padding: 12px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 11px;
+            z-index: 3000;
+            display: none;
+        }
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: var(--text);
+        }
+        .hidden {
+            display: none !important;
+        }
+
+        /* MANAGEMENT UI */
+        #manage-ui {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            z-index: 200;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .manage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--p-color);
+            padding-bottom: 10px;
+        }
+        .manage-header .title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .bulk-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+        .bulk-card .bulk-title {
+            font-size: 11px;
+            color: var(--p-color);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .bulk-card textarea {
+            width: 100%;
+            height: 55px;
+            resize: vertical;
+            font-size: 9px;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            font-family: monospace;
+        }
+        .bulk-card .bulk-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .bulk-card .bulk-row label {
+            font-size: 10px;
+            color: var(--text);
+        }
+        .bulk-card .bulk-row input {
+            width: 50px;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-size: 10px;
+            background: var(--bg);
+            color: var(--text);
+            text-align: center;
+        }
+        .bulk-card .bulk-row .btn-tool {
+            width: auto;
+            padding: 4px 14px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .edit-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 0 5px;
+            font-size: 11px;
+            font-weight: 700;
+            background: transparent;
+            outline: none;
+            color: var(--text);
+        }
+        td.selected-cell {
+            background-color: var(--selected) !important;
+            border: 1.5px solid var(--p-color);
+        }
+        .btn-clean {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            color: white;
+            cursor: pointer;
+            flex: 1;
+            min-width: 70px;
+        }
+        .history-controls {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-history {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 10px;
+            color: white;
+            cursor: pointer;
+            background: #64748b;
+        }
+
+        /* remove bulk area from dashboard */
+        .bulk-user-area {
+            display: none;
+        }
+
+        /* table inside manage */
+        #manage-ui .table-wrap {
+            height: calc(100vh - 340px);
+        }
+        #manage-ui table td input {
+            font-size: 10px;
+        }
+
+        /* Instagram username field visibility */
+        .ig-username-field {
+            display: none;
+        }
+        .ig-username-field.active {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .user-info-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .social-btn {
+                font-size: 10px;
+                padding: 2px 8px;
+            }
+            .social-btn i {
+                font-size: 10px;
+            }
+            .active-user-name {
+                font-size: 11px;
+            }
+            #login-box {
+                padding: 20px 15px;
+            }
+        }
     </style>
 </head>
 <body onpointerup="stopSelection()">
 
-    <div id="loading-screen"><h3>LOADING DATABASE...</h3></div>
+    <div id="loading-screen"><h3>LOADING...</h3></div>
     <div id="toast">Action Success!</div>
 
-    <!-- স্ক্রিন ১: সিলেকশন ভিউ -->
-    <div id="selection-view">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding: 15px;">
-            <h2>DATABASE MONITOR</h2>
-            <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
+    <!-- LOGIN OVERLAY with Login & Signup tabs -->
+    <div id="login-overlay">
+        <div id="login-box">
+            <h2><i class="fa-regular fa-envelope"></i> MailCode Pro</h2>
+            <p class="sub">Sign in to your account</p>
+
+            <!-- Toggle Login / Signup -->
+            <div class="form-toggle">
+                <button class="tab-btn active" id="loginTabBtn" onclick="showLoginForm()">Login</button>
+                <button class="tab-btn" id="signupTabBtn" onclick="showSignupForm()">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form">
+                <input type="text" id="login-username" class="input-field" placeholder="Username">
+                <input type="password" id="login-password" class="input-field" placeholder="Password">
+                <div class="remember-me">
+                    <input type="checkbox" id="rememberMe" checked>
+                    <label for="rememberMe">Remember me</label>
+                </div>
+                <button class="btn" onclick="loginUser()">Login</button>
+                <div id="login-error" class="error-msg"></div>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" style="display:none;">
+                <input type="text" id="signup-name" class="input-field" placeholder="Full Name">
+                <input type="text" id="signup-username" class="input-field" placeholder="Username">
+                <input type="password" id="signup-password" class="input-field" placeholder="Password">
+                <button class="btn" onclick="signupUser()">Create Account</button>
+                <div id="signup-error" class="error-msg"></div>
+            </div>
         </div>
-        <div id="tabs-container" class="tab-grid" style="padding: 10px;"></div>
     </div>
 
-    <!-- স্ক্রিন ২: মেইন ড্যাশবোর্ড -->
+    <!-- MAIN DASHBOARD (only shown after login) -->
     <div id="main-dashboard" class="hidden">
         <div class="top-panel">
+            <!-- User Info Bar with Social Toggle (smaller) and Logout -->
+            <div class="user-info-bar">
+                <div class="social-toggle">
+                    <button class="social-btn fb active" id="btnFacebook" onclick="setSocial('facebook')">
+                        <i class="fab fa-facebook"></i> FB
+                    </button>
+                    <button class="social-btn ig" id="btnInstagram" onclick="setSocial('instagram')">
+                        <i class="fab fa-instagram"></i> IG
+                    </button>
+                </div>
+                <div class="active-user-name">
+                    <span id="display-user-name">USERNAME</span>
+                </div>
+                <div style="display:flex; gap:4px; align-items:center; flex-wrap:wrap;">
+                    <button class="btn-tool" style="background:var(--p-color); width:auto; padding:3px 10px; font-size:10px;" onclick="openManagement()">MANAGE</button>
+                    <button onclick="logout()" style="background:none; border:none; color:#64748b; font-size:14px; padding:2px 6px;"><i class="fa-solid fa-sign-out-alt"></i></button>
+                    <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
+                </div>
+            </div>
+
+            <!-- 3 TOOLS: OTP, Cookie/2FA, Insta Names -->
             <div class="triple-header">
-                <!-- টুল ১: ওটিপি -->
+                <!-- OTP Fetcher -->
                 <div class="header-card">
                     <div style="color:var(--p-color); font-size:11px;">OTP Fetcher</div>
                     <input type="text" id="otp-input-box" class="input-box" readonly placeholder="Select row...">
                     <button onclick="fetchOTPCode()" id="btn-fetch" class="btn-tool" style="background:var(--p-color)">GET CODE</button>
                     <div id="otp-area"><div id="otp-val" onclick="copyValue(this.innerText, 'OTP')">------</div></div>
                 </div>
-                <!-- টুল ২: Cookie & 2FA -->
+                <!-- Cookie & 2FA (with Instagram Username field) -->
                 <div class="header-card">
                     <div style="color:#0891b2; font-size:11px;">Cookie & 2FA</div>
                     <input type="text" id="cookie-input" class="input-box" placeholder="Cookie..." oninput="parseCookie()">
                     <input type="text" id="tfa-input" class="input-box" placeholder="2FA Secret..." oninput="generateLive2FA()">
+                    <!-- Instagram Username field (hidden by default) -->
+                    <div id="ig-username-container" class="ig-username-field">
+                        <input type="text" id="username-input" class="input-box" placeholder="Instagram Username..." oninput="updateUsername()">
+                    </div>
                     <div id="tfa-code-display" class="tfa-display" onclick="copyValue(this.innerText, '2FA')">------</div>
                     <button id="send-btn" class="btn-tool" style="background:#10b981;" onclick="updateFirebaseAndSheet()">SEND ALL</button>
                 </div>
-                <!-- টুল ৩: Insta Names -->
+                <!-- Instagram Names Generator -->
                 <div class="header-card">
                     <div style="background:var(--insta-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; font-size:11px;">Insta Names</div>
                     <select id="country-select" class="input-box" style="height:28px;">
@@ -136,54 +699,59 @@
                     <div id="name-result-area" class="name-res-area"></div>
                 </div>
             </div>
-            <div class="user-info-bar">
-                <button onclick="location.reload()" style="background:none; border:none; color:#64748b;"><i class="fa-solid fa-arrow-left-long fa-2xl"></i></button>
-                <div class="active-user-name" onclick="openManagement()">
-                    <span id="display-user-name">USERNAME</span>
-                    <button style="background:var(--p-color); color:white; border:none; padding:4px 12px; border-radius:8px; font-size:11px; margin-left:10px;">MANAGE</button>
-                </div>
-                <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
-            </div>
+
+            <!-- TABLE (bulk removed from here) -->
         </div>
         <div class="table-wrap">
             <table id="user-table">
                 <thead>
-                    <tr><th style="width:25px;">#</th><th style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr>
+                    <tr>
+                        <th style="width:25px;">#</th>
+                        <th id="mainIdHeader" style="width:45px;">UID</th>
+                        <th style="width:45px;">Pass</th>
+                        <th style="width:45px;">2FA</th>
+                        <th style="width:45px;">Cook</th>
+                        <th>Full Mail</th>
+                        <th style="width:55px;">Status</th>
+                        <th style="width:30px;">X</th>
+                    </tr>
                 </thead>
                 <tbody id="user-table-body"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- ম্যানেজ ইউআই -->
+    <!-- MANAGEMENT UI (with Bulk Import inside) -->
     <div id="manage-ui">
         <div class="manage-header">
-            <div style="font-size: 15px;"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div>
-            <button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:8px 20px;">BACK</button>
+            <div class="title"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div>
+            <button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:6px 18px;">BACK</button>
         </div>
 
+        <!-- Bulk Import Card (moved here) -->
         <div class="bulk-card">
-            <div class="bulk-counter" id="bulk-count">Mails: 0</div>
-            <span style="font-size: 11px; color: var(--p-color);">BULK IMPORT (Email|Pass|Cookie|Token)</span>
-            <textarea id="bulkDataBox" class="input-box" style="height: 55px;" placeholder="Paste data here..." oninput="updateBulkCount()"></textarea>
-            <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
-                <span style="font-size: 10px;">ROW:</span>
-                <input type="number" id="bulk-start-row" class="input-box" style="width:50px;" value="1">
-                <button class="btn-tool" style="background:green; flex:1" onclick="uploadBulkData()">IMPORT</button>
+            <div class="bulk-title"><i class="fa-solid fa-upload"></i> BULK IMPORT (Email|Pass|Cookie|Token)</div>
+            <textarea id="bulkDataBox" placeholder="Paste data here..." oninput="updateBulkCount()"></textarea>
+            <div class="bulk-row">
+                <label>ROW:</label>
+                <input type="number" id="bulk-start-row" value="1">
+                <button class="btn-tool" style="background:green;" onclick="uploadBulkData()">IMPORT</button>
+                <span id="bulk-count" style="font-size:10px; color:#64748b;">Mails: 0</span>
             </div>
             <div class="history-controls">
-                <button onclick="undoAction()" class="btn-history" style="background:#64748b;"><i class="fa-solid fa-rotate-left"></i> RETURN</button>
-                <button onclick="redoAction()" class="btn-history" style="background:#475569;"><i class="fa-solid fa-rotate-right"></i> FORWARD</button>
+                <button onclick="undoAction()" class="btn-history"><i class="fa-solid fa-rotate-left"></i> RETURN</button>
+                <button onclick="redoAction()" class="btn-history"><i class="fa-solid fa-rotate-right"></i> FORWARD</button>
             </div>
         </div>
 
+        <!-- Range Actions -->
         <div class="bulk-card">
-            <div style="display:flex; gap:5px; align-items:center;">
-                <input type="text" id="fill-val" class="input-box" style="flex:2" placeholder="Value to Fill">
-                <input type="number" id="fill-from" class="input-box" style="width:35px" value="1">
-                <span>-</span>
-                <input type="number" id="fill-to" class="input-box" style="width:35px" value="10">
-                <button onclick="applyRangeAction('fill')" class="btn-tool" style="background:var(--p-color); width: 60px;">APPLY</button>
+            <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
+                <input type="text" id="fill-val" class="input-box" style="flex:2; min-width:80px;" placeholder="Value to Fill">
+                <input type="number" id="fill-from" class="input-box" style="width:35px;" value="1">
+                <span style="font-size:11px;">-</span>
+                <input type="number" id="fill-to" class="input-box" style="width:35px;" value="10">
+                <button onclick="applyRangeAction('fill')" class="btn-tool" style="background:var(--p-color); width:60px;">APPLY</button>
             </div>
             <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; margin-top: 10px;">
                 <button class="btn-clean" style="background:#f59e0b;" onclick="applyRangeAction('pass')">Clear Pass</button>
@@ -192,245 +760,798 @@
             </div>
         </div>
 
-        <div class="table-wrap" style="height: calc(100vh - 430px);">
+        <!-- Manage Table -->
+        <div class="table-wrap">
             <table>
-                <thead><tr><th style="width:25px;">#</th><th style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr></thead>
+                <thead><tr><th style="width:25px;">#</th><th id="manageIdHeader" style="width:45px;">UID</th><th style="width:45px;">Pass</th><th style="width:45px;">2FA</th><th style="width:45px;">Cook</th><th>Full Mail</th><th style="width:55px;">Status</th><th style="width:30px;">X</th></tr></thead>
                 <tbody id="manage-table-body"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- কনটেক্সট মেনু (উইথ ক্লোজ বাটন) -->
+    <!-- CONTEXT MENU -->
     <div id="user-context-menu">
         <div class="menu-item" onclick="enableRangeMode()"><i class="fa-solid fa-object-group"></i> Select Range</div>
         <div class="menu-item" onclick="copySelectedVertical()"><i class="fa-solid fa-copy"></i> Copy UID (Vertical)</div>
         <div class="menu-item" style="color:red;" onclick="deleteSelectedRows()"><i class="fa-solid fa-trash"></i> Delete Selected</div>
-        <div class="menu-item" style="color:#666; border-top: 1px solid #ddd;" onclick="resetSelection()"><i class="fa-solid fa-xmark"></i> Close & Reset</div>
+        <div class="menu-item" style="color:#666; border-top:1px solid #ddd;" onclick="resetSelection()"><i class="fa-solid fa-xmark"></i> Close & Reset</div>
     </div>
 
-<script>
-    // --- ফায়ারবেস কনফিগারেশন ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyAWe-hm45aoVdAuGajFP2aWUrXbWah29B0",
-        authDomain: "user-sheet-control.firebaseapp.com",
-        databaseURL: "https://user-sheet-control-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "user-sheet-control",
-        storageBucket: "user-sheet-control.firebasestorage.app",
-        messagingSenderId: "1003962005887",
-        appId: "1:1003962005887:web:cc9048bc5d1413449a024a"
-    };
+    <script>
+        // ===== FIREBASE CONFIG =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWe-hm45aoVdAuGajFP2aWUrXbWah29B0",
+            authDomain: "user-sheet-control.firebaseapp.com",
+            databaseURL: "https://user-sheet-control-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "user-sheet-control",
+            storageBucket: "user-sheet-control.firebasestorage.app",
+            messagingSenderId: "1003962005887",
+            appId: "1:1003962005887:web:cc9048bc5d1413449a024a"
+        };
+        const FORM_SYNC_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfeDglY6zK6GgaLiY6iliGxHoXwGJeAYCAogMrIazpcKVuSCQ/formResponse";
+        const FORM_ENTRIES = {
+            uid: "entry.2103578011",
+            pass: "entry.862857244",
+            tfa: "entry.650662198",
+            cookie: "entry.846810001",
+            mail: "entry.2057161853"
+        };
 
-    // --- গুগল ফর্ম এপিআই ---
-    const FORM_SYNC_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfeDglY6zK6GgaLiY6iliGxHoXwGJeAYCAogMrIazpcKVuSCQ/formResponse";
-    const FORM_ENTRIES = { uid: "entry.2103578011", pass: "entry.862857244", tfa: "entry.650662198", cookie: "entry.846810001", mail: "entry.2057161853" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const API_FETCH_URL = "https://code.yamin.bd/api.php?action=fetch";
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const API_FETCH_URL = "https://code.yamin.bd/api.php?action=fetch";
+        // ===== GLOBALS =====
+        let currentUser = null;
+        let selectedRowId = null,
+            extractedUid = "";
+        let rowKeys = [],
+            localData = {};
+        let isRangeMode = false,
+            startPoint = null,
+            selectedSet = new Set(); // stores "key|field" for cell selection
+        let historyStack = [],
+            redoStack = [];
+        let socialMode = 'facebook';
+        let masterPool = [];
 
-    let activeUser = "", selectedRowId = null, extractedUid = "", rowKeys = [], localData = {}, historyStack = [], redoStack = [];
-    let isRangeMode = false, startPoint = null, selectedSet = new Set();
-
-    function archiveToGS(u, d) {
-        if (!Array.isArray(d)) d = [d];
-        d.forEach(row => {
-            const p = new URLSearchParams();
-            p.append(FORM_ENTRIES.uid, row.uid || "");
-            p.append(FORM_ENTRIES.pass, row.pass || "");
-            p.append(FORM_ENTRIES.tfa, row.tfa || "");
-            p.append(FORM_ENTRIES.cookie, row.cookie || "");
-            p.append(FORM_ENTRIES.mail, row.fullMail || "");
-            fetch(FORM_SYNC_URL, { method: 'POST', mode: 'no-cors', body: p });
-        });
-    }
-
-    function toggleTheme() {
-        const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.body.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-    }
-    if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
-
-    window.onload = () => {
-        db.ref('users').on('value', (snap) => {
-            let html = '';
-            snap.forEach((child) => {
-                html += `<button class="person-btn" style="background:${child.val().color || '#4f46e5'}" onclick="selectUser('${child.key}')">${child.key}</button>`;
-            });
-            document.getElementById('tabs-container').innerHTML = html;
-            document.getElementById('loading-screen').style.display = 'none';
-        });
-    };
-
-    function selectUser(name) {
-        activeUser = name;
-        document.getElementById('display-user-name').innerText = name;
-        document.getElementById('selection-view').classList.add('hidden');
-        document.getElementById('main-dashboard').classList.remove('hidden');
-        db.ref('data/' + activeUser).on('value', (snap) => {
-            localData = snap.val() || {};
-            rowKeys = Object.keys(localData);
-            renderTables();
-        });
-    }
-
-    function renderTables() {
-        let fH = '', mH = ''; let i = 1;
-        const isD = document.body.getAttribute('data-theme') === 'dark';
-        rowKeys.forEach(key => {
-            let row = localData[key];
-            let hC = (key === selectedRowId) ? 'active-mail-cell' : '';
-            let sC = selectedSet.has(key) ? 'selected-cell' : '';
-            let rowBg = row.color || 'transparent';
-            if (isD && rowBg === '#ffffff') rowBg = 'transparent';
-
-            fH += `<tr style="background-color: ${rowBg};">
-                <td>${i}</td><td>${row.uid||""}</td><td>${row.pass||""}</td><td>${row.tfa||""}</td><td>${row.cookie||""}</td>
-                <td class="c-mail ${hC}" onclick="onMailClick(this, '${key}', '${row.fullMail}')">${row.fullMail || ""}</td>
-                <td style="color:#dc2626;">${row.status||""}</td>
-                <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${key}')"></i></td>
-            </tr>`;
-            mH += `<tr>
-                <td>${i}</td>
-                ${['uid','pass','tfa','cookie','fullMail','status'].map(f => `
-                    <td class="${sC}" onclick="handleManageSelect(event, '${key}', ${i-1})"><input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}', '${f}', this.value)"></td>
-                `).join('')}
-                <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${key}')"></i></td>
-            </tr>`;
-            i++;
-        });
-        document.getElementById('user-table-body').innerHTML = fH;
-        document.getElementById('manage-table-body').innerHTML = mH;
-    }
-
-    // --- সিলেকশন রিসেট লজিক (NEW) ---
-    function resetSelection() {
-        isRangeMode = false;
-        startPoint = null;
-        selectedSet.clear();
-        hideMenu();
-        renderTables();
-    }
-
-    // --- নাম জেনারেটর (RESTORED HINDI API & NATIVE SCRIPTS) ---
-    async function generateNames() {
-        const type = document.getElementById('country-select').value;
-        const area = document.getElementById('name-result-area');
-        area.innerHTML = "Generating...";
-
-        if(type === 'custom') {
-            const b = ["Samiul", "Islam", "Khan", "Ahmed", "Hasan", "Azmir"]; area.innerHTML = "";
-            for(let k=0; k<5; k++) addNameCard(b[Math.floor(Math.random()*6)] + "_" + Math.random().toString(36).substring(7), area); return;
+        // ===== AUTH =====
+        function hashPassword(pw) {
+            return btoa(pw + 'salt');
         }
 
-        try {
-            // ইন্ডিয়ান এবং অন্যান্য সাধারণ নামের জন্য randomuser.me (Original API)
-            // চীন, থাই এবং আরবির জন্য ফিক্সড নেটিভ ডাটা
-            const nativeNames = {
-                th: [["สมชาย", "แซ่ตั้ง"], ["นารี", "รัตน"], ["มาลัย", "พงศ์"], ["มานะ", "ศิริ"]],
-                cn: [["王", "伟"], ["李", "芳"], ["张", "强"], ["刘", "洋"]],
-                ir: [["محمد", "أحمد"], ["فاطمة", "علي"], ["علي", "حسن"], ["ليلى", "مریم"]]
-            };
+        // Show/hide login/signup forms
+        function showLoginForm() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('loginTabBtn').classList.add('active');
+            document.getElementById('signupTabBtn').classList.remove('active');
+            document.getElementById('login-error').innerText = '';
+            document.getElementById('signup-error').innerText = '';
+        }
+        function showSignupForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('signup-form').style.display = 'block';
+            document.getElementById('signupTabBtn').classList.add('active');
+            document.getElementById('loginTabBtn').classList.remove('active');
+            document.getElementById('login-error').innerText = '';
+            document.getElementById('signup-error').innerText = '';
+        }
 
-            if(nativeNames[type]) {
-                area.innerHTML = "";
-                for(let k=0; k<5; k++) {
-                    let pair = nativeNames[type][Math.floor(Math.random() * nativeNames[type].length)];
-                    addNameCard(pair[0] + " " + pair[1], area);
-                }
+        // Signup (with auto-approve check)
+        async function signupUser() {
+            const name = document.getElementById('signup-name').value.trim();
+            const username = document.getElementById('signup-username').value.trim();
+            const password = document.getElementById('signup-password').value.trim();
+            if (!name || !username || !password) {
+                document.getElementById('signup-error').innerText = 'All fields required';
+                return;
+            }
+            // Check existing
+            const snap = await db.ref('users/' + username).once('value');
+            if (snap.exists()) {
+                document.getElementById('signup-error').innerText = 'Username already taken';
                 return;
             }
 
-            // ইন্ডিয়া (in) এবং অন্যদের জন্য এপিআই কল
-            const res = await fetch(`https://randomuser.me/api/?results=5&nat=${type}`);
-            const data = await res.json(); area.innerHTML = "";
-            data.results.forEach(u => addNameCard(u.name.first + " " + u.name.last, area));
-        } catch(e) { area.innerHTML = "Error!"; }
-    }
+            // Check auto-approve setting
+            const autoApproveSnap = await db.ref('settings/autoApprove').once('value');
+            const autoApprove = autoApproveSnap.val() === true;
 
-    function addNameCard(n, a) {
-        const d = document.createElement('div'); d.className = "name-card";
-        d.onclick = () => { navigator.clipboard.writeText(n); showToast("Copied!"); d.style.opacity = "0"; setTimeout(() => d.remove(), 300); };
-        d.innerHTML = `<span>${n}</span><i class="fa-solid fa-copy"></i>`; a.appendChild(d);
-    }
+            // Create user
+            await db.ref('users/' + username).set({
+                name: name,
+                password: hashPassword(password),
+                approved: autoApprove, // true if auto approve is ON
+                role: 'user'
+            });
+            await db.ref('data/' + username).set({});
 
-    // --- বাল্ক ও এডিট ---
-    function updateBulkCount() { const t = document.getElementById('bulkDataBox').value.trim(); document.getElementById('bulk-count').innerText = "Mails: " + (t?t.split('\n').length:0); }
-    async function uploadBulkData() {
-        const text = document.getElementById('bulkDataBox').value.trim(); const start = parseInt(document.getElementById('bulk-start-row').value) - 1;
-        if(!text) return; saveHistory(); let ups = {}; let arch = [];
-        text.split('\n').forEach((l, idx) => {
-            let target = start + idx; let k = (target < rowKeys.length) ? rowKeys[target] : db.ref(`data/${activeUser}`).push().key;
-            let rowObj = { uid:"", pass:"", tfa:"", cookie:"", fullMail:l.trim(), status:"", color:"#ffffff" }; ups[`data/${activeUser}/${k}`] = rowObj; arch.push(rowObj);
-        });
-        db.ref().update(ups).then(() => { document.getElementById('bulkDataBox').value = ""; archiveToGS(activeUser, arch); showToast("Imported!"); });
-    }
-
-    function saveEdit(rId, f, v) { db.ref(`data/${activeUser}/${rId}`).update({ [f]: v }).then(() => { archiveToGS(activeUser, localData[rId]); showToast("Saved!"); }); }
-    async function backupRow(rId) { const ts = new Date().getTime(); await db.ref(`backups/${activeUser}/${ts}`).set(localData[rId]); }
-    function clearRow(rId) { if(confirm("Clear?")) { backupRow(rId); db.ref(`data/${activeUser}/${rId}`).update({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:""}); } }
-    function deleteRow(rId) { if(confirm("Delete?")) { backupRow(rId); db.ref(`data/${activeUser}/${rId}`).remove(); } }
-    function addRow() { db.ref(`data/${activeUser}`).push({uid:"", pass:"", tfa:"", cookie:"", fullMail:"", status:"", color:"#ffffff"}); }
-
-    async function applyRangeAction(mode) {
-        const from = parseInt(document.getElementById('fill-from').value)-1, to = parseInt(document.getElementById('fill-to').value)-1;
-        if(from < 0 || to >= rowKeys.length || from > to) return alert("Range Error!");
-        saveHistory(); let ups = {};
-        for(let j=from; j<=to; j++) {
-            let k = rowKeys[j];
-            if(mode==='fill') ups[`data/${activeUser}/${k}/pass`] = document.getElementById('fill-val').value;
-            else if(mode==='delete') { backupRow(k); await db.ref(`data/${activeUser}/${k}`).remove(); }
+            const msg = autoApprove ?
+                'Account created and auto-approved! You can now login.' :
+                'Signup successful! Wait for admin approval.';
+            alert(msg);
+            showLoginForm();
+            document.getElementById('signup-username').value = '';
+            document.getElementById('signup-password').value = '';
+            document.getElementById('signup-name').value = '';
+            if (autoApprove) {
+                // Optionally auto-login? But we'll just show login form.
+            }
         }
-        if(mode==='fill') await db.ref().update(ups);
-        showToast("Done!");
-        resetSelection();
-    }
 
-    // --- ওটিপি ও সিলেকশন ---
-    function onMailClick(el, rId, fullText) {
-        document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell')); el.classList.add('active-mail-cell');
-        selectedRowId = rId; document.getElementById('otp-area').style.display = 'none'; document.getElementById('otp-input-box').value = fullText;
-        if(fullText) copyValue(fullText.split('|')[0].trim(), "Email");
-    }
+        // Check session
+        function checkSession() {
+            const saved = localStorage.getItem('userPanelUser');
+            if (saved) {
+                currentUser = saved;
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('main-dashboard').classList.remove('hidden');
+                document.getElementById('display-user-name').innerText = currentUser.toUpperCase();
+                document.getElementById('loading-screen').style.display = 'none';
+                loadUserData();
+                loadSocialMode();
+                return true;
+            }
+            return false;
+        }
 
-    async function fetchOTPCode() {
-        const val = document.getElementById('otp-input-box').value; if(!val) return; const btn = document.getElementById('btn-fetch'); btn.innerText = "...";
-        try { const res = await fetch(API_FETCH_URL, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ email: val.split('|')[0], password: val.split('|')[1], refresh_token: val.split('|')[2] || "", client_id: val.split('|')[3] || "" }) }); const data = await res.json(); if(data.status) { document.getElementById('otp-area').style.display = 'block'; document.getElementById('otp-val').innerText = data.code; copyValue(data.code, "OTP"); } } finally { btn.innerText = "GET CODE"; }
-    }
+        async function loginUser() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            if (!username || !password) {
+                document.getElementById('login-error').innerText = 'Enter credentials';
+                return;
+            }
+            const snap = await db.ref('users/' + username).once('value');
+            if (!snap.exists()) {
+                document.getElementById('login-error').innerText = 'User not found';
+                return;
+            }
+            const user = snap.val();
+            if (user.password !== hashPassword(password)) {
+                document.getElementById('login-error').innerText = 'Wrong password';
+                return;
+            }
+            if (!user.approved) {
+                document.getElementById('login-error').innerText = 'Account not approved by admin.';
+                return;
+            }
+            // Login success
+            currentUser = username;
+            if (document.getElementById('rememberMe').checked) {
+                localStorage.setItem('userPanelUser', username);
+            } else {
+                localStorage.removeItem('userPanelUser');
+            }
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('main-dashboard').classList.remove('hidden');
+            document.getElementById('display-user-name').innerText = username.toUpperCase();
+            document.getElementById('loading-screen').style.display = 'none';
+            loadUserData();
+            loadSocialMode();
+            document.getElementById('login-error').innerText = '';
+        }
 
-    function updateFirebaseAndSheet() {
-        if (!selectedRowId) return; const cV = document.getElementById('cookie-input').value, tV = document.getElementById('tfa-input').value; const syncD = { uid: extractedUid || "", tfa: tV, cookie: cV };
-        db.ref(`data/${activeUser}/${selectedRowId}`).update(syncD).then(() => { archiveToGS(activeUser, {...localData[selectedRowId], ...syncD}); document.getElementById('cookie-input').value = ""; document.getElementById('tfa-input').value = ""; document.getElementById('tfa-code-display').innerText = "------"; });
-    }
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('userPanelUser');
+            if (window.dataListener) {
+                db.ref('data/' + currentUser).off();
+                window.dataListener = null;
+            }
+            document.getElementById('main-dashboard').classList.add('hidden');
+            document.getElementById('login-overlay').style.display = 'flex';
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-error').innerText = '';
+            selectedSet.clear();
+            resetSelection();
+            historyStack = [];
+            redoStack = [];
+            showLoginForm();
+        }
 
-    function parseCookie() { const input = document.getElementById('cookie-input').value; const match = input.match(/c_user=([0-9]+)/); extractedUid = match ? match[1] : ""; }
-    function generateLive2FA() {
-        const secret = document.getElementById('tfa-input').value.trim(); if (secret.length < 10) return;
-        try { const keyBytes = base32Decode(secret); const time = Math.floor(Date.now() / 30000); const timeBytes = new Uint8Array(8); let tv = time; for (let i = 7; i >= 0; i--) { timeBytes[i] = tv & 0xff; tv = Math.floor(tv / 256); } const hmac = CryptoJS.HmacSHA1(CryptoJS.lib.WordArray.create(timeBytes), CryptoJS.lib.WordArray.create(keyBytes)); const hb = []; for (let i = 0; i < hmac.words.length; i++) hb.push((hmac.words[i] >>> 24) & 0xff, (hmac.words[i] >>> 16) & 0xff, (hmac.words[i] >>> 8) & 0xff, hmac.words[i] & 0xff); const offset = hb[hb.length - 1] & 0x0f; const code = ((hb[offset] & 0x7f) << 24 | (hb[offset+1] & 0xff) << 16 | (hb[offset+2] & 0xff) << 8 | (hb[offset+3] & 0xff)) % 1000000; document.getElementById('tfa-code-display').innerText = code.toString().padStart(6, '0'); } catch (e) { document.getElementById('tfa-code-display').innerText = "ERR"; }
-    }
-    function base32Decode(encoded) {
-        const b32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits = '', bytes = []; encoded = encoded.replace(/\s/g, '').toUpperCase();
-        for (let i = 0; i < encoded.length; i++) { const val = b32.indexOf(encoded.charAt(i)); if (val !== -1) bits += val.toString(2).padStart(5, '0'); }
-        for (let i = 0; i + 8 <= bits.length; i += 8) bytes.push(parseInt(bits.substr(i, 8), 2)); return new Uint8Array(bytes);
-    }
-    function copyValue(text, type) { if(!text || text === "------") return; navigator.clipboard.writeText(text); showToast(type + " Copied!"); }
-    function showToast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 1500); }
+        // ===== SOCIAL TOGGLE =====
+        function setSocial(mode) {
+            socialMode = mode;
+            localStorage.setItem('userSocialMode', mode);
+            document.getElementById('btnFacebook').classList.toggle('active', mode === 'facebook');
+            document.getElementById('btnInstagram').classList.toggle('active', mode === 'instagram');
+            // Show/hide Instagram username field
+            const igContainer = document.getElementById('ig-username-container');
+            if (mode === 'instagram') {
+                igContainer.classList.add('active');
+            } else {
+                igContainer.classList.remove('active');
+            }
+            // Update headers
+            const mainHeader = document.getElementById('mainIdHeader');
+            const manageHeader = document.getElementById('manageIdHeader');
+            if (mode === 'facebook') {
+                mainHeader.innerText = 'UID';
+                if (manageHeader) manageHeader.innerText = 'UID';
+            } else {
+                mainHeader.innerText = 'Username';
+                if (manageHeader) manageHeader.innerText = 'Username';
+            }
+            if (currentUser) {
+                renderTable();
+                renderManageTable();
+            }
+            showToast('Switched to ' + mode.charAt(0).toUpperCase() + mode.slice(1));
+        }
 
-    function handleManageSelect(e, k, rIdx) {
-        if (!isRangeMode) { selectedSet.clear(); startPoint = {r: rIdx, key: k}; selectedSet.add(k); showActionMenu(e); renderTables(); }
-        else { selectedSet.clear(); let s = Math.min(startPoint.r, rIdx), end = Math.max(startPoint.r, rIdx); for (let j = s; j <= end; j++) selectedSet.add(rowKeys[j]); showActionMenu(e); renderTables(); }
-    }
-    function showActionMenu(e) { const m = document.getElementById('user-context-menu'); m.style.display = 'block'; m.style.left = Math.min(e.clientX, window.innerWidth - 180) + 'px'; m.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px'; }
-    function hideMenu() { document.getElementById('user-context-menu').style.display = 'none'; }
-    function enableRangeMode() { isRangeMode = true; hideMenu(); showToast("Range Mode On"); }
-    function copySelectedVertical() { let t = ""; selectedSet.forEach(k => t += (localData[k].uid || "") + "\n"); navigator.clipboard.writeText(t.trim()); showToast("UIDs Copied!"); resetSelection(); }
-    async function deleteSelectedRows() { if(confirm("Delete selected with backup?")) { for(const k of selectedSet) await backupRow(k); selectedSet.forEach(k => db.ref(`data/${activeUser}/${k}`).remove()); resetSelection(); } }
-    function openManagement() { document.getElementById('main-dashboard').classList.add('hidden'); document.getElementById('manage-ui').style.display = 'block'; }
-    function closeManagement() { document.getElementById('manage-ui').style.display = 'none'; document.getElementById('main-dashboard').classList.remove('hidden'); }
-    function saveHistory() { historyStack.push(JSON.parse(JSON.stringify(localData))); redoStack = []; }
-    async function undoAction() { if(historyStack.length) { redoStack.push(JSON.parse(JSON.stringify(localData))); await db.ref(`data/${activeUser}`).set(historyStack.pop()); } }
-    async function redoAction() { if(redoStack.length) { historyStack.push(JSON.parse(JSON.stringify(localData))); await db.ref(`data/${activeUser}`).set(redoStack.pop()); } }
-    function stopSelection() {}
-</script>
+        function loadSocialMode() {
+            const saved = localStorage.getItem('userSocialMode');
+            if (saved) {
+                setSocial(saved);
+            } else {
+                setSocial('facebook');
+            }
+        }
+
+        // ===== LOAD USER DATA =====
+        function loadUserData() {
+            if (!currentUser) return;
+            const ref = db.ref('data/' + currentUser);
+            window.dataListener = ref.on('value', snap => {
+                localData = snap.val() || {};
+                rowKeys = Object.keys(localData);
+                renderTable();
+                renderManageTable();
+                document.getElementById('bulk-count').innerText = 'Mails: ' + rowKeys.length;
+            });
+        }
+
+        // ===== RENDER FUNCTIONS =====
+        function renderTable() {
+            let html = '';
+            let i = 1;
+            const isD = document.body.getAttribute('data-theme') === 'dark';
+            rowKeys.forEach(key => {
+                let row = localData[key];
+                let hC = (key === selectedRowId) ? 'active-mail-cell' : '';
+                let rowBg = row.color || 'transparent';
+                if (isD && rowBg === '#ffffff') rowBg = 'transparent';
+                const idValue = row.uid || '';
+                html += `<tr style="background-color:${rowBg};">
+                    <td>${i}</td>
+                    ${['uid','pass','tfa','cookie','fullMail','status','color'].map(f => {
+                        let isSel = selectedSet.has(`${key}|${f}`);
+                        let cellContent = (f === 'uid') ? idValue : (row[f] || '');
+                        if (f === 'fullMail') {
+                            return `<td class="${isSel?'selected-cell':''} c-mail ${hC}" style="background-color:${rowBg};" onclick="handleCellClick(event,${i-1},'${key}','${f}')">
+                                <input class="edit-input" style="width:100%;height:100%;border:none;padding:2px 4px;font-size:9px;background:transparent;outline:none;color:var(--text);" value="${cellContent}" onchange="saveEdit('${key}','${f}',this.value)" onfocus="this.parentElement.click()">
+                            </td>`;
+                        } else {
+                            return `<td class="${isSel?'selected-cell':''}" style="background-color:${rowBg};" onclick="handleCellClick(event,${i-1},'${key}','${f}')">
+                                <input class="edit-input" style="width:100%;height:100%;border:none;padding:2px 4px;font-size:9px;background:transparent;outline:none;color:var(--text);" value="${cellContent}" onchange="saveEdit('${key}','${f}',this.value)" onfocus="this.parentElement.click()">
+                            </td>`;
+                        }
+                    }).join('')}
+                    <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${key}')"></i></td>
+                </tr>`;
+                i++;
+            });
+            document.getElementById('user-table-body').innerHTML = html;
+        }
+
+        function renderManageTable() {
+            let html = '';
+            let i = 1;
+            const isD = document.body.getAttribute('data-theme') === 'dark';
+            rowKeys.forEach(key => {
+                let row = localData[key];
+                let rowBg = row.color || 'transparent';
+                if (isD && rowBg === '#ffffff') rowBg = 'transparent';
+                const idValue = row.uid || '';
+                // Fields: uid, pass, tfa, cookie, fullMail, status (no color in manage)
+                const fields = ['uid','pass','tfa','cookie','fullMail','status'];
+                html += `<tr style="background-color:${rowBg};">
+                    <td>${i}</td>
+                    ${fields.map(f => {
+                        let isSel = selectedSet.has(`${key}|${f}`);
+                        let cellContent = (f === 'uid') ? idValue : (row[f] || '');
+                        return `<td class="${isSel?'selected-cell':''}" style="background-color:${rowBg};" onclick="handleManageCellClick(event,${i-1},'${key}','${f}')">
+                            <input class="edit-input" value="${cellContent}" onchange="saveEdit('${key}','${f}',this.value)" onfocus="this.parentElement.click()">
+                        </td>`;
+                    }).join('')}
+                    <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${key}')"></i></td>
+                </tr>`;
+                i++;
+            });
+            document.getElementById('manage-table-body').innerHTML = html;
+        }
+
+        // ===== EDIT / SAVE =====
+        function saveEdit(id, f, v) {
+            db.ref(`data/${currentUser}/${id}`).update({ [f]: v }).then(() => {
+                archiveToGS(localData[id]);
+                showToast('Saved!');
+            });
+        }
+
+        function archiveToGS(data) {
+            if (!data) return;
+            const rows = Array.isArray(data) ? data : [data];
+            rows.forEach(row => {
+                const p = new URLSearchParams();
+                p.append(FORM_ENTRIES.uid, row.uid || '');
+                p.append(FORM_ENTRIES.pass, row.pass || '');
+                p.append(FORM_ENTRIES.tfa, row.tfa || '');
+                p.append(FORM_ENTRIES.cookie, row.cookie || '');
+                p.append(FORM_ENTRIES.mail, row.fullMail || '');
+                fetch(FORM_SYNC_URL, { method: 'POST', mode: 'no-cors', body: p });
+            });
+        }
+
+        // ===== OTP, COOKIE, 2FA =====
+        function onMailClick(el, rId, fullText) {
+            document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell'));
+            el.classList.add('active-mail-cell');
+            selectedRowId = rId;
+            document.getElementById('otp-area').style.display = 'none';
+            document.getElementById('otp-input-box').value = fullText;
+            if (fullText) copyValue(fullText.split('|')[0].trim(), "Email");
+            // Also load existing data into the inputs if any
+            const row = localData[rId];
+            if (row) {
+                document.getElementById('cookie-input').value = row.cookie || '';
+                document.getElementById('tfa-input').value = row.tfa || '';
+                if (socialMode === 'instagram') {
+                    document.getElementById('username-input').value = row.uid || '';
+                }
+                parseCookie(); // to set extractedUid if needed
+                generateLive2FA(); // generate 2FA if secret present
+            }
+        }
+
+        async function fetchOTPCode() {
+            const val = document.getElementById('otp-input-box').value;
+            if (!val) return;
+            const btn = document.getElementById('btn-fetch');
+            btn.innerText = "...";
+            try {
+                const res = await fetch(API_FETCH_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        email: val.split('|')[0],
+                        password: val.split('|')[1] || '',
+                        refresh_token: val.split('|')[2] || '',
+                        client_id: val.split('|')[3] || ''
+                    })
+                });
+                const data = await res.json();
+                if (data.status) {
+                    document.getElementById('otp-area').style.display = 'block';
+                    document.getElementById('otp-val').innerText = data.code;
+                    copyValue(data.code, 'OTP');
+                }
+            } finally {
+                btn.innerText = 'GET CODE';
+            }
+        }
+
+        function parseCookie() {
+            const input = document.getElementById('cookie-input').value;
+            const match = input.match(/c_user=([0-9]+)/);
+            extractedUid = match ? match[1] : '';
+        }
+
+        function generateLive2FA() {
+            const secret = document.getElementById('tfa-input').value.trim();
+            if (secret.length < 10) return;
+            try {
+                const keyBytes = base32Decode(secret);
+                const time = Math.floor(Date.now() / 30000);
+                const timeBytes = new Uint8Array(8);
+                let tv = time;
+                for (let i = 7; i >= 0; i--) {
+                    timeBytes[i] = tv & 0xff;
+                    tv = Math.floor(tv / 256);
+                }
+                const hmac = CryptoJS.HmacSHA1(
+                    CryptoJS.lib.WordArray.create(timeBytes),
+                    CryptoJS.lib.WordArray.create(keyBytes)
+                );
+                const hb = [];
+                for (let i = 0; i < hmac.words.length; i++) {
+                    hb.push((hmac.words[i] >>> 24) & 0xff,
+                        (hmac.words[i] >>> 16) & 0xff,
+                        (hmac.words[i] >>> 8) & 0xff,
+                        hmac.words[i] & 0xff);
+                }
+                const offset = hb[hb.length - 1] & 0x0f;
+                const code = ((hb[offset] & 0x7f) << 24 |
+                        (hb[offset + 1] & 0xff) << 16 |
+                        (hb[offset + 2] & 0xff) << 8 |
+                        (hb[offset + 3] & 0xff)) % 1000000;
+                document.getElementById('tfa-code-display').innerText = code.toString().padStart(6, '0');
+            } catch (e) {
+                document.getElementById('tfa-code-display').innerText = 'ERR';
+            }
+        }
+
+        function base32Decode(encoded) {
+            const b32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+            let bits = '',
+                bytes = [];
+            encoded = encoded.replace(/\s/g, '').toUpperCase();
+            for (let i = 0; i < encoded.length; i++) {
+                const val = b32.indexOf(encoded.charAt(i));
+                if (val !== -1) bits += val.toString(2).padStart(5, '0');
+            }
+            for (let i = 0; i + 8 <= bits.length; i += 8) {
+                bytes.push(parseInt(bits.substr(i, 8), 2));
+            }
+            return new Uint8Array(bytes);
+        }
+
+        function copyValue(text, type) {
+            if (!text || text === '------') return;
+            navigator.clipboard.writeText(text);
+            showToast(type + ' Copied!');
+        }
+
+        // Update Instagram username (auto-save)
+        function updateUsername() {
+            if (!selectedRowId) return;
+            const val = document.getElementById('username-input').value.trim();
+            // Update the uid field of the selected row
+            db.ref(`data/${currentUser}/${selectedRowId}/uid`).set(val).then(() => {
+                archiveToGS(localData[selectedRowId]);
+                // No toast to avoid spam, but we could show a subtle message
+            });
+        }
+
+        function updateFirebaseAndSheet() {
+            if (!selectedRowId) return;
+            const cV = document.getElementById('cookie-input').value;
+            const tV = document.getElementById('tfa-input').value;
+            // If Instagram mode, also get username
+            let uidVal = extractedUid; // from cookie parse, fallback
+            if (socialMode === 'instagram') {
+                uidVal = document.getElementById('username-input').value.trim() || uidVal;
+            }
+            const syncD = { uid: uidVal, tfa: tV, cookie: cV };
+            db.ref(`data/${currentUser}/${selectedRowId}`).update(syncD).then(() => {
+                archiveToGS({ ...localData[selectedRowId], ...syncD });
+                document.getElementById('cookie-input').value = '';
+                document.getElementById('tfa-input').value = '';
+                document.getElementById('tfa-code-display').innerText = '------';
+                if (socialMode === 'instagram') {
+                    document.getElementById('username-input').value = '';
+                }
+                showToast('Saved!');
+            });
+        }
+
+        // ===== NAME GENERATOR =====
+        async function generateNames() {
+            const type = document.getElementById('country-select').value;
+            const area = document.getElementById('name-result-area');
+            area.innerHTML = 'Generating...';
+            if (type === 'custom') {
+                const b = ['Samiul', 'Islam', 'Khan', 'Ahmed', 'Hasan', 'Azmir'];
+                area.innerHTML = '';
+                for (let k = 0; k < 5; k++) {
+                    addNameCard(b[Math.floor(Math.random() * b.length)] + '_' + Math.random().toString(36).substring(7), area);
+                }
+                return;
+            }
+            try {
+                const nativeNames = {
+                    th: [
+                        ['สมชาย', 'แซ่ตั้ง'],
+                        ['นารี', 'รัตน'],
+                        ['มาลัย', 'พงศ์'],
+                        ['มานะ', 'ศิริ']
+                    ],
+                    cn: [
+                        ['王', '伟'],
+                        ['李', '芳'],
+                        ['张', '强'],
+                        ['刘', '洋']
+                    ],
+                    ir: [
+                        ['محمد', 'أحمد'],
+                        ['فاطمة', 'علي'],
+                        ['علي', 'حسن'],
+                        ['ليلى', 'مریم']
+                    ]
+                };
+                if (nativeNames[type]) {
+                    area.innerHTML = '';
+                    for (let k = 0; k < 5; k++) {
+                        let pair = nativeNames[type][Math.floor(Math.random() * nativeNames[type].length)];
+                        addNameCard(pair[0] + ' ' + pair[1], area);
+                    }
+                    return;
+                }
+                const res = await fetch(`https://randomuser.me/api/?results=5&nat=${type}`);
+                const data = await res.json();
+                area.innerHTML = '';
+                data.results.forEach(u => addNameCard(u.name.first + ' ' + u.name.last, area));
+            } catch (e) {
+                area.innerHTML = 'Error!';
+            }
+        }
+
+        function addNameCard(n, a) {
+            const d = document.createElement('div');
+            d.className = 'name-card';
+            d.onclick = () => {
+                navigator.clipboard.writeText(n);
+                showToast('Copied!');
+                d.style.opacity = '0';
+                setTimeout(() => d.remove(), 300);
+            };
+            d.innerHTML = `<span>${n}</span><i class="fa-solid fa-copy"></i>`;
+            a.appendChild(d);
+        }
+
+        // ===== BULK COUNT (updated on input) =====
+        function updateBulkCount() {
+            const text = document.getElementById('bulkDataBox').value.trim();
+            const count = text ? text.split('\n').length : 0;
+            document.getElementById('bulk-count').innerText = 'Mails: ' + count;
+        }
+
+        // ===== BULK IMPORT (inside manage) =====
+        async function uploadBulkData() {
+            const text = document.getElementById('bulkDataBox').value.trim();
+            const start = parseInt(document.getElementById('bulk-start-row').value) - 1;
+            if (!text) return alert('Paste data!');
+            const lines = text.split('\n').filter(l => l.trim() !== '');
+            let ups = {},
+                arch = [];
+            // Get current keys to determine insertion points
+            const snap = await db.ref('data/' + currentUser).once('value');
+            const currentData = snap.val() || {};
+            const currentKeys = Object.keys(currentData);
+            lines.forEach((l, idx) => {
+                let target = start + idx;
+                let k = (target < currentKeys.length) ? currentKeys[target] : db.ref(`data/${currentUser}`).push().key;
+                let obj = { uid: '', pass: '', tfa: '', cookie: '', fullMail: l.trim(), status: '', color: '#ffffff' };
+                ups[`data/${currentUser}/${k}`] = obj;
+                arch.push(obj);
+            });
+            await db.ref().update(ups);
+            document.getElementById('bulkDataBox').value = '';
+            archiveToGS(arch);
+            updateBulkCount(); // reset count
+            showToast('Imported!');
+        }
+
+        // ===== MANAGEMENT (overlay) =====
+        function openManagement() {
+            document.getElementById('main-dashboard').classList.add('hidden');
+            document.getElementById('manage-ui').style.display = 'block';
+            renderManageTable();
+            updateBulkCount(); // update count when opening
+        }
+
+        function closeManagement() {
+            document.getElementById('manage-ui').style.display = 'none';
+            document.getElementById('main-dashboard').classList.remove('hidden');
+            renderTable();
+        }
+
+        // ===== RANGE ACTIONS =====
+        async function applyRangeAction(mode) {
+            const from = parseInt(document.getElementById('fill-from').value) - 1;
+            const to = parseInt(document.getElementById('fill-to').value) - 1;
+            if (from < 0 || to >= rowKeys.length || from > to) return alert('Range Error!');
+            saveHistory();
+            if (mode === 'delete') {
+                for (let j = from; j <= to; j++) {
+                    const key = rowKeys[j];
+                    await backupRow(key);
+                    await db.ref(`data/${currentUser}/${key}`).remove();
+                }
+            } else {
+                let ups = {};
+                const val = document.getElementById('fill-val').value;
+                for (let j = from; j <= to; j++) {
+                    const key = rowKeys[j];
+                    if (mode === 'fill') ups[`data/${currentUser}/${key}/pass`] = val;
+                    else if (mode === 'pass') ups[`data/${currentUser}/${key}/pass`] = '';
+                }
+                await db.ref().update(ups);
+            }
+            resetSelection();
+            showToast('Action applied');
+        }
+
+        // ===== UNDO / REDO =====
+        function saveHistory() {
+            historyStack.push(JSON.parse(JSON.stringify(localData)));
+            redoStack = [];
+        }
+
+        async function undoAction() {
+            if (historyStack.length) {
+                redoStack.push(JSON.parse(JSON.stringify(localData)));
+                await db.ref(`data/${currentUser}`).set(historyStack.pop());
+                showToast('Undo');
+            }
+        }
+
+        async function redoAction() {
+            if (redoStack.length) {
+                historyStack.push(JSON.parse(JSON.stringify(localData)));
+                await db.ref(`data/${currentUser}`).set(redoStack.pop());
+                showToast('Redo');
+            }
+        }
+
+        // ===== ROW OPERATIONS =====
+        function backupRow(rId) {
+            db.ref(`backups/${currentUser}/${Date.now()}`).set(localData[rId]);
+        }
+
+        function clearRow(rId) {
+            if (confirm('Clear row?')) {
+                backupRow(rId);
+                db.ref(`data/${currentUser}/${rId}`).update({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' });
+            }
+        }
+
+        function deleteRow(rId) {
+            if (confirm('Delete row?')) {
+                backupRow(rId);
+                db.ref(`data/${currentUser}/${rId}`).remove();
+            }
+        }
+
+        function addRow() {
+            db.ref(`data/${currentUser}`).push({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' });
+        }
+
+        // ===== SELECTION & CONTEXT MENU (Main table) =====
+        function handleCellClick(e, rIdx, key, f) {
+            if (!isRangeMode) {
+                selectedSet.clear();
+                startPoint = { r: rIdx, f: f };
+                selectedSet.add(`${key}|${f}`);
+                if (e.target.tagName !== 'INPUT') showMenu(e);
+                renderTable();
+            } else {
+                applyRangeSelection(rIdx, f);
+                showMenu(e);
+            }
+        }
+
+        function applyRangeSelection(rE, fE) {
+            selectedSet.clear();
+            const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status', 'color'];
+            let fS = flds.indexOf(startPoint.f),
+                fE2 = flds.indexOf(fE);
+            let rS = Math.min(startPoint.r, rE),
+                rEx = Math.max(startPoint.r, rE);
+            let cS = Math.min(fS, fE2),
+                cEx = Math.max(fS, fE2);
+            for (let i = rS; i <= rEx; i++) {
+                for (let j = cS; j <= cEx; j++) {
+                    selectedSet.add(`${rowKeys[i]}|${flds[j]}`);
+                }
+            }
+            renderTable();
+        }
+
+        // ===== SELECTION FOR MANAGE TABLE =====
+        function handleManageCellClick(e, rIdx, key, f) {
+            if (!isRangeMode) {
+                selectedSet.clear();
+                startPoint = { r: rIdx, f: f };
+                selectedSet.add(`${key}|${f}`);
+                if (e.target.tagName !== 'INPUT') showMenu(e);
+                renderManageTable();
+            } else {
+                applyManageRangeSelection(rIdx, f);
+                showMenu(e);
+            }
+        }
+
+        function applyManageRangeSelection(rE, fE) {
+            selectedSet.clear();
+            const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status'];
+            let fS = flds.indexOf(startPoint.f),
+                fE2 = flds.indexOf(fE);
+            let rS = Math.min(startPoint.r, rE),
+                rEx = Math.max(startPoint.r, rE);
+            let cS = Math.min(fS, fE2),
+                cEx = Math.max(fS, fE2);
+            for (let i = rS; i <= rEx; i++) {
+                for (let j = cS; j <= cEx; j++) {
+                    selectedSet.add(`${rowKeys[i]}|${flds[j]}`);
+                }
+            }
+            renderManageTable();
+        }
+
+        // ===== CONTEXT MENU ACTIONS =====
+        function showMenu(e) {
+            const m = document.getElementById('user-context-menu');
+            m.style.display = 'block';
+            m.style.left = Math.min(e.clientX, window.innerWidth - 190) + 'px';
+            m.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px';
+        }
+
+        function hideMenu() {
+            document.getElementById('user-context-menu').style.display = 'none';
+        }
+
+        function enableRangeMode() {
+            isRangeMode = true;
+            hideMenu();
+            showToast('Range Mode On');
+        }
+
+        function copySelectedVertical() {
+            let t = '';
+            selectedSet.forEach(item => {
+                let [k, f] = item.split('|');
+                t += (localData[k][f] || '') + '\n';
+            });
+            navigator.clipboard.writeText(t.trim());
+            showToast('Copied!');
+            resetSelection();
+        }
+
+        async function deleteSelectedRows() {
+            if (selectedSet.size === 0) return alert('No cells selected.');
+            if (!confirm('Delete rows that have any selected cell? (backup saved)')) return;
+            let rows = new Set();
+            selectedSet.forEach(item => {
+                let [k] = item.split('|');
+                rows.add(k);
+            });
+            for (const k of rows) {
+                await backupRow(k);
+                db.ref(`data/${currentUser}/${k}`).remove();
+            }
+            resetSelection();
+            showToast('Deleted ' + rows.size + ' rows.');
+        }
+
+        function resetSelection() {
+            isRangeMode = false;
+            startPoint = null;
+            selectedSet.clear();
+            hideMenu();
+            renderTable();
+            renderManageTable();
+        }
+
+        // ===== TOAST & THEME =====
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 1500);
+        }
+
+        function toggleTheme() {
+            const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        }
+        if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+
+        function stopSelection() {}
+
+        // ===== INIT =====
+        window.onload = function() {
+            document.getElementById('loading-screen').style.display = 'none';
+            if (!checkSession()) {
+                document.getElementById('login-overlay').style.display = 'flex';
+                showLoginForm(); // default to login
+            }
+            if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+        };
+    </script>
 </body>
 </html>
