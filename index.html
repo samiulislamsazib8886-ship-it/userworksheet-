@@ -16,11 +16,10 @@
             --card: #ffffff;
             --text: #1e293b;
             --border: #e2e8f0;
-            --f-sz: 11px;
+            --f-sz: 9.3px;
             --highlight: #4f46e5;
             --selected: rgba(79, 70, 229, 0.25);
             --fb-color: #1877f2;
-            --ig-color: #e4405f;
         }
         [data-theme="dark"] {
             --bg: #0f172a;
@@ -29,18 +28,17 @@
             --border: #334155;
             --selected: rgba(255,255,255,0.15);
             --fb-color: #3b82f6;
-            --ig-color: #e4405f;
         }
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            font-weight: 600;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
         }
         body {
             background: var(--bg);
-            padding: 8px;
+            padding: 5px;
             color: var(--text);
             overflow-x: hidden;
             transition: 0.3s;
@@ -59,29 +57,29 @@
         }
         #login-box {
             background: var(--card);
-            border-radius: 28px;
-            padding: 40px 35px;
+            border-radius: 24px;
+            padding: 35px 30px;
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             text-align: center;
         }
         #login-box h2 {
             color: var(--p-color);
-            font-size: 26px;
+            font-size: 24px;
             margin-bottom: 6px;
         }
         #login-box .sub {
             color: #64748b;
-            font-size: 15px;
+            font-size: 14px;
             margin-bottom: 20px;
         }
         .input-field {
             width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            border: 1.5px solid var(--border);
-            font-size: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 14px;
             margin-bottom: 14px;
             background: var(--bg);
             color: var(--text);
@@ -89,14 +87,14 @@
         }
         .input-field:focus {
             border-color: var(--p-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
         }
         .btn {
-            padding: 14px;
+            padding: 12px;
             border: none;
             border-radius: 30px;
             font-weight: 700;
-            font-size: 15px;
+            font-size: 14px;
             cursor: pointer;
             transition: 0.15s;
             background: var(--p-color);
@@ -110,7 +108,7 @@
         .toggle-link {
             color: var(--p-color);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             margin-top: 12px;
             display: inline-block;
         }
@@ -123,33 +121,33 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 14px;
+            font-size: 13px;
             color: #64748b;
             margin-bottom: 14px;
             justify-content: center;
         }
         .remember-me input {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
         }
         .form-toggle {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             justify-content: center;
             margin-bottom: 20px;
-            border-bottom: 1.5px solid var(--border);
-            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
         }
         .form-toggle .tab-btn {
             background: transparent;
             border: none;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text);
             opacity: 0.5;
             cursor: pointer;
-            padding: 4px 18px;
+            padding: 4px 16px;
             border-radius: 20px;
             transition: 0.2s;
         }
@@ -159,157 +157,85 @@
             color: white;
         }
 
-        /* SOCIAL TOGGLE */
-        .social-toggle {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .social-btn {
-            padding: 4px 12px;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: white;
-            opacity: 0.6;
-            line-height: 1.4;
-        }
-        .social-btn i {
-            font-size: 13px;
-        }
-        .social-btn.active {
-            opacity: 1;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-        }
-        .social-btn.fb {
-            background: var(--fb-color);
-        }
-        .social-btn.ig {
-            background: var(--ig-color);
-        }
-        .social-btn:hover {
-            transform: scale(0.95);
-        }
-
-        /* DASHBOARD - refined compact cards */
+        /* DASHBOARD */
         .top-panel {
             position: sticky;
             top: 0;
             background: var(--bg);
-            padding-bottom: 8px;
+            padding-bottom: 5px;
             z-index: 100;
             transition: 0.3s;
         }
         .triple-header {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             overflow-x: auto;
             padding: 4px 2px;
             scrollbar-width: none;
         }
         .header-card {
             background: var(--card);
-            border-radius: 12px;
-            padding: 10px 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            min-width: 180px;
+            border-radius: 10px;
+            padding: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-width: 185px;
             flex: 1;
-            height: 145px;
+            height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid var(--border);
-        }
-        .header-card .title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--p-color);
-            letter-spacing: 0.2px;
-            margin-bottom: 3px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .header-card .title i {
-            font-size: 12px;
         }
         .input-box {
             width: 100%;
-            padding: 5px 8px;
-            border-radius: 6px;
+            padding: 6px;
+            border-radius: 5px;
             border: 1.5px solid var(--border);
-            font-size: 10px;
+            font-size: 9px;
             background: var(--bg);
             color: var(--text);
             outline: none;
-            height: 26px;
-            transition: 0.2s;
-        }
-        .input-box:focus {
-            border-color: var(--p-color);
-            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
         }
         .btn-tool {
             width: 100%;
             border: none;
-            padding: 5px;
+            padding: 7px;
             border-radius: 6px;
             color: white;
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 11px;
             cursor: pointer;
-            height: 26px;
-            line-height: 1;
-            transition: 0.15s;
-        }
-        .btn-tool:hover {
-            transform: scale(0.97);
-            opacity: 0.9;
         }
         #otp-area {
             background: #0f172a;
             color: #10b981;
-            border-radius: 6px;
+            border-radius: 5px;
             text-align: center;
-            padding: 2px;
+            padding: 4px;
             display: none;
-            font-size: 16px;
-            letter-spacing: 2px;
-            height: 24px;
-            line-height: 24px;
         }
         #otp-val {
-            font-size: 16px;
-            letter-spacing: 2px;
+            font-size: 19px;
+            letter-spacing: 4px;
+            cursor: pointer;
         }
         .tfa-display {
             font-size: 16px;
             color: #0891b2;
             text-align: center;
             background: #e0f2f1;
-            border-radius: 6px;
+            border-radius: 4px;
             padding: 2px;
             cursor: pointer;
-            height: 24px;
-            line-height: 24px;
         }
 
         .name-res-area {
-            font-size: 9px;
+            font-size: 9.5px;
             overflow-y: auto;
             flex: 1;
             margin-top: 2px;
-            max-height: 36px;
         }
         .name-card {
             background: var(--border);
-            padding: 2px 8px;
+            padding: 5px 8px;
             border-radius: 4px;
             display: flex;
             justify-content: space-between;
@@ -317,52 +243,50 @@
             margin-bottom: 2px;
             cursor: pointer;
             transition: 0.3s;
-            font-size: 9px;
         }
 
         .user-info-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 12px;
+            padding: 6px 10px;
             background: var(--card);
-            border-radius: 12px;
-            margin-bottom: 8px;
+            border-radius: 10px;
+            margin-bottom: 5px;
             border: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 4px;
         }
         .active-user-name {
             font-size: 13px;
             text-transform: uppercase;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             color: var(--text);
         }
         .theme-toggle {
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             color: var(--p-color);
-            padding: 2px;
+            padding: 5px;
         }
 
         .table-wrap {
             background: var(--card);
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: auto;
             border: 1px solid var(--border);
-            height: calc(100vh - 225px);
+            height: calc(100vh - 195px);
         }
         table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
-            font-size: 11px;
+            min-width: 1000px;
             background: var(--card);
         }
         th, td {
-            padding: 6px 4px;
+            font-size: var(--f-sz);
+            padding: 8px 2px;
             text-align: center;
             border-bottom: 1px solid var(--border);
             white-space: nowrap;
@@ -377,74 +301,41 @@
             position: sticky;
             top: 0;
             z-index: 50;
-            font-size: 10px;
-            padding: 8px 4px;
         }
         td:first-child, th:first-child {
             position: sticky;
             left: 0;
             z-index: 51;
             background: var(--card);
-            width: 32px;
+            width: 30px;
             border-right: 2px solid var(--border);
         }
-        /* Column widths */
-        th:nth-child(2) { width: 12%; }
-        th:nth-child(3) { width: 10%; }
-        th:nth-child(4) { width: 10%; }
-        th:nth-child(5) { width: 12%; }
-        th:nth-child(6) { width: 30%; }
-        th:nth-child(7) { width: 10%; }
-        th:nth-child(8) { width: 6%; }
 
         .c-mail {
             color: var(--p-color);
             cursor: pointer;
             text-align: left;
-            padding-left: 6px;
+            padding-left: 4px;
         }
         .active-mail-cell {
             background-color: var(--highlight) !important;
             color: white !important;
-            border-radius: 6px;
-        }
-
-        .edit-input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            padding: 3px 4px;
-            font-size: 11px;
-            font-weight: 600;
-            background: transparent;
-            outline: none;
-            color: var(--text);
-            pointer-events: none;
-            cursor: default;
-        }
-        .c-mail .edit-input {
-            pointer-events: none;
-            cursor: pointer;
-        }
-
-        td.selected-cell {
-            background-color: var(--selected) !important;
-            border: 1.5px solid var(--p-color);
+            border-radius: 4px;
         }
 
         #user-context-menu {
             position: fixed;
             background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 8px;
             display: none;
             z-index: 2000;
             box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
-            min-width: 170px;
+            min-width: 160px;
         }
         .menu-item {
-            padding: 10px 16px;
-            font-size: 13px;
+            padding: 12px 15px;
+            font-size: 14px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -458,14 +349,14 @@
 
         #toast {
             position: fixed;
-            bottom: 30px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 10px 22px;
-            border-radius: 40px;
-            font-size: 12px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 11px;
             z-index: 3000;
             display: none;
         }
@@ -481,7 +372,6 @@
             align-items: center;
             z-index: 9999;
             color: var(--text);
-            font-size: 20px;
         }
         .hidden {
             display: none !important;
@@ -496,7 +386,7 @@
             height: 100%;
             background: var(--bg);
             z-index: 200;
-            padding: 12px;
+            padding: 10px;
             display: none;
             overflow-y: auto;
         }
@@ -504,14 +394,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 15px;
             border-bottom: 2px solid var(--p-color);
             padding-bottom: 10px;
             color: var(--text);
-        }
-        .manage-header .title {
-            font-size: 17px;
-            font-weight: 700;
         }
         .bulk-card {
             background: var(--card);
@@ -523,31 +409,46 @@
         }
         .bulk-counter {
             position: absolute;
-            right: 14px;
-            top: 10px;
+            right: 15px;
+            top: 12px;
             font-size: 10px;
             background: #333;
             color: #fff;
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 10px;
         }
+        .edit-input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 0 5px;
+            font-size: 11px;
+            font-weight: 700;
+            background: transparent;
+            outline: none;
+            color: var(--text);
+        }
+        td.selected-cell {
+            background-color: var(--selected) !important;
+            border: 1.5px solid var(--p-color);
+        }
         .btn-clean {
-            padding: 6px;
+            padding: 8px;
             border: none;
             border-radius: 6px;
             font-size: 10px;
             color: white;
             cursor: pointer;
             flex: 1;
-            min-width: 60px;
+            min-width: 80px;
         }
         .history-controls {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             margin-top: 8px;
         }
         .btn-history {
-            padding: 5px 14px;
+            padding: 6px 14px;
             border: none;
             border-radius: 6px;
             font-size: 10px;
@@ -557,11 +458,11 @@
         }
         .bulk-card textarea {
             width: 100%;
-            height: 45px;
+            height: 55px;
             resize: vertical;
-            font-size: 10px;
-            padding: 5px;
-            border-radius: 6px;
+            font-size: 9px;
+            padding: 4px;
+            border-radius: 4px;
             border: 1px solid var(--border);
             background: var(--bg);
             color: var(--text);
@@ -570,17 +471,18 @@
         }
         .bulk-card .bulk-row {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             align-items: center;
             margin-top: 6px;
             flex-wrap: wrap;
         }
         .bulk-card .bulk-row label {
             font-size: 10px;
+            color: var(--text);
         }
         .bulk-card .bulk-row input {
-            width: 44px;
-            padding: 3px;
+            width: 50px;
+            padding: 4px;
             border-radius: 4px;
             border: 1px solid var(--border);
             font-size: 10px;
@@ -590,7 +492,7 @@
         }
         .bulk-card .bulk-row .btn-tool {
             width: auto;
-            padding: 5px 14px;
+            padding: 4px 14px;
             background: green;
             color: white;
             border: none;
@@ -599,19 +501,12 @@
             cursor: pointer;
         }
         #manage-ui .table-wrap {
-            height: calc(100vh - 320px);
-        }
-        #manage-ui table td input {
-            font-size: 10px;
-            pointer-events: none;
-            cursor: default;
+            height: calc(100vh - 340px);
         }
 
-        .ig-username-field {
+        /* No bulk import outside management */
+        .bulk-user-area {
             display: none;
-        }
-        .ig-username-field.active {
-            display: block;
         }
 
         @media (max-width: 600px) {
@@ -619,40 +514,12 @@
                 flex-wrap: wrap;
                 justify-content: center;
             }
-            .social-btn {
-                font-size: 11px;
-                padding: 3px 10px;
-            }
-            .social-btn i {
-                font-size: 11px;
-            }
             .active-user-name {
-                font-size: 12px;
+                font-size: 11px;
             }
             .header-card {
-                min-width: 140px;
+                min-width: 150px;
                 height: 135px;
-                padding: 8px 10px;
-            }
-            .header-card .title {
-                font-size: 10px;
-            }
-            .triple-header {
-                gap: 6px;
-            }
-            .input-box {
-                font-size: 9px;
-                height: 24px;
-                padding: 4px 6px;
-            }
-            .btn-tool {
-                font-size: 9px;
-                height: 24px;
-            }
-            #otp-area, .tfa-display {
-                font-size: 14px;
-                height: 22px;
-                line-height: 22px;
             }
         }
     </style>
@@ -695,46 +562,36 @@
     <div id="main-dashboard" class="hidden">
         <div class="top-panel">
             <div class="user-info-bar">
-                <div class="social-toggle">
-                    <button class="social-btn fb active" id="btnFacebook" onclick="setSocial('facebook')">
-                        <i class="fab fa-facebook"></i> FB
-                    </button>
-                    <button class="social-btn ig" id="btnInstagram" onclick="setSocial('instagram')">
-                        <i class="fab fa-instagram"></i> IG
-                    </button>
-                </div>
                 <div class="active-user-name">
                     <span id="display-user-name">USERNAME</span>
                 </div>
-                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                    <button class="btn-tool" style="background:var(--p-color); width:auto; padding:4px 14px; font-size:11px; height:auto;" onclick="openManagement()">MANAGE</button>
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <button class="btn-tool" style="background:var(--p-color); width:auto; padding:4px 14px;" onclick="openManagement()">MANAGE</button>
                     <button onclick="logout()" style="background:none; border:none; color:#64748b; font-size:18px; padding:4px 8px;"><i class="fa-solid fa-sign-out-alt"></i></button>
                     <div class="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-circle-half-stroke"></i></div>
                 </div>
             </div>
 
             <div class="triple-header">
-                <!-- OTP -->
+                <!-- OTP Fetcher -->
                 <div class="header-card">
-                    <div class="title"><i class="fa-regular fa-key"></i> OTP Fetcher</div>
-                    <input type="text" id="otp-input-box" class="input-box" readonly placeholder="Select row...">
+                    <div style="color:var(--p-color); font-size:11px;">OTP Fetcher</div>
+                    <input type="text" id="otp-input-box" class="input-box" readonly placeholder="Select row..." onclick="copyFullOTP()" title="Click to copy full content">
                     <button onclick="fetchOTPCode()" id="btn-fetch" class="btn-tool" style="background:var(--p-color)">GET CODE</button>
                     <div id="otp-area"><div id="otp-val" onclick="copyValue(this.innerText, 'OTP')">------</div></div>
                 </div>
                 <!-- Cookie & 2FA -->
                 <div class="header-card">
-                    <div class="title"><i class="fa-regular fa-cookie"></i> Cookie & 2FA</div>
-                    <input type="text" id="cookie-input" class="input-box" placeholder="Cookie..." oninput="parseCookie()">
+                    <div style="color:#0891b2; font-size:11px;">Cookie & 2FA</div>
+                    <input type="text" id="cookie-input" class="input-box" placeholder="Cookie...">
                     <input type="text" id="tfa-input" class="input-box" placeholder="2FA Secret..." oninput="generateLive2FA()">
-                    <div id="ig-username-container" class="ig-username-field">
-                        <input type="text" id="username-input" class="input-box" placeholder="Instagram Username..." oninput="updateUsername()">
-                    </div>
+                    <div id="tfa-code-display" class="tfa-display" onclick="copyValue(this.innerText, '2FA')">------</div>
                     <button id="send-btn" class="btn-tool" style="background:#10b981;" onclick="updateFirebaseAndSheet()">SEND ALL</button>
                 </div>
-                <!-- Insta Names Generator -->
+                <!-- Instagram Names Generator -->
                 <div class="header-card">
-                    <div class="title" style="background:var(--insta-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;"><i class="fa-brands fa-instagram"></i> Insta Names</div>
-                    <select id="country-select" class="input-box" style="height:26px; font-size:10px;">
+                    <div style="background:var(--insta-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; font-size:11px;">Insta Names</div>
+                    <select id="country-select" class="input-box" style="height:28px;">
                         <option value="us">USA</option>
                         <option value="th">Thailand (ไทย)</option>
                         <option value="cn">China (中文)</option>
@@ -755,14 +612,14 @@
             <table id="user-table">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th id="mainIdHeader">UID</th>
-                        <th>Pass</th>
-                        <th>2FA</th>
-                        <th>Cook</th>
+                        <th style="width:25px;">#</th>
+                        <th id="mainIdHeader" style="width:45px;">UID</th>
+                        <th style="width:45px;">Pass</th>
+                        <th style="width:45px;">2FA</th>
+                        <th style="width:45px;">Cook</th>
                         <th>Full Mail</th>
-                        <th>Status</th>
-                        <th style="width:55px;">Action</th>
+                        <th style="width:55px;">Status</th>
+                        <th style="width:30px;">X</th>
                     </tr>
                 </thead>
                 <tbody id="user-table-body"></tbody>
@@ -773,12 +630,13 @@
     <!-- MANAGEMENT UI -->
     <div id="manage-ui">
         <div class="manage-header">
-            <div class="title"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div>
-            <button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:6px 20px; height:auto;">BACK</button>
+            <div style="font-size:15px;"><i class="fa-solid fa-screwdriver-wrench"></i> MANAGEMENT</div>
+            <button class="btn-tool" onclick="closeManagement()" style="background:#334155; width:auto; padding:8px 20px;">BACK</button>
         </div>
+
         <div class="bulk-card">
             <div class="bulk-counter" id="bulk-count">Mails: 0</div>
-            <span style="font-size:11px; color:var(--p-color); font-weight:700;">BULK IMPORT (Email|Pass|Cookie|Token)</span>
+            <span style="font-size:11px; color:var(--p-color);">BULK IMPORT (Email|Pass|Cookie|Token)</span>
             <textarea id="bulkDataBox" placeholder="Paste data here..." oninput="updateBulkCount()"></textarea>
             <div class="bulk-row">
                 <label>ROW:</label>
@@ -790,23 +648,25 @@
                 <button onclick="redoAction()" class="btn-history"><i class="fa-solid fa-rotate-right"></i> FORWARD</button>
             </div>
         </div>
+
         <div class="bulk-card">
-            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                <input type="text" id="fill-val" class="input-box" style="flex:2; min-width:70px;" placeholder="Value to Fill">
-                <input type="number" id="fill-from" class="input-box" style="width:40px;" value="1">
-                <span style="font-size:11px;">-</span>
-                <input type="number" id="fill-to" class="input-box" style="width:40px;" value="10">
+            <div style="display:flex; gap:5px; align-items:center; flex-wrap:wrap;">
+                <input type="text" id="fill-val" class="input-box" style="flex:2; min-width:80px;" placeholder="Value to Fill">
+                <input type="number" id="fill-from" class="input-box" style="width:35px;" value="1">
+                <span>-</span>
+                <input type="number" id="fill-to" class="input-box" style="width:35px;" value="10">
                 <button onclick="applyRangeAction('fill')" class="btn-tool" style="background:var(--p-color); width:60px;">APPLY</button>
             </div>
-            <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:6px; margin-top:8px;">
+            <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:5px; margin-top:10px;">
                 <button class="btn-clean" style="background:#f59e0b;" onclick="applyRangeAction('pass')">Clear Pass</button>
                 <button class="btn-clean" style="background:#ef4444;" onclick="applyRangeAction('delete')">Delete Rows</button>
                 <button class="btn-clean" style="background:#1a73e8;" onclick="addRow()">+ Add Row</button>
             </div>
         </div>
-        <div class="table-wrap" style="height:calc(100vh - 320px);">
+
+        <div class="table-wrap" style="height:calc(100vh - 340px);">
             <table>
-                <thead><tr><th>#</th><th id="manageIdHeader">UID</th><th>Pass</th><th>2FA</th><th>Cook</th><th>Full Mail</th><th>Status</th><th style="width:55px;">Action</th></tr></thead>
+                <thead><tr><th>#</th><th id="manageIdHeader">UID</th><th>Pass</th><th>2FA</th><th>Cook</th><th>Full Mail</th><th>Status</th><th>X</th></tr></thead>
                 <tbody id="manage-table-body"></tbody>
             </table>
         </div>
@@ -846,11 +706,10 @@
 
         // ===== GLOBALS =====
         let currentUser = null;
-        let selectedRowId = null, extractedUid = "";
+        let selectedRowId = null;
         let rowKeys = [], localData = {};
         let isRangeMode = false, startPoint = null, selectedSet = new Set();
         let historyStack = [], redoStack = [];
-        let socialMode = 'facebook';
         let dataListener = null;
 
         // ===== AUTH =====
@@ -886,6 +745,7 @@
                 document.getElementById('signup-error').innerText = 'Username already taken';
                 return;
             }
+            // Check auto-approve setting
             const autoApproveSnap = await db.ref('settings/autoApprove').once('value');
             const autoApprove = autoApproveSnap.val() === true;
             await db.ref('users/' + username).set({
@@ -894,8 +754,8 @@
                 approved: autoApprove,
                 role: 'user'
             });
+            // Create the Facebook data node
             await db.ref('data/' + username + '/facebook').set({});
-            await db.ref('data/' + username + '/instagram').set({});
             alert(autoApprove ? 'Account created and auto-approved! You can now login.' : 'Signup successful! Wait for admin approval.');
             showLoginForm();
             document.getElementById('signup-username').value = '';
@@ -911,7 +771,6 @@
                 document.getElementById('main-dashboard').classList.remove('hidden');
                 document.getElementById('display-user-name').innerText = currentUser.toUpperCase();
                 document.getElementById('loading-screen').style.display = 'none';
-                loadSocialMode();
                 attachDataListener();
                 return true;
             }
@@ -949,74 +808,53 @@
             document.getElementById('main-dashboard').classList.remove('hidden');
             document.getElementById('display-user-name').innerText = username.toUpperCase();
             document.getElementById('loading-screen').style.display = 'none';
-            loadSocialMode();
             attachDataListener();
             document.getElementById('login-error').innerText = '';
+        }
+
+        function showAuthPanel() {
+            document.getElementById('main-dashboard').classList.add('hidden');
+            document.getElementById('manage-ui').style.display = 'none';
+            document.getElementById('login-overlay').style.display = 'flex';
+            showLoginForm();
         }
 
         function logout() {
             currentUser = null;
             localStorage.removeItem('userPanelUser');
-            if (dataListener) { dataListener.off(); dataListener = null; }
-            document.getElementById('main-dashboard').classList.add('hidden');
-            document.getElementById('login-overlay').style.display = 'flex';
+            if (dataListener) {
+                dataListener.off();
+                dataListener = null;
+            }
             document.getElementById('login-username').value = '';
             document.getElementById('login-password').value = '';
+            document.getElementById('signup-name').value = '';
+            document.getElementById('signup-username').value = '';
+            document.getElementById('signup-password').value = '';
             document.getElementById('login-error').innerText = '';
+            document.getElementById('signup-error').innerText = '';
             selectedSet.clear();
             resetSelection();
             historyStack = [];
             redoStack = [];
-            showLoginForm();
-        }
-
-        // ===== SOCIAL TOGGLE =====
-        function setSocial(mode) {
-            socialMode = mode;
-            localStorage.setItem('userSocialMode', mode);
-            document.getElementById('btnFacebook').classList.toggle('active', mode === 'facebook');
-            document.getElementById('btnInstagram').classList.toggle('active', mode === 'instagram');
-            const igContainer = document.getElementById('ig-username-container');
-            if (mode === 'instagram') {
-                igContainer.classList.add('active');
-            } else {
-                igContainer.classList.remove('active');
-            }
-            const mainHeader = document.getElementById('mainIdHeader');
-            const manageHeader = document.getElementById('manageIdHeader');
-            if (mode === 'facebook') {
-                mainHeader.innerText = 'UID';
-                if (manageHeader) manageHeader.innerText = 'UID';
-            } else {
-                mainHeader.innerText = 'Username';
-                if (manageHeader) manageHeader.innerText = 'Username';
-            }
-            attachDataListener();
-            showToast('Switched to ' + mode.charAt(0).toUpperCase() + mode.slice(1));
-        }
-
-        function loadSocialMode() {
-            const saved = localStorage.getItem('userSocialMode');
-            if (saved && (saved === 'facebook' || saved === 'instagram')) {
-                setSocial(saved);
-            } else {
-                setSocial('facebook');
-            }
+            showAuthPanel();
         }
 
         // ===== DATA LISTENER =====
         function attachDataListener() {
             if (!currentUser) return;
-            if (dataListener) { dataListener.off(); dataListener = null; }
-            const path = `data/${currentUser}/${socialMode}`;
+            if (dataListener) {
+                dataListener.off();
+                dataListener = null;
+            }
+            const path = `data/${currentUser}/facebook`;
             const ref = db.ref(path);
             dataListener = ref.on('value', snap => {
                 localData = snap.val() || {};
                 rowKeys = Object.keys(localData);
                 renderTable();
                 renderManageTable();
-                updateBulkCount();
-                loadBackups();
+                document.getElementById('bulk-count').innerText = 'Mails: ' + rowKeys.length;
             });
         }
 
@@ -1030,24 +868,15 @@
                 let hC = (key === selectedRowId) ? 'active-mail-cell' : '';
                 let rowBg = row.color || 'transparent';
                 if (isD && rowBg === '#ffffff') rowBg = 'transparent';
-                const idValue = row.uid || '';
                 html += `<tr style="background-color:${rowBg};">
                     <td>${i}</td>
-                    ${['uid','pass','tfa','cookie','fullMail','status'].map(f => {
-                        let isSel = selectedSet.has(`${key}|${f}`);
-                        let cellContent = (f === 'uid') ? idValue : (row[f] || '');
-                        if (f === 'fullMail') {
-                            return `<td class="${isSel?'selected-cell':''} c-mail ${hC}" style="background-color:${rowBg};" onclick="onMailClick(this, '${key}', '${cellContent}')">
-                                <input class="edit-input" style="width:100%;height:100%;border:none;padding:3px 4px;font-size:11px;font-weight:600;background:transparent;outline:none;color:var(--text);cursor:pointer;pointer-events:none;" value="${cellContent}" readonly>
-                            </td>`;
-                        } else {
-                            return `<td class="${isSel?'selected-cell':''}" style="background-color:${rowBg};" onclick="handleCellClick(event,${i-1},'${key}','${f}')">
-                                <input class="edit-input" style="width:100%;height:100%;border:none;padding:3px 4px;font-size:11px;font-weight:600;background:transparent;outline:none;color:var(--text);cursor:default;" value="${cellContent}" readonly>
-                            </td>`;
-                        }
-                    }).join('')}
-                    <!-- Action column: Eraser icon clears row content; trash icon (in context menu) deletes -->
-                    <td><i class="fa-solid fa-eraser" style="color:#f59e0b;cursor:pointer;font-size:13px;" onclick="clearRow('${key}')" title="Clear row content"></i></td>
+                    <td>${row.uid||''}</td>
+                    <td>${row.pass||''}</td>
+                    <td>${row.tfa||''}</td>
+                    <td>${row.cookie||''}</td>
+                    <td class="c-mail ${hC}" onclick="onMailClick(this, '${key}', '${row.fullMail||''}')">${row.fullMail||''}</td>
+                    <td style="color:#dc2626;">${row.status||''}</td>
+                    <td><i class="fa-solid fa-eraser" style="color:#f43f5e;cursor:pointer;" onclick="clearRow('${key}')"></i></td>
                 </tr>`;
                 i++;
             });
@@ -1060,31 +889,28 @@
             const isD = document.body.getAttribute('data-theme') === 'dark';
             rowKeys.forEach(key => {
                 let row = localData[key];
+                let sC = selectedSet.has(key) ? 'selected-cell' : '';
                 let rowBg = row.color || 'transparent';
                 if (isD && rowBg === '#ffffff') rowBg = 'transparent';
-                const idValue = row.uid || '';
-                const fields = ['uid','pass','tfa','cookie','fullMail','status'];
                 html += `<tr style="background-color:${rowBg};">
                     <td>${i}</td>
-                    ${fields.map(f => {
-                        let isSel = selectedSet.has(`${key}|${f}`);
-                        let cellContent = (f === 'uid') ? idValue : (row[f] || '');
-                        return `<td class="${isSel?'selected-cell':''}" style="background-color:${rowBg};" onclick="handleManageCellClick(event,${i-1},'${key}','${f}')">
-                            <input class="edit-input" value="${cellContent}" readonly style="cursor:default;font-size:10px;padding:2px 4px;">
-                        </td>`;
-                    }).join('')}
-                    <td><i class="fa-solid fa-eraser" style="color:#f59e0b;cursor:pointer;font-size:13px;" onclick="clearRow('${key}')" title="Clear row content"></i></td>
+                    ${['uid','pass','tfa','cookie','fullMail','status'].map(f => `
+                        <td class="${sC}" onclick="handleManageSelect(event, '${key}', ${i-1})"><input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}','${f}',this.value)"></td>
+                    `).join('')}
+                    <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${key}')"></i></td>
                 </tr>`;
                 i++;
             });
             document.getElementById('manage-table-body').innerHTML = html;
         }
 
-        // ===== SAVE / EDIT (only via tools) =====
+        // ===== SAVE / EDIT =====
         function saveEdit(id, f, v) {
-            const path = `data/${currentUser}/${socialMode}/${id}`;
+            const path = `data/${currentUser}/facebook/${id}`;
             db.ref(path).update({ [f]: v }).then(() => {
-                archiveToGS(localData[id]);
+                // Archive the edited value together with the rest of this row.
+                // Do not send the previous listener snapshot to the archive.
+                archiveToGS({ ...(localData[id] || {}), [f]: v });
                 showToast('Saved!');
             });
         }
@@ -1107,34 +933,41 @@
         function onMailClick(el, rId, fullText) {
             document.querySelectorAll('.c-mail').forEach(c => c.classList.remove('active-mail-cell'));
             el.classList.add('active-mail-cell');
+            const changedRow = selectedRowId !== rId;
             selectedRowId = rId;
             document.getElementById('otp-area').style.display = 'none';
             document.getElementById('otp-input-box').value = fullText;
             if (fullText) {
-                // Copy the entire content (not just email part)
-                navigator.clipboard.writeText(fullText).then(() => {
-                    showToast('Full mail + token copied!');
-                }).catch(() => {
-                    // fallback
-                    const textArea = document.createElement('textarea');
-                    textArea.value = fullText;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    document.execCommand('copy');
-                    textArea.remove();
-                    showToast('Full mail + token copied!');
-                });
+                const emailPart = fullText.split('|')[0].trim();
+                copyValue(emailPart, 'Email');
             }
-            const row = localData[rId];
-            if (row) {
-                document.getElementById('cookie-input').value = row.cookie || '';
-                document.getElementById('tfa-input').value = row.tfa || '';
-                if (socialMode === 'instagram') {
-                    document.getElementById('username-input').value = row.uid || '';
-                }
-                parseCookie();
-                generateLive2FA();
-            }
+            // Do not pull existing row values into the input boxes. The inputs are
+            // intentionally blank so the next SEND ALL is a direct replacement
+            // with the newly entered values.
+            if (changedRow) clearTopDataInputs();
+        }
+
+        function clearTopDataInputs() {
+            document.getElementById('cookie-input').value = '';
+            document.getElementById('tfa-input').value = '';
+            document.getElementById('tfa-code-display').innerText = '------';
+            document.getElementById('otp-area').style.display = 'none';
+        }
+
+        function copyFullOTP() {
+            const val = document.getElementById('otp-input-box').value;
+            if (!val) return;
+            navigator.clipboard.writeText(val).then(() => {
+                showToast('Full content copied!');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = val;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                textArea.remove();
+                showToast('Full content copied!');
+            });
         }
 
         async function fetchOTPCode() {
@@ -1162,12 +995,6 @@
             } finally {
                 btn.innerText = 'GET CODE';
             }
-        }
-
-        function parseCookie() {
-            const input = document.getElementById('cookie-input').value;
-            const match = input.match(/c_user=([0-9]+)/);
-            extractedUid = match ? match[1] : '';
         }
 
         function generateLive2FA() {
@@ -1224,34 +1051,39 @@
             showToast(type + ' Copied!');
         }
 
-        function updateUsername() {
-            if (!selectedRowId) return;
-            const val = document.getElementById('username-input').value.trim();
-            const path = `data/${currentUser}/${socialMode}/${selectedRowId}`;
-            db.ref(path).update({ uid: val }).then(() => {
-                archiveToGS(localData[selectedRowId]);
-            });
-        }
-
+        // ===== SEND ALL =====
         function updateFirebaseAndSheet() {
-            if (!selectedRowId) return;
-            const cV = document.getElementById('cookie-input').value;
-            const tV = document.getElementById('tfa-input').value;
-            let uidVal = extractedUid;
-            if (socialMode === 'instagram') {
-                uidVal = document.getElementById('username-input').value.trim() || uidVal;
+            if (!selectedRowId) {
+                alert('Please select a row by clicking on the Full Mail column.');
+                return;
             }
-            const syncD = { uid: uidVal, tfa: tV, cookie: cV };
-            const path = `data/${currentUser}/${socialMode}/${selectedRowId}`;
+            const cV = document.getElementById('cookie-input').value.trim();
+            const tV = document.getElementById('tfa-input').value.trim();
+
+            // Only send fields that contain new values. Empty inputs must not
+            // overwrite values already stored in the other columns.
+            const syncD = {};
+            if (tV) syncD.tfa = tV;
+            if (cV) {
+                syncD.cookie = cV;
+                const match = cV.match(/c_user=([0-9]+)/);
+                if (match) syncD.uid = match[1];
+            }
+
+            if (Object.keys(syncD).length === 0) {
+                alert('Enter Cookie or 2FA data first.');
+                return;
+            }
+
+            const path = `data/${currentUser}/facebook/${selectedRowId}`;
             db.ref(path).update(syncD).then(() => {
-                archiveToGS({ ...localData[selectedRowId], ...syncD });
-                document.getElementById('cookie-input').value = '';
-                document.getElementById('tfa-input').value = '';
-                document.getElementById('tfa-code-display').innerText = '------';
-                if (socialMode === 'instagram') {
-                    document.getElementById('username-input').value = '';
-                }
-                showToast('Saved!');
+                // Preserve Full Mail/description and every untouched field.
+                const currentRow = localData[selectedRowId] || {};
+                archiveToGS({ ...currentRow, ...syncD });
+                clearTopDataInputs();
+                showToast('Saved to selected row!');
+            }).catch(() => {
+                showToast('Could not save row');
             });
         }
 
@@ -1264,20 +1096,25 @@
                 const b = ['Samiul', 'Islam', 'Khan', 'Ahmed', 'Hasan', 'Azmir'];
                 area.innerHTML = '';
                 for (let k = 0; k < 5; k++) {
-                    addNameCard(b[Math.floor(Math.random() * b.length)] + '_' + Math.random().toString(36).substring(7), area);
+                    addNameCard(
+                        b[Math.floor(Math.random() * b.length)] +
+                        '_' +
+                        Math.random().toString(36).substring(7),
+                        area
+                    );
                 }
                 return;
             }
             try {
                 const nativeNames = {
-                    th: [['สมชาย','แซ่ตั้ง'],['นารี','รัตน'],['มาลัย','พงศ์'],['มานะ','ศิริ']],
-                    cn: [['王','伟'],['李','芳'],['张','强'],['刘','洋']],
-                    ir: [['محمد','أحمد'],['فاطمة','علي'],['علي','حسن'],['ليلى','مریم']]
+                    th: [['สมชาย', 'แซ่ตั้ง'], ['นารี', 'รัตน'], ['มาลัย', 'พงศ์'], ['มานะ', 'ศิริ']],
+                    cn: [['王', '伟'], ['李', '芳'], ['张', '强'], ['刘', '洋']],
+                    ir: [['محمد', 'أحمد'], ['فاطمة', 'علي'], ['علي', 'حسن'], ['ليلى', 'مریم']]
                 };
                 if (nativeNames[type]) {
                     area.innerHTML = '';
                     for (let k = 0; k < 5; k++) {
-                        let pair = nativeNames[type][Math.floor(Math.random() * nativeNames[type].length)];
+                        const pair = nativeNames[type][Math.floor(Math.random() * nativeNames[type].length)];
                         addNameCard(pair[0] + ' ' + pair[1], area);
                     }
                     return;
@@ -1304,21 +1141,20 @@
             a.appendChild(d);
         }
 
-        // ===== BULK COUNT =====
+        // ===== BULK IMPORT (management only) =====
         function updateBulkCount() {
             const text = document.getElementById('bulkDataBox').value.trim();
             const count = text ? text.split('\n').length : 0;
             document.getElementById('bulk-count').innerText = 'Mails: ' + count;
         }
 
-        // ===== BULK IMPORT =====
         async function uploadBulkData() {
             const text = document.getElementById('bulkDataBox').value.trim();
             const start = parseInt(document.getElementById('bulk-start-row').value) - 1;
             if (!text) return alert('Paste data!');
             const lines = text.split('\n').filter(l => l.trim() !== '');
             let ups = {}, arch = [];
-            const path = `data/${currentUser}/${socialMode}`;
+            const path = `data/${currentUser}/facebook`;
             const snap = await db.ref(path).once('value');
             const currentData = snap.val() || {};
             const currentKeys = Object.keys(currentData);
@@ -1356,7 +1192,7 @@
             const to = parseInt(document.getElementById('fill-to').value) - 1;
             if (from < 0 || to >= rowKeys.length || from > to) return alert('Range Error!');
             saveHistory();
-            const path = `data/${currentUser}/${socialMode}`;
+            const path = `data/${currentUser}/facebook`;
             if (mode === 'delete') {
                 for (let j = from; j <= to; j++) {
                     const key = rowKeys[j];
@@ -1386,7 +1222,7 @@
         async function undoAction() {
             if (historyStack.length) {
                 redoStack.push(JSON.parse(JSON.stringify(localData)));
-                await db.ref(`data/${currentUser}/${socialMode}`).set(historyStack.pop());
+                await db.ref(`data/${currentUser}/facebook`).set(historyStack.pop());
                 showToast('Undo');
             }
         }
@@ -1394,38 +1230,35 @@
         async function redoAction() {
             if (redoStack.length) {
                 historyStack.push(JSON.parse(JSON.stringify(localData)));
-                await db.ref(`data/${currentUser}/${socialMode}`).set(redoStack.pop());
+                await db.ref(`data/${currentUser}/facebook`).set(redoStack.pop());
                 showToast('Redo');
             }
         }
 
         // ===== ROW OPERATIONS =====
         function backupRow(rId) {
-            db.ref(`backups/${currentUser}/${socialMode}/${Date.now()}`).set(localData[rId]);
+            db.ref(`backups/${currentUser}/facebook/${Date.now()}`).set(localData[rId]);
         }
 
-        // Clear row content (keep row)
         function clearRow(rId) {
-            if (confirm('Clear all content of this row? (row will remain)')) {
+            if (confirm('Clear row?')) {
                 backupRow(rId);
-                const path = `data/${currentUser}/${socialMode}/${rId}`;
+                const path = `data/${currentUser}/facebook/${rId}`;
                 db.ref(path).update({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' });
-                showToast('Row cleared');
             }
         }
 
-        // Delete row entirely (only used in context menu or range delete)
         function deleteRow(rId) {
-            if (confirm('Delete this row permanently?')) {
+            if (confirm('Delete row?')) {
                 backupRow(rId);
-                const path = `data/${currentUser}/${socialMode}/${rId}`;
+                const path = `data/${currentUser}/facebook/${rId}`;
                 db.ref(path).remove();
-                showToast('Row deleted');
             }
         }
 
         function addRow() {
-            db.ref(`data/${currentUser}/${socialMode}`).push({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' });
+            const path = `data/${currentUser}/facebook`;
+            db.ref(path).push({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' });
         }
 
         // ===== SELECTION & CONTEXT MENU =====
@@ -1442,9 +1275,22 @@
             }
         }
 
+        function handleManageSelect(e, key, rIdx) {
+            if (!isRangeMode) {
+                selectedSet.clear();
+                startPoint = { r: rIdx };
+                selectedSet.add(key);
+                if (e.target.tagName !== 'INPUT') showMenu(e);
+                renderManageTable();
+            } else {
+                applyRangeSelectionRows(rIdx);
+                showMenu(e);
+            }
+        }
+
         function applyRangeSelection(rE, fE) {
             selectedSet.clear();
-            const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status'];
+            const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status', 'color'];
             let fS = flds.indexOf(startPoint.f), fE2 = flds.indexOf(fE);
             let rS = Math.min(startPoint.r, rE), rEx = Math.max(startPoint.r, rE);
             let cS = Math.min(fS, fE2), cEx = Math.max(fS, fE2);
@@ -1456,29 +1302,12 @@
             renderTable();
         }
 
-        function handleManageCellClick(e, rIdx, key, f) {
-            if (!isRangeMode) {
-                selectedSet.clear();
-                startPoint = { r: rIdx, f: f };
-                selectedSet.add(`${key}|${f}`);
-                if (e.target.tagName !== 'INPUT') showMenu(e);
-                renderManageTable();
-            } else {
-                applyManageRangeSelection(rIdx, f);
-                showMenu(e);
-            }
-        }
-
-        function applyManageRangeSelection(rE, fE) {
+        function applyRangeSelectionRows(rE) {
             selectedSet.clear();
-            const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status'];
-            let fS = flds.indexOf(startPoint.f), fE2 = flds.indexOf(fE);
-            let rS = Math.min(startPoint.r, rE), rEx = Math.max(startPoint.r, rE);
-            let cS = Math.min(fS, fE2), cEx = Math.max(fS, fE2);
-            for (let i = rS; i <= rEx; i++) {
-                for (let j = cS; j <= cEx; j++) {
-                    selectedSet.add(`${rowKeys[i]}|${flds[j]}`);
-                }
+            let s = Math.min(startPoint.r, rE);
+            let e = Math.max(startPoint.r, rE);
+            for (let i = s; i <= e; i++) {
+                selectedSet.add(rowKeys[i]);
             }
             renderManageTable();
         }
@@ -1503,8 +1332,13 @@
         function copySelectedVertical() {
             let t = '';
             selectedSet.forEach(item => {
-                let [k, f] = item.split('|');
-                t += (localData[k][f] || '') + '\n';
+                let parts = item.split('|');
+                if (parts.length === 2) {
+                    let [k, f] = parts;
+                    t += (localData[k][f] || '') + '\n';
+                } else {
+                    t += (localData[item].uid || '') + '\n';
+                }
             });
             navigator.clipboard.writeText(t.trim());
             showToast('Copied!');
@@ -1516,10 +1350,11 @@
             if (!confirm('Delete rows that have any selected cell? (backup saved)')) return;
             let rows = new Set();
             selectedSet.forEach(item => {
-                let [k] = item.split('|');
-                rows.add(k);
+                let parts = item.split('|');
+                if (parts.length === 2) rows.add(parts[0]);
+                else rows.add(item);
             });
-            const path = `data/${currentUser}/${socialMode}`;
+            const path = `data/${currentUser}/facebook`;
             for (const k of rows) {
                 await backupRow(k);
                 await db.ref(`${path}/${k}`).remove();
@@ -1535,27 +1370,6 @@
             hideMenu();
             renderTable();
             renderManageTable();
-        }
-
-        // ===== BACKUPS =====
-        function loadBackups() {
-            const path = `backups/${currentUser}/${socialMode}`;
-            db.ref(path).limitToLast(8).on('value', snap => {
-                let h = '';
-                snap.forEach(c => {
-                    h += `<tr style="background:#fef9f0;"><td>${new Date(parseInt(c.key)).toLocaleString()}</td><td>${c.val().fullMail||'Data'}</td><td><button class="btn" style="background:green;padding:2px 12px;" onclick="restore('${c.key}')">Restore</button></td></tr>`;
-                });
-                document.getElementById('backup-body').innerHTML = h;
-            });
-        }
-
-        function restore(id) {
-            const path = `data/${currentUser}/${socialMode}`;
-            db.ref(`backups/${currentUser}/${socialMode}/${id}`).once('value', s => {
-                db.ref(path).push(s.val()).then(() => {
-                    db.ref(`backups/${currentUser}/${socialMode}/${id}`).remove();
-                });
-            });
         }
 
         // ===== TOAST & THEME =====
@@ -1579,8 +1393,7 @@
         window.onload = function() {
             document.getElementById('loading-screen').style.display = 'none';
             if (!checkSession()) {
-                document.getElementById('login-overlay').style.display = 'flex';
-                showLoginForm();
+                showAuthPanel();
             }
             if (localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
         };
