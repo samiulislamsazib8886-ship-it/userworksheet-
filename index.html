@@ -608,7 +608,6 @@
             height: calc(100vh - 340px);
         }
 
-        /* No bulk import outside management */
         .bulk-user-area {
             display: none;
         }
@@ -713,16 +712,22 @@
                 <!-- Instagram Names Generator -->
                 <div class="header-card">
                     <div style="background:var(--insta-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent; font-size:11px;">Insta Names</div>
-                    <select id="country-select" class="input-box" style="height:28px;">
-                        <option value="us">USA</option>
-                        <option value="th">Thailand (ไทย)</option>
-                        <option value="cn">China (中文)</option>
-                        <option value="ir">Arabic (عربي)</option>
-                        <option value="in">India (हिंदी)</option>
-                        <option value="tr">Turkey</option>
-                        <option value="bd">Bangladesh</option>
-                        <option value="custom">CUSTOM</option>
-                    </select>
+                    <div style="display:flex; gap:2px;">
+                        <select id="country-select" class="input-box" style="height:22px; padding:2px; font-size:8px;">
+                            <option value="us">USA (API)</option>
+                            <option value="th">Thailand (API)</option>
+                            <option value="ir">Arabic (API)</option>
+                            <option value="in">India (API)</option>
+                            <option value="tr">Turkey (API)</option>
+                            <option value="cn">China (中文)</option>
+                            <option value="bd">Bangladesh</option>
+                            <option value="custom">CUSTOM</option>
+                        </select>
+                        <select id="gender-select" class="input-box" style="height:22px; padding:2px; font-size:8px; width:70px;">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
 
                     <button class="btn-tool" style="background:var(--insta-gradient);" onclick="generateNames()">GENERATE</button>
                     <div id="name-result-area" class="name-res-area"></div>
@@ -814,7 +819,7 @@
     </div>
 
     <script>
-        // ===== FIREBASE CONFIG (Updated) =====
+        // ===== FIREBASE CONFIG =====
         const firebaseConfig = {
             apiKey: "AIzaSyCmAxYWYPw9ybBazJ9E_9BoL7CzNS02w78",
             authDomain: "my-website-c9dfc.firebaseapp.com",
@@ -900,7 +905,6 @@
                 document.getElementById('signup-error').innerText = 'Username already taken';
                 return;
             }
-            // Check auto-approve setting
             const autoApproveSnap = await db.ref('settings/autoApprove').once('value');
             const autoApprove = autoApproveSnap.val() === true;
             await db.ref('users/' + username).set({
@@ -909,7 +913,6 @@
                 approved: autoApprove,
                 role: 'user'
             });
-            // Create the Facebook data node
             await db.ref('data/' + username + '/facebook').set({});
             alert(autoApprove ? 'Account created and auto-approved! You can now login.' : 'Signup successful! Wait for admin approval.');
             showLoginForm();
@@ -1459,45 +1462,111 @@
             });
         }
 
-        // ===== NAME GENERATOR =====
+        // ===== INSTANT API & RECALL NAME GENERATOR =====
+        const localFallbackData = {
+            custom: {
+                male: ['Samiul_Islam', 'Khan_Azmir', 'Ahmed_Hasan', 'Tanvir_Ahamed', 'Ariful_Islam'],
+                female: ['Nusrat_Jahan', 'Sultana_Razia', 'Fatema_Tuz', 'Ayesha_Siddiqa', 'Mariam_Begum']
+            },
+            bd: {
+                male: ['আরিফুল ইসলাম', 'তানভীর আহমেদ', 'সামিউল খান', 'মেহেদী হাসান', 'রাকিবুল হাসান'],
+                female: ['নুসরাত জাহান', 'ফাতেমা আক্তার', 'সুমাইয়া রহমান', 'সাদিয়া ইসলাম', 'আফরোজা বেগম']
+            },
+            cn: {
+                male: ['王伟', '张强', '刘洋', '陈杰', '李明'],
+                female: ['李芳', '王秀英', '张敏', '刘静', '陈丽']
+            },
+            us: {
+                male: ['James Smith', 'John Johnson', 'Robert Williams', 'Michael Brown', 'David Jones'],
+                female: ['Emily Davis', 'Sarah Miller', 'Jessica Taylor', 'Ashley Anderson', 'Amanda Thomas']
+            },
+            th: {
+                male: ['สมชาย แซ่ตั้ง', 'มานะ ศิริ', 'อนันต์ สุขงาม', 'กิตติศักดิ์ ชัย', 'ประเสริฐ ดี'],
+                female: ['นารี รัตน', 'มาลัย พงศ์', 'สุภาวดี แจ่ม', 'วนิดา พร', 'อารียา สุข']
+            },
+            ir: {
+                male: ['محمد أحمد', 'علي حسن', 'عمر فاروق', 'یوسف خلیل', 'خالد محمود'],
+                female: ['فاطمة علي', 'ليلى مریم', 'عائشة نور', 'زینب أحمد', 'مریم حسین']
+            },
+            in: {
+                male: ['आरव शर्मा', 'रोहन गुप्ता', 'आदित्य पटेल', 'राहुल वर्मा', 'विक्रम सिंह'],
+                female: ['अनन्या वर्मा', 'प्रिया सिंह', 'नेहा शर्मा', 'पूजा पटेल', 'रिया সেন']
+            },
+            tr: {
+                male: ['Ahmet Yılmaz', 'Mehmet Kaya', 'Mustafa Çelik', 'Emre Şahin', 'Burak Demir'],
+                female: ['Ayşe Demir', 'Fatma Şahin', 'Elif Yılmaz', 'Zeynep Kaya', 'Ece Çelik']
+            }
+        };
+
+        const apiNatMap = {
+            'us': 'us',
+            'th': 'th',
+            'ir': 'ir',
+            'in': 'in',
+            'tr': 'tr'
+        };
+
         async function generateNames() {
             const type = document.getElementById('country-select').value;
+            const gender = document.getElementById('gender-select').value;
             const area = document.getElementById('name-result-area');
-            area.innerHTML = 'Generating...';
-            if (type === 'custom') {
-                const b = ['Samiul', 'Islam', 'Khan', 'Ahmed', 'Hasan', 'Azmir'];
-                area.innerHTML = '';
-                for (let k = 0; k < 5; k++) {
-                    addNameCard(
-                        b[Math.floor(Math.random() * b.length)] +
-                        '_' +
-                        Math.random().toString(36).substring(7),
-                        area
-                    );
-                }
+            area.innerHTML = '<div style="color:var(--p-color);font-size:10px;text-align:center;padding-top:10px;"><i class="fa-solid fa-spinner fa-spin"></i> Generating...</div>';
+
+            if (type === 'bd' || type === 'cn' || type === 'custom') {
+                renderLocalNames(type, gender, area);
                 return;
             }
-            try {
-                const nativeNames = {
-                    th: [['สมชาย', 'แซ่ตั้ง'], ['นารี', 'รัตน'], ['มาลัย', 'พงศ์'], ['มานะ', 'ศิริ']],
-                    cn: [['王', '伟'], ['李', '芳'], ['张', '强'], ['刘', '洋']],
-                    ir: [['محمد', 'أحمد'], ['فاطمة', 'علي'], ['علي', 'حسن'], ['ليلى', 'مریم']]
-                };
-                if (nativeNames[type]) {
-                    area.innerHTML = '';
-                    for (let k = 0; k < 5; k++) {
-                        const pair = nativeNames[type][Math.floor(Math.random() * nativeNames[type].length)];
-                        addNameCard(pair[0] + ' ' + pair[1], area);
-                    }
-                    return;
-                }
-                const res = await fetch(`https://randomuser.me/api/?results=5&nat=${type}`);
-                const data = await res.json();
-                area.innerHTML = '';
-                data.results.forEach(u => addNameCard(u.name.first + ' ' + u.name.last, area));
-            } catch (e) {
-                area.innerHTML = 'Error!';
+
+            const nat = apiNatMap[type] || 'us';
+            const success = await fetchNamesWithRetry(`https://randomuser.me/api/?results=5&nat=${nat}&gender=${gender}`, area, type, gender, 5, 2000);
+            
+            if (!success) {
+                renderLocalNames(type, gender, area);
             }
+        }
+
+        async function fetchNamesWithRetry(url, area, type, gender, maxRetries = 5, delayMs = 2000) {
+            for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+                    const res = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
+                    if (!res.ok) throw new Error('API Response Error');
+
+                    const data = await res.json();
+                    if (data && data.results && data.results.length > 0) {
+                        area.innerHTML = '';
+                        data.results.forEach(user => {
+                            const fullName = `${user.name.first} ${user.name.last}`;
+                            addNameCard(fullName, area);
+                        });
+                        return true;
+                    }
+                } catch (e) {
+                    console.warn(`Attempt ${attempt} failed. Retrying in ${delayMs/1000}s...`);
+                    area.innerHTML = `<div style="color:#e6683c;font-size:9px;text-align:center;padding-top:10px;"><i class="fa-solid fa-rotate-right fa-spin"></i> Retrying (${attempt}/${maxRetries})...</div>`;
+                    if (attempt < maxRetries) {
+                        await new Promise(resolve => setTimeout(resolve, delayMs));
+                    }
+                }
+            }
+            return false;
+        }
+
+        function renderLocalNames(type, gender, area) {
+            area.innerHTML = '';
+            const countryObj = localFallbackData[type] || localFallbackData['us'];
+            const list = countryObj[gender] || countryObj['male'];
+            const shuffled = [...list].sort(() => 0.5 - Math.random());
+            shuffled.slice(0, 5).forEach(nameStr => {
+                if (type === 'custom') {
+                    nameStr += '_' + Math.random().toString(36).substring(7);
+                }
+                addNameCard(nameStr, area);
+            });
         }
 
         function addNameCard(n, a) {
@@ -1513,7 +1582,7 @@
             a.appendChild(d);
         }
 
-        // ===== BULK IMPORT (management only) =====
+        // ===== BULK IMPORT =====
         function updateBulkCount() {
             const text = document.getElementById('bulkDataBox').value.trim();
             const count = text ? text.split('\n').length : 0;
