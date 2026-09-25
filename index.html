@@ -257,18 +257,89 @@
             border-radius: 10px;
             margin-bottom: 5px;
             border: 1px solid var(--border);
+            position: relative;
         }
         .active-user-name {
-            font-size: 13px;
+            font-size: 15px;
+            font-weight: 800;
             text-transform: uppercase;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             color: var(--text);
         }
         .active-user-name #display-user-name {
             cursor: pointer;
         }
+        
+        /* VERIFIED BADGE STYLE */
+        .verified-badge-icon {
+            width: 17px;
+            height: 17px;
+            display: none;
+            vertical-align: middle;
+        }
+        
+        /* PROFILE PICTURE STYLES */
+        .profile-pic-container {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--border);
+            overflow: hidden;
+            border: 1.5px solid var(--p-color);
+        }
+        .profile-pic-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        .profile-pic-container i {
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .profile-menu {
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 250;
+            min-width: 130px;
+            overflow: hidden;
+        }
+        .profile-menu.show {
+            display: flex;
+        }
+        .profile-menu-item {
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            background: transparent;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            transition: 0.2s;
+        }
+        .profile-menu-item:hover {
+            background: var(--border);
+        }
+
         .stats-strip {
             display: flex;
             gap: 5px;
@@ -336,6 +407,152 @@
         .running-user-row:last-child {
             border-bottom: none;
         }
+        
+        /* NOTIFICATION ICON & MODAL STYLES */
+        .noti-btn-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .noti-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 30px;
+            border: 1px solid var(--p-color);
+            border-radius: 7px;
+            background: var(--card);
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--p-color);
+            transition: 0.2s;
+        }
+        .noti-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.85;
+        }
+        .noti-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+            border-radius: 10px;
+            padding: 1px 4px;
+            min-width: 15px;
+            text-align: center;
+            display: none;
+            border: 1px solid var(--card);
+        }
+        
+        /* NOTIFICATION POPUP MODALS */
+        #noti-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3500;
+            padding: 15px;
+        }
+        .noti-box {
+            background: var(--card);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            border: 1px solid var(--border);
+            animation: popIn 0.25s ease-out;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .noti-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+        .noti-box-header h3 {
+            font-size: 15px;
+            color: var(--p-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .noti-close-btn {
+            background: #f1f5f9;
+            border: none;
+            color: #64748b;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        [data-theme="dark"] .noti-close-btn {
+            background: #334155;
+            color: #cbd5e1;
+        }
+        .noti-close-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+        .noti-list {
+            max-height: 260px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .noti-item {
+            background: var(--bg);
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--p-color);
+            font-size: 11px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .noti-item-content {
+            flex: 1;
+        }
+        .noti-item-time {
+            font-size: 8px;
+            color: #64748b;
+            margin-top: 4px;
+            text-align: right;
+        }
+        .noti-del-btn {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 2px 4px;
+            transition: 0.2s;
+        }
+        .noti-del-btn:hover {
+            transform: scale(1.15);
+            color: #dc2626;
+        }
+
         .theme-toggle {
             display: inline-flex;
             align-items: center;
@@ -352,26 +569,61 @@
             white-space: nowrap;
             user-select: none;
         }
-        .logout-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            min-height: 30px;
-            border: 1px solid #f43f5e !important;
-            border-radius: 7px;
-            background: var(--card) !important;
-            color: #e11d48 !important;
-            font-size: 11px !important;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 5px 9px !important;
-            white-space: nowrap;
-        }
-        .logout-btn:hover,
         .theme-toggle:hover {
             opacity: 0.85;
             transform: translateY(-1px);
+        }
+
+        /* THREE DOTS MENU STYLES */
+        .dots-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 5px;
+            transition: 0.2s;
+        }
+        .dots-btn:hover {
+            background: var(--border);
+        }
+        .nav-dropdown-menu {
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 200;
+            min-width: 120px;
+            overflow: hidden;
+        }
+        .nav-dropdown-menu.show {
+            display: flex;
+        }
+        .nav-dropdown-item {
+            padding: 10px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            background: transparent;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text);
+            transition: 0.2s;
+        }
+        .nav-dropdown-item:hover {
+            background: var(--border);
+        }
+        .nav-dropdown-item.logout {
+            color: #e11d48;
         }
 
         .table-wrap {
@@ -615,10 +867,10 @@
         @media (max-width: 600px) {
             .user-info-bar {
                 flex-wrap: wrap;
-                justify-content: center;
+                justify-content: space-between;
             }
             .active-user-name {
-                font-size: 11px;
+                font-size: 13px;
             }
             .header-card {
                 min-width: 150px;
@@ -631,6 +883,9 @@
 
     <div id="loading-screen"><h3>LOADING...</h3></div>
     <div id="toast">Action Success!</div>
+
+    <!-- Hidden File Input for Profile Picture -->
+    <input type="file" id="profile-pic-input" accept="image/*" style="display:none;" onchange="uploadProfilePic(event)">
 
     <!-- LOGIN OVERLAY -->
     <div id="login-overlay">
@@ -666,14 +921,50 @@
         <div class="top-panel">
             <div class="user-info-bar">
                 <div class="active-user-name">
+                    <!-- PROFILE PICTURE CONTAINER -->
+                    <div class="profile-pic-container">
+                        <i class="fa-solid fa-user" id="profile-default-icon"></i>
+                        <img id="profile-img-display" alt="Profile">
+                    </div>
+                    <!-- PROFILE MENU -->
+                    <div id="profile-dropdown" class="profile-menu">
+                        <button class="profile-menu-item" onclick="triggerPhotoSelect(); toggleProfileMenu();">
+                            <i class="fa-solid fa-camera" style="color:var(--p-color);"></i> Change Photo
+                        </button>
+                        <button class="profile-menu-item" id="delete-photo-btn" onclick="deleteProfilePic(); toggleProfileMenu();" style="color:#e11d48; display:none;">
+                            <i class="fa-solid fa-trash"></i> Delete Photo
+                        </button>
+                    </div>
+
                     <span id="display-user-name" onclick="showMyTaskCount()" title="Click to view your task count">USERNAME</span>
+                    
+                    <!-- VERIFIED BADGE IMAGE -->
+                    <img id="user-verified-badge" class="verified-badge-icon" src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg" alt="Verified Badge" title="Verified User">
                 </div>
                 <div style="display:flex; gap:6px; align-items:center;">
-                    <button class="btn-tool" style="background:var(--p-color); width:auto; padding:4px 14px;" onclick="openManagement()">MANAGE</button>
-                    <button onclick="logout()" class="logout-btn" title="Log out"><i class="fa-solid fa-right-from-bracket"></i><span>LOG OUT</span></button>
+                    <!-- NOTIFICATION BUTTON (LEFT OF DAY/NIGHT) -->
+                    <div class="noti-btn-wrap">
+                        <button type="button" class="noti-btn" onclick="openNotificationModal()" title="Broadcast Messages">
+                            <i class="fa-solid fa-bell"></i>
+                        </button>
+                        <span id="noti-badge" class="noti-badge">0</span>
+                    </div>
+
                     <button type="button" class="theme-toggle" onclick="toggleTheme()" title="Switch day/night mode">
                         <i id="theme-icon" class="fa-solid fa-moon"></i><span id="theme-label">NIGHT</span>
                     </button>
+                    <!-- THREE DOTS MENU -->
+                    <button type="button" class="dots-btn" onclick="toggleNavMenu(event)" title="More Options">
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <div id="nav-dropdown" class="nav-dropdown-menu">
+                        <button class="nav-dropdown-item" onclick="openManagement(); toggleNavMenu();">
+                            <i class="fa-solid fa-screwdriver-wrench" style="color:var(--p-color);"></i> MANAGE
+                        </button>
+                        <button class="nav-dropdown-item logout" onclick="logout(); toggleNavMenu();">
+                            <i class="fa-solid fa-right-from-bracket"></i> LOG OUT
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="stats-strip" aria-label="User activity statistics">
@@ -818,6 +1109,19 @@
         </div>
     </div>
 
+    <!-- NOTIFICATION MODAL & POPUP -->
+    <div id="noti-modal" onclick="closeNotificationModal(event)">
+        <div class="noti-box" onclick="event.stopPropagation()">
+            <div class="noti-box-header">
+                <h3><i class="fa-solid fa-bullhorn"></i> Broadcast Messages</h3>
+                <button class="noti-close-btn" onclick="closeNotificationModal()" title="Close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="noti-list-container" class="noti-list">
+                <!-- Broadcast messages will be listed here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         // ===== FIREBASE CONFIG =====
         const firebaseConfig = {
@@ -861,12 +1165,244 @@
         let isRangeMode = false, startPoint = null, selectedSet = new Set();
         let historyStack = [], redoStack = [];
         let dataListener = null;
+        let userDetailsListener = null;
+        let broadcastListener = null;
+        let broadcastList = [];
         let otpRequestId = 0;
         let otpController = null;
         let otpDotsTimer = null;
         let statsUsersListener = null;
         let statsDataListeners = new Map();
         let statsCounts = {};
+
+        // ===== PROFILE PICTURE & USER INFO FUNCTIONS =====
+        function toggleProfileMenu(e) {
+            if(e) e.stopPropagation();
+            const menu = document.getElementById('profile-dropdown');
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+
+        function triggerPhotoSelect() {
+            document.getElementById('profile-pic-input').click();
+        }
+
+        function uploadProfilePic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if(file.size > 2 * 1024 * 1024) {
+                    alert('File size should be less than 2MB');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Img = e.target.result;
+                    if(db && currentUser) {
+                        db.ref('users/' + currentUser + '/profilePic').set(base64Img)
+                          .then(() => {
+                              showToast('Profile picture saved to server!');
+                          })
+                          .catch(() => {
+                              showToast('Failed to upload picture');
+                          });
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+            event.target.value = '';
+        }
+
+        function attachUserDetailsListener() {
+            if (!currentUser || !db) return;
+            if (userDetailsListener) {
+                userDetailsListener.off();
+                userDetailsListener = null;
+            }
+            
+            userDetailsListener = db.ref('users/' + currentUser);
+            userDetailsListener.on('value', snap => {
+                const userData = snap.val() || {};
+                const imgEl = document.getElementById('profile-img-display');
+                const iconEl = document.getElementById('profile-default-icon');
+                const deleteBtn = document.getElementById('delete-photo-btn');
+                const verifiedBadge = document.getElementById('user-verified-badge');
+
+                if (userData.profilePic) {
+                    imgEl.src = userData.profilePic;
+                    imgEl.style.display = 'block';
+                    iconEl.style.display = 'none';
+                    if(deleteBtn) deleteBtn.style.display = 'flex';
+                } else {
+                    imgEl.src = '';
+                    imgEl.style.display = 'none';
+                    iconEl.style.display = 'block';
+                    if(deleteBtn) deleteBtn.style.display = 'none';
+                }
+
+                if (userData.isVerified === true) {
+                    verifiedBadge.style.display = 'inline-block';
+                } else {
+                    verifiedBadge.style.display = 'none';
+                }
+            });
+        }
+
+        function deleteProfilePic() {
+            if (confirm('Delete profile picture?')) {
+                if(db && currentUser) {
+                    db.ref('users/' + currentUser + '/profilePic').remove()
+                      .then(() => {
+                          showToast('Profile picture deleted!');
+                      });
+                }
+            }
+        }
+
+        // ===== BROADCAST NOTIFICATION SYSTEM (24-HOUR AUTO-DELETE & PERMANENT DELETE) =====
+        function attachBroadcastListener() {
+            if (!db) return;
+            if (broadcastListener) {
+                broadcastListener.off();
+                broadcastListener = null;
+            }
+
+            broadcastListener = db.ref('broadcasts');
+            broadcastListener.on('value', snap => {
+                const data = snap.val() || {};
+                broadcastList = [];
+                const now = Date.now();
+                const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+                Object.keys(data).forEach(key => {
+                    const item = data[key];
+                    const timestamp = item.timestamp || 0;
+
+                    // Automatically delete messages older than 24 hours from Firebase
+                    if (now - timestamp > TWENTY_FOUR_HOURS) {
+                        db.ref('broadcasts/' + key).remove();
+                    } else {
+                        broadcastList.push({ id: key, ...item });
+                    }
+                });
+                
+                // Newest first
+                broadcastList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                checkAndShowBroadcasts();
+            });
+        }
+
+        function checkAndShowBroadcasts() {
+            if (!currentUser) return;
+            const seenIds = JSON.parse(localStorage.getItem('seen_broadcasts_' + currentUser) || '[]');
+            
+            const unread = broadcastList.filter(b => !seenIds.includes(b.id));
+            const badge = document.getElementById('noti-badge');
+            
+            if (unread.length > 0) {
+                badge.innerText = unread.length;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            // Auto show Popup modal for the newest unread broadcast
+            if (unread.length > 0) {
+                openNotificationModal(true);
+            }
+        }
+
+        function openNotificationModal(autoPop = false) {
+            const modal = document.getElementById('noti-modal');
+            const container = document.getElementById('noti-list-container');
+            if (!modal || !container) return;
+
+            container.innerHTML = '';
+
+            if (broadcastList.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#64748b; padding:15px; font-size:11px;">No messages available.</div>';
+            } else {
+                const seenIds = JSON.parse(localStorage.getItem('seen_broadcasts_' + currentUser) || '[]');
+                
+                broadcastList.forEach(b => {
+                    const isNew = !seenIds.includes(b.id);
+                    const item = document.createElement('div');
+                    item.className = 'noti-item';
+                    if (isNew) {
+                        item.style.borderLeftColor = '#ef4444';
+                        item.style.background = 'rgba(239, 68, 68, 0.08)';
+                    }
+                    
+                    const timeStr = b.timestamp ? new Date(b.timestamp).toLocaleString() : '';
+                    item.innerHTML = `
+                        <div class="noti-item-content">
+                            <div style="font-size:12px; color:var(--text); line-height:1.4;">${b.message || b.text || ''}</div>
+                            <div class="noti-item-time">${timeStr}</div>
+                        </div>
+                        <button class="noti-del-btn" onclick="deleteBroadcastMessage('${b.id}')" title="Delete permanently">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function deleteBroadcastMessage(id) {
+            if (confirm('Are you sure you want to delete this notification permanently?')) {
+                if (db) {
+                    db.ref('broadcasts/' + id).remove()
+                        .then(() => {
+                            showToast('Notification deleted permanently!');
+                        })
+                        .catch(() => {
+                            showToast('Failed to delete notification.');
+                        });
+                }
+            }
+        }
+
+        function closeNotificationModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            const modal = document.getElementById('noti-modal');
+            if (modal) modal.style.display = 'none';
+
+            // Mark all broadcasts as seen when modal is closed with CROSS or Outside click
+            if (currentUser && broadcastList.length > 0) {
+                const allIds = broadcastList.map(b => b.id);
+                localStorage.setItem('seen_broadcasts_' + currentUser, JSON.stringify(allIds));
+                const badge = document.getElementById('noti-badge');
+                if (badge) badge.style.display = 'none';
+            }
+        }
+
+        // ===== NAV DROPDOWN =====
+        function toggleNavMenu(e) {
+            if(e) e.stopPropagation();
+            const drop = document.getElementById('nav-dropdown');
+            if (drop) {
+                drop.classList.toggle('show');
+            }
+        }
+
+        window.addEventListener('click', function(e) {
+            const drop = document.getElementById('nav-dropdown');
+            if (drop && drop.classList.contains('show')) {
+                if (!e.target.closest('#nav-dropdown') && !e.target.closest('.dots-btn')) {
+                    drop.classList.remove('show');
+                }
+            }
+
+            const profMenu = document.getElementById('profile-dropdown');
+            if (profMenu && profMenu.classList.contains('show')) {
+                if (!e.target.closest('#profile-dropdown') && !e.target.closest('.profile-pic-container')) {
+                    profMenu.classList.remove('show');
+                }
+            }
+        });
 
         // ===== AUTH =====
         function hashPassword(pw) { return btoa(pw + 'salt'); }
@@ -911,7 +1447,8 @@
                 name: name,
                 password: hashPassword(password),
                 approved: autoApprove,
-                role: 'user'
+                role: 'user',
+                isVerified: false
             });
             await db.ref('data/' + username + '/facebook').set({});
             alert(autoApprove ? 'Account created and auto-approved! You can now login.' : 'Signup successful! Wait for admin approval.');
@@ -930,7 +1467,9 @@
                 document.getElementById('main-dashboard').classList.remove('hidden');
                 document.getElementById('display-user-name').innerText = currentUser.toUpperCase();
                 document.getElementById('loading-screen').style.display = 'none';
+                attachUserDetailsListener();
                 attachDataListener();
+                attachBroadcastListener();
                 return true;
             }
             return false;
@@ -971,7 +1510,9 @@
             document.getElementById('main-dashboard').classList.remove('hidden');
             document.getElementById('display-user-name').innerText = username.toUpperCase();
             document.getElementById('loading-screen').style.display = 'none';
+            attachUserDetailsListener();
             attachDataListener();
+            attachBroadcastListener();
             document.getElementById('login-error').innerText = '';
         }
 
@@ -990,6 +1531,14 @@
             if (dataListener) {
                 dataListener.off();
                 dataListener = null;
+            }
+            if (userDetailsListener) {
+                userDetailsListener.off();
+                userDetailsListener = null;
+            }
+            if (broadcastListener) {
+                broadcastListener.off();
+                broadcastListener = null;
             }
             document.getElementById('login-username').value = '';
             document.getElementById('login-password').value = '';
@@ -1101,7 +1650,7 @@
             showToast(`${currentUser ? currentUser.toUpperCase() : 'YOU'}: ${count} active task${count === 1 ? '' : 's'}`);
         }
 
-        function showRunningUsers() {
+        async function showRunningUsers() {
             const modal = document.getElementById('running-users-modal');
             const list = document.getElementById('running-users-list');
             if (!modal || !list) return;
@@ -1117,17 +1666,37 @@
                 empty.innerText = 'No running users found.';
                 list.appendChild(empty);
             } else {
-                runningUsers.forEach(([username, count]) => {
+                for (const [username, count] of runningUsers) {
                     const row = document.createElement('div');
                     row.className = 'running-user-row';
+                    
+                    const nameContainer = document.createElement('div');
+                    nameContainer.style.display = 'flex';
+                    nameContainer.style.alignItems = 'center';
+                    nameContainer.style.gap = '4px';
+
                     const name = document.createElement('span');
                     name.innerText = username;
+                    nameContainer.appendChild(name);
+
+                    if (db) {
+                        const uSnap = await db.ref('users/' + username + '/isVerified').once('value');
+                        if (uSnap.val() === true) {
+                            const vBadge = document.createElement('img');
+                            vBadge.src = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg';
+                            vBadge.style.width = '14px';
+                            vBadge.style.height = '14px';
+                            vBadge.style.verticalAlign = 'middle';
+                            nameContainer.appendChild(vBadge);
+                        }
+                    }
+
                     const tasks = document.createElement('strong');
                     tasks.innerText = `${count} task${count === 1 ? '' : 's'}`;
                     tasks.style.color = 'var(--p-color)';
-                    row.append(name, tasks);
+                    row.append(nameContainer, tasks);
                     list.appendChild(row);
-                });
+                }
             }
             modal.style.display = 'flex';
         }
