@@ -1164,18 +1164,79 @@
         let rowKeys = [], localData = {};
         let isRangeMode = false, startPoint = null, selectedSet = new Set();
         let historyStack = [], redoStack = [];
-        let dataListener = null;
-        let userDetailsListener = null;
-        let broadcastListener = null;
         let broadcastList = [];
         let otpRequestId = 0;
         let otpController = null;
         let otpDotsTimer = null;
-        let statsUsersListener = null;
-        let statsDataListeners = new Map();
-        let statsCounts = {};
+        let globalUsersCache = {};
 
-        // ===== PROFILE PICTURE & USER INFO FUNCTIONS =====
+        // ===== REALTIME DATA AND USER LISTENERS (DELTA & LOW DATA USAGE) =====
+        function setupRealtimeListeners() {
+            if (!db || !currentUser) return;
+
+            // 1. Listen for new data added in real-time (onChildAdded)
+            const path = `data/${currentUser}/facebook`;
+            db.ref(path).on('child_added', (snapshot) => {
+                const key = snapshot.key;
+                const val = snapshot.val();
+                
+                // Add or update only incremental item to localData
+                localData[key] = val;
+                if (!rowKeys.includes(key)) {
+                    rowKeys.push(key);
+                }
+                
+                // Save cache and refresh UI dynamically without re-downloading all data
+                sessionStorage.setItem('mainData_' + currentUser, JSON.stringify(localData));
+                renderTable();
+                renderManageTable();
+                document.getElementById('bulk-count').innerText = 'Mails: ' + rowKeys.length;
+                updateStatsFromLocal();
+            });
+
+            // 2. Listen for changed items in real-time (onChildChanged)
+            db.ref(path).on('child_changed', (snapshot) => {
+                const key = snapshot.key;
+                const val = snapshot.val();
+                
+                localData[key] = val;
+                sessionStorage.setItem('mainData_' + currentUser, JSON.stringify(localData));
+                renderTable();
+                renderManageTable();
+                updateStatsFromLocal();
+            });
+
+            // 3. Listen for deleted items in real-time (onChildRemoved)
+            db.ref(path).on('child_removed', (snapshot) => {
+                const key = snapshot.key;
+                delete localData[key];
+                rowKeys = rowKeys.filter(k => k !== key);
+                
+                sessionStorage.setItem('mainData_' + currentUser, JSON.stringify(localData));
+                renderTable();
+                renderManageTable();
+                document.getElementById('bulk-count').innerText = 'Mails: ' + rowKeys.length;
+                updateStatsFromLocal();
+            });
+
+            // 4. Real-time Users activity delta tracking (Low Bandwidth)
+            db.ref('users').on('child_added', (snapshot) => {
+                globalUsersCache[snapshot.key] = snapshot.val();
+                updateGlobalUsersCount();
+            });
+
+            db.ref('users').on('child_changed', (snapshot) => {
+                globalUsersCache[snapshot.key] = snapshot.val();
+                updateGlobalUsersCount();
+            });
+        }
+
+        function updateGlobalUsersCount() {
+            const count = Object.keys(globalUsersCache).length;
+            document.getElementById('total-users-count').innerText = count || "1";
+        }
+
+        // ===== PROFILE PICTURE & USER INFO FUNCTIONS (SESSION CACHED) =====
         function toggleProfileMenu(e) {
             if(e) e.stopPropagation();
             const menu = document.getElementById('profile-dropdown');
@@ -1201,6 +1262,8 @@
                     if(db && currentUser) {
                         db.ref('users/' + currentUser + '/profilePic').set(base64Img)
                           .then(() => {
+                              sessionStorage.removeItem('userData_' + currentUser);
+                              loadUserDetailsOnce();
                               showToast('Profile picture saved to server!');
                           })
                           .catch(() => {
@@ -1213,39 +1276,45 @@
             event.target.value = '';
         }
 
-        function attachUserDetailsListener() {
+        function loadUserDetailsOnce() {
             if (!currentUser || !db) return;
-            if (userDetailsListener) {
-                userDetailsListener.off();
-                userDetailsListener = null;
-            }
+            const cachedUser = sessionStorage.getItem('userData_' + currentUser);
             
-            userDetailsListener = db.ref('users/' + currentUser);
-            userDetailsListener.on('value', snap => {
+            if (cachedUser) {
+                applyUserData(JSON.parse(cachedUser));
+                return;
+            }
+
+            db.ref('users/' + currentUser).once('value').then(snap => {
                 const userData = snap.val() || {};
-                const imgEl = document.getElementById('profile-img-display');
-                const iconEl = document.getElementById('profile-default-icon');
-                const deleteBtn = document.getElementById('delete-photo-btn');
-                const verifiedBadge = document.getElementById('user-verified-badge');
-
-                if (userData.profilePic) {
-                    imgEl.src = userData.profilePic;
-                    imgEl.style.display = 'block';
-                    iconEl.style.display = 'none';
-                    if(deleteBtn) deleteBtn.style.display = 'flex';
-                } else {
-                    imgEl.src = '';
-                    imgEl.style.display = 'none';
-                    iconEl.style.display = 'block';
-                    if(deleteBtn) deleteBtn.style.display = 'none';
-                }
-
-                if (userData.isVerified === true) {
-                    verifiedBadge.style.display = 'inline-block';
-                } else {
-                    verifiedBadge.style.display = 'none';
-                }
+                sessionStorage.setItem('userData_' + currentUser, JSON.stringify(userData));
+                applyUserData(userData);
             });
+        }
+
+        function applyUserData(userData) {
+            const imgEl = document.getElementById('profile-img-display');
+            const iconEl = document.getElementById('profile-default-icon');
+            const deleteBtn = document.getElementById('delete-photo-btn');
+            const verifiedBadge = document.getElementById('user-verified-badge');
+
+            if (userData.profilePic) {
+                imgEl.src = userData.profilePic;
+                imgEl.style.display = 'block';
+                iconEl.style.display = 'none';
+                if(deleteBtn) deleteBtn.style.display = 'flex';
+            } else {
+                imgEl.src = '';
+                imgEl.style.display = 'none';
+                iconEl.style.display = 'block';
+                if(deleteBtn) deleteBtn.style.display = 'none';
+            }
+
+            if (userData.isVerified === true) {
+                verifiedBadge.style.display = 'inline-block';
+            } else {
+                verifiedBadge.style.display = 'none';
+            }
         }
 
         function deleteProfilePic() {
@@ -1253,44 +1322,46 @@
                 if(db && currentUser) {
                     db.ref('users/' + currentUser + '/profilePic').remove()
                       .then(() => {
+                          sessionStorage.removeItem('userData_' + currentUser);
+                          loadUserDetailsOnce();
                           showToast('Profile picture deleted!');
                       });
                 }
             }
         }
 
-        // ===== BROADCAST NOTIFICATION SYSTEM (24-HOUR AUTO-DELETE & PERMANENT DELETE) =====
-        function attachBroadcastListener() {
+        // ===== BROADCAST NOTIFICATION SYSTEM (ONCE FETCH / BANDWIDTH OPTIMIZED) =====
+        function loadBroadcastsOnce() {
             if (!db) return;
-            if (broadcastListener) {
-                broadcastListener.off();
-                broadcastListener = null;
+            const cachedNoti = sessionStorage.getItem('broadcasts_cache');
+            if (cachedNoti) {
+                processBroadcasts(JSON.parse(cachedNoti));
+                return;
             }
 
-            broadcastListener = db.ref('broadcasts');
-            broadcastListener.on('value', snap => {
+            db.ref('broadcasts').once('value').then(snap => {
                 const data = snap.val() || {};
-                broadcastList = [];
-                const now = Date.now();
-                const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-                Object.keys(data).forEach(key => {
-                    const item = data[key];
-                    const timestamp = item.timestamp || 0;
-
-                    // Automatically delete messages older than 24 hours from Firebase
-                    if (now - timestamp > TWENTY_FOUR_HOURS) {
-                        db.ref('broadcasts/' + key).remove();
-                    } else {
-                        broadcastList.push({ id: key, ...item });
-                    }
-                });
-                
-                // Newest first
-                broadcastList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-                checkAndShowBroadcasts();
+                sessionStorage.setItem('broadcasts_cache', JSON.stringify(data));
+                processBroadcasts(data);
             });
+        }
+
+        function processBroadcasts(data) {
+            broadcastList = [];
+            const now = Date.now();
+            const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
+            Object.keys(data).forEach(key => {
+                const item = data[key];
+                const timestamp = item.timestamp || 0;
+
+                if (now - timestamp <= TWENTY_FOUR_HOURS) {
+                    broadcastList.push({ id: key, ...item });
+                }
+            });
+            
+            broadcastList.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            checkAndShowBroadcasts();
         }
 
         function checkAndShowBroadcasts() {
@@ -1303,13 +1374,9 @@
             if (unread.length > 0) {
                 badge.innerText = unread.length;
                 badge.style.display = 'inline-block';
+                openNotificationModal(true);
             } else {
                 badge.style.display = 'none';
-            }
-
-            // Auto show Popup modal for the newest unread broadcast
-            if (unread.length > 0) {
-                openNotificationModal(true);
             }
         }
 
@@ -1356,7 +1423,9 @@
                 if (db) {
                     db.ref('broadcasts/' + id).remove()
                         .then(() => {
+                            sessionStorage.removeItem('broadcasts_cache');
                             showToast('Notification deleted permanently!');
+                            loadBroadcastsOnce();
                         })
                         .catch(() => {
                             showToast('Failed to delete notification.');
@@ -1370,7 +1439,6 @@
             const modal = document.getElementById('noti-modal');
             if (modal) modal.style.display = 'none';
 
-            // Mark all broadcasts as seen when modal is closed with CROSS or Outside click
             if (currentUser && broadcastList.length > 0) {
                 const allIds = broadcastList.map(b => b.id);
                 localStorage.setItem('seen_broadcasts_' + currentUser, JSON.stringify(allIds));
@@ -1467,9 +1535,10 @@
                 document.getElementById('main-dashboard').classList.remove('hidden');
                 document.getElementById('display-user-name').innerText = currentUser.toUpperCase();
                 document.getElementById('loading-screen').style.display = 'none';
-                attachUserDetailsListener();
-                attachDataListener();
-                attachBroadcastListener();
+                loadUserDetailsOnce();
+                fetchUserDataOnce();
+                loadBroadcastsOnce();
+                setupRealtimeListeners();
                 return true;
             }
             return false;
@@ -1510,9 +1579,10 @@
             document.getElementById('main-dashboard').classList.remove('hidden');
             document.getElementById('display-user-name').innerText = username.toUpperCase();
             document.getElementById('loading-screen').style.display = 'none';
-            attachUserDetailsListener();
-            attachDataListener();
-            attachBroadcastListener();
+            loadUserDetailsOnce();
+            fetchUserDataOnce();
+            loadBroadcastsOnce();
+            setupRealtimeListeners();
             document.getElementById('login-error').innerText = '';
         }
 
@@ -1525,21 +1595,10 @@
 
         function logout() {
             cancelOTPRequest();
-            stopUserStatsListeners();
             currentUser = null;
             localStorage.removeItem('userPanelUser');
-            if (dataListener) {
-                dataListener.off();
-                dataListener = null;
-            }
-            if (userDetailsListener) {
-                userDetailsListener.off();
-                userDetailsListener = null;
-            }
-            if (broadcastListener) {
-                broadcastListener.off();
-                broadcastListener = null;
-            }
+            sessionStorage.clear();
+            
             document.getElementById('login-username').value = '';
             document.getElementById('login-password').value = '';
             document.getElementById('signup-name').value = '';
@@ -1554,43 +1613,42 @@
             showAuthPanel();
         }
 
-        // ===== DATA LISTENER =====
-        function attachDataListener() {
+        // ===== OPTIMIZED DATA FETCHING (CACHED DATA SYSTEM) =====
+        function fetchUserDataOnce() {
             if (!currentUser) return;
-            if (dataListener) {
-                dataListener.off();
-                dataListener = null;
-            }
-            const path = `data/${currentUser}/facebook`;
-            const ref = db.ref(path);
-            dataListener = ref;
-            ref.on('value', snap => {
-                localData = snap.val() || {};
+            const cacheKey = 'mainData_' + currentUser;
+            const cachedData = sessionStorage.getItem(cacheKey);
+
+            if (cachedData) {
+                localData = JSON.parse(cachedData);
                 rowKeys = Object.keys(localData);
                 renderTable();
                 renderManageTable();
                 document.getElementById('bulk-count').innerText = 'Mails: ' + rowKeys.length;
-                if (currentUser && statsCounts[currentUser] !== undefined) {
-                    statsCounts[currentUser] = countWorkingRows(localData);
-                    updateUserStats(Object.keys(statsCounts).length);
-                }
-            });
-            attachUserStatsListeners();
-        }
-
-        function stopUserStatsListeners() {
-            if (statsUsersListener) {
-                statsUsersListener.off();
-                statsUsersListener = null;
+                updateStatsFromLocal();
+                return;
             }
-            statsDataListeners.forEach(ref => ref.off());
-            statsDataListeners.clear();
-            statsCounts = {};
+
+            const path = `data/${currentUser}/facebook`;
+            db.ref(path).once('value').then(snap => {
+                localData = snap.val() || {};
+                sessionStorage.setItem(cacheKey, JSON.stringify(localData));
+                rowKeys = Object.keys(localData);
+                renderTable();
+                renderManageTable();
+                document.getElementById('bulk-count').innerText = 'Mails: ' + rowKeys.length;
+                updateStatsFromLocal();
+            });
         }
 
-        function clearStatsDataListeners() {
-            statsDataListeners.forEach(ref => ref.off());
-            statsDataListeners.clear();
+        function updateLocalAndSync(newData) {
+            localData = newData;
+            sessionStorage.setItem('mainData_' + currentUser, JSON.stringify(localData));
+            rowKeys = Object.keys(localData);
+            renderTable();
+            renderManageTable();
+            document.getElementById('bulk-count').innerText = 'Mails: ' + rowKeys.length;
+            updateStatsFromLocal();
         }
 
         function hasWorkingData(row) {
@@ -1604,49 +1662,14 @@
             return Object.values(value).filter(hasWorkingData).length;
         }
 
-        function updateUserStats(totalUsers) {
-            const counts = Object.values(statsCounts);
-            const runningUsers = counts.filter(count => count > 0).length;
-            const myTasks = statsCounts[currentUser] ?? countWorkingRows(localData);
-            const totalEl = document.getElementById('total-users-count');
-            const runningEl = document.getElementById('running-users-count');
-            const myTasksEl = document.getElementById('my-tasks-count');
-            if (totalEl) totalEl.innerText = totalUsers;
-            if (runningEl) runningEl.innerText = runningUsers;
-            if (myTasksEl) myTasksEl.innerText = myTasks;
-        }
-
-        function attachUserStatsListeners() {
-            if (!currentUser) return;
-            stopUserStatsListeners();
-            statsUsersListener = db.ref('users');
-            statsUsersListener.on('value', snap => {
-                const users = [];
-                snap.forEach(child => {
-                    const user = child.val() || {};
-                    if (user.role !== 'admin') users.push(child.key);
-                });
-
-                clearStatsDataListeners();
-                statsCounts = {};
-                users.forEach(username => {
-                    statsCounts[username] = 0;
-                    const ref = db.ref(`data/${username}/facebook`);
-                    statsDataListeners.set(username, ref);
-                    ref.on('value', dataSnap => {
-                        statsCounts[username] = countWorkingRows(dataSnap.val());
-                        updateUserStats(users.length);
-                    });
-                });
-                updateUserStats(users.length);
-            }, () => {
-                statsCounts = { [currentUser]: countWorkingRows(localData) };
-                updateUserStats(0);
-            });
+        function updateStatsFromLocal() {
+            const count = countWorkingRows(localData);
+            document.getElementById('my-tasks-count').innerText = count;
+            document.getElementById('running-users-count').innerText = count > 0 ? "1" : "0";
         }
 
         function showMyTaskCount() {
-            const count = statsCounts[currentUser] ?? countWorkingRows(localData);
+            const count = countWorkingRows(localData);
             showToast(`${currentUser ? currentUser.toUpperCase() : 'YOU'}: ${count} active task${count === 1 ? '' : 's'}`);
         }
 
@@ -1656,47 +1679,41 @@
             if (!modal || !list) return;
 
             list.innerHTML = '';
-            const runningUsers = Object.entries(statsCounts)
-                .filter(([, count]) => count > 0)
-                .sort(([a], [b]) => a.localeCompare(b));
+            const myCount = countWorkingRows(localData);
 
-            if (runningUsers.length === 0) {
+            if (myCount === 0) {
                 const empty = document.createElement('div');
                 empty.style.cssText = 'padding:14px 4px;color:#64748b;font-size:11px;';
                 empty.innerText = 'No running users found.';
                 list.appendChild(empty);
             } else {
-                for (const [username, count] of runningUsers) {
-                    const row = document.createElement('div');
-                    row.className = 'running-user-row';
-                    
-                    const nameContainer = document.createElement('div');
-                    nameContainer.style.display = 'flex';
-                    nameContainer.style.alignItems = 'center';
-                    nameContainer.style.gap = '4px';
+                const row = document.createElement('div');
+                row.className = 'running-user-row';
+                
+                const nameContainer = document.createElement('div');
+                nameContainer.style.display = 'flex';
+                nameContainer.style.alignItems = 'center';
+                nameContainer.style.gap = '4px';
 
-                    const name = document.createElement('span');
-                    name.innerText = username;
-                    nameContainer.appendChild(name);
+                const name = document.createElement('span');
+                name.innerText = currentUser.toUpperCase();
+                nameContainer.appendChild(name);
 
-                    if (db) {
-                        const uSnap = await db.ref('users/' + username + '/isVerified').once('value');
-                        if (uSnap.val() === true) {
-                            const vBadge = document.createElement('img');
-                            vBadge.src = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg';
-                            vBadge.style.width = '14px';
-                            vBadge.style.height = '14px';
-                            vBadge.style.verticalAlign = 'middle';
-                            nameContainer.appendChild(vBadge);
-                        }
-                    }
-
-                    const tasks = document.createElement('strong');
-                    tasks.innerText = `${count} task${count === 1 ? '' : 's'}`;
-                    tasks.style.color = 'var(--p-color)';
-                    row.append(nameContainer, tasks);
-                    list.appendChild(row);
+                const userData = JSON.parse(sessionStorage.getItem('userData_' + currentUser) || '{}');
+                if (userData.isVerified === true) {
+                    const vBadge = document.createElement('img');
+                    vBadge.src = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg';
+                    vBadge.style.width = '14px';
+                    vBadge.style.height = '14px';
+                    vBadge.style.verticalAlign = 'middle';
+                    nameContainer.appendChild(vBadge);
                 }
+
+                const tasks = document.createElement('strong');
+                tasks.innerText = `${myCount} task${myCount === 1 ? '' : 's'}`;
+                tasks.style.color = 'var(--p-color)';
+                row.append(nameContainer, tasks);
+                list.appendChild(row);
             }
             modal.style.display = 'flex';
         }
@@ -1755,8 +1772,13 @@
 
         // ===== SAVE / EDIT =====
         function saveEdit(id, f, v) {
+            // Optimistic update
+            if (!localData[id]) localData[id] = {};
+            localData[id][f] = v;
+
             const path = `data/${currentUser}/facebook/${id}`;
             db.ref(path).update({ [f]: v }).then(() => {
+                updateLocalAndSync(localData);
                 archiveToGS({ ...(localData[id] || {}), [f]: v });
                 showToast('Saved!');
             });
@@ -2023,6 +2045,8 @@
             const path = `data/${currentUser}/facebook/${selectedRowId}`;
             db.ref(path).update(syncD).then(() => {
                 const currentRow = localData[selectedRowId] || {};
+                localData[selectedRowId] = { ...currentRow, ...syncD };
+                updateLocalAndSync(localData);
                 archiveToGS({ ...currentRow, ...syncD });
                 clearTopDataInputs();
                 showToast('Saved to selected row!');
@@ -2165,17 +2189,18 @@
             const lines = text.split('\n').filter(l => l.trim() !== '');
             let ups = {}, arch = [];
             const path = `data/${currentUser}/facebook`;
-            const snap = await db.ref(path).once('value');
-            const currentData = snap.val() || {};
-            const currentKeys = Object.keys(currentData);
+            
+            const currentKeys = Object.keys(localData);
             lines.forEach((l, idx) => {
                 let target = start + idx;
                 let k = (target < currentKeys.length) ? currentKeys[target] : db.ref(path).push().key;
                 let obj = { uid: '', pass: '', tfa: '', cookie: '', fullMail: l.trim(), status: '', color: '#ffffff' };
                 ups[`${path}/${k}`] = obj;
+                localData[k] = obj;
                 arch.push(obj);
             });
             await db.ref().update(ups);
+            updateLocalAndSync(localData);
             document.getElementById('bulkDataBox').value = '';
             archiveToGS(arch);
             updateBulkCount();
@@ -2208,17 +2233,25 @@
                     const key = rowKeys[j];
                     await backupRow(key);
                     await db.ref(`${path}/${key}`).remove();
+                    delete localData[key];
                 }
             } else {
                 let ups = {};
                 const val = document.getElementById('fill-val').value;
                 for (let j = from; j <= to; j++) {
                     const key = rowKeys[j];
-                    if (mode === 'fill') ups[`${path}/${key}/pass`] = val;
-                    else if (mode === 'pass') ups[`${path}/${key}/pass`] = '';
+                    if (mode === 'fill') {
+                        ups[`${path}/${key}/pass`] = val;
+                        if(localData[key]) localData[key].pass = val;
+                    }
+                    else if (mode === 'pass') {
+                        ups[`${path}/${key}/pass`] = '';
+                        if(localData[key]) localData[key].pass = '';
+                    }
                 }
                 await db.ref().update(ups);
             }
+            updateLocalAndSync(localData);
             resetSelection();
             showToast('Action applied');
         }
@@ -2232,7 +2265,9 @@
         async function undoAction() {
             if (historyStack.length) {
                 redoStack.push(JSON.parse(JSON.stringify(localData)));
-                await db.ref(`data/${currentUser}/facebook`).set(historyStack.pop());
+                const prev = historyStack.pop();
+                await db.ref(`data/${currentUser}/facebook`).set(prev);
+                updateLocalAndSync(prev);
                 showToast('Undo');
             }
         }
@@ -2240,7 +2275,9 @@
         async function redoAction() {
             if (redoStack.length) {
                 historyStack.push(JSON.parse(JSON.stringify(localData)));
-                await db.ref(`data/${currentUser}/facebook`).set(redoStack.pop());
+                const next = redoStack.pop();
+                await db.ref(`data/${currentUser}/facebook`).set(next);
+                updateLocalAndSync(next);
                 showToast('Redo');
             }
         }
@@ -2255,6 +2292,10 @@
                 backupRow(rId);
                 const path = `data/${currentUser}/facebook/${rId}`;
                 db.ref(path).update({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' });
+                if(localData[rId]) {
+                    localData[rId] = { ...localData[rId], uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' };
+                    updateLocalAndSync(localData);
+                }
             }
         }
 
@@ -2262,13 +2303,21 @@
             if (confirm('Delete row?')) {
                 backupRow(rId);
                 const path = `data/${currentUser}/facebook/${rId}`;
-                db.ref(path).remove();
+                db.ref(path).remove().then(() => {
+                    delete localData[rId];
+                    updateLocalAndSync(localData);
+                });
             }
         }
 
         function addRow() {
             const path = `data/${currentUser}/facebook`;
-            db.ref(path).push({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' });
+            const newRef = db.ref(path).push();
+            const newObj = { uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' };
+            newRef.set(newObj).then(() => {
+                localData[newRef.key] = newObj;
+                updateLocalAndSync(localData);
+            });
         }
 
         // ===== SELECTION & CONTEXT MENU =====
@@ -2368,7 +2417,9 @@
             for (const k of rows) {
                 await backupRow(k);
                 await db.ref(`${path}/${k}`).remove();
+                delete localData[k];
             }
+            updateLocalAndSync(localData);
             resetSelection();
             showToast('Deleted ' + rows.size + ' rows.');
         }
@@ -2391,36 +2442,35 @@
         }
 
         function toggleTheme() {
-            const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            document.body.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-            updateThemeControl(next);
-        }
-
-        function updateThemeControl(theme) {
+            const b = document.body;
             const icon = document.getElementById('theme-icon');
             const label = document.getElementById('theme-label');
-            if (!icon || !label) return;
-            const isDark = theme === 'dark';
-            icon.className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-            label.innerText = isDark ? 'DAY' : 'NIGHT';
-        }
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
+            if (b.getAttribute('data-theme') === 'dark') {
+                b.removeAttribute('data-theme');
+                icon.className = 'fa-solid fa-moon';
+                label.innerText = 'NIGHT';
+                localStorage.setItem('theme', 'light');
+            } else {
+                b.setAttribute('data-theme', 'dark');
+                icon.className = 'fa-solid fa-sun';
+                label.innerText = 'DAY';
+                localStorage.setItem('theme', 'dark');
+            }
+            renderTable();
+            renderManageTable();
         }
 
         function stopSelection() {}
 
-        // ===== INIT =====
-        window.onload = function() {
-            document.getElementById('loading-screen').style.display = 'none';
-            if (!checkSession()) {
-                showAuthPanel();
+        // INIT LOAD
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+                document.getElementById('theme-label').innerText = 'DAY';
             }
-            const savedTheme = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', savedTheme);
-            updateThemeControl(savedTheme);
-        };
+            checkSession();
+        });
     </script>
 </body>
 </html>
