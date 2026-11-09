@@ -187,7 +187,7 @@
         }
         .input-box {
             width: 100%;
-            padding: 6px;
+            padding: 5px;
             border-radius: 5px;
             border: 1.5px solid var(--border);
             font-size: 9px;
@@ -993,10 +993,12 @@
                     </div>
                 </div>
                 <!-- Cookie & 2FA -->
-                <div class="header-card">
-                    <div style="color:#0891b2; font-size:11px;">Cookie & 2FA</div>
+                <div class="header-card" style="height: 155px;">
+                    <div style="color:#0891b2; font-size:11px;">Cookie, 2FA, Username & Pass</div>
                     <input type="text" id="cookie-input" class="input-box" placeholder="Cookie...">
                     <input type="text" id="tfa-input" class="input-box" placeholder="2FA Secret..." oninput="generateLive2FA()">
+                    <input type="text" id="username-input" class="input-box" placeholder="Username...">
+                    <input type="password" id="password-input" class="input-box" placeholder="Password...">
                     <div id="tfa-code-display" class="tfa-display" onclick="copyValue(this.innerText, '2FA')">------</div>
                     <button id="send-btn" class="btn-tool" style="background:#10b981;" onclick="updateFirebaseAndSheet()">SEND ALL</button>
                 </div>
@@ -1033,6 +1035,7 @@
                     <tr>
                         <th style="width:25px;">#</th>
                         <th id="mainIdHeader" style="width:45px;">UID</th>
+                        <th style="width:45px;">Username</th>
                         <th style="width:45px;">Pass</th>
                         <th style="width:45px;">2FA</th>
                         <th style="width:45px;">Cook</th>
@@ -1085,7 +1088,7 @@
 
         <div class="table-wrap" style="height:calc(100vh - 340px);">
             <table>
-                <thead><tr><th>#</th><th id="manageIdHeader">UID</th><th>Pass</th><th>2FA</th><th>Cook</th><th>Full Mail</th><th>Status</th><th>X</th></tr></thead>
+                <thead><tr><th>#</th><th id="manageIdHeader">UID</th><th>Username</th><th>Pass</th><th>2FA</th><th>Cook</th><th>Full Mail</th><th>Status</th><th>X</th></tr></thead>
                 <tbody id="manage-table-body"></tbody>
             </table>
         </div>
@@ -1103,7 +1106,10 @@
         <div class="running-users-box" onclick="event.stopPropagation()">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                 <strong>RUNNING USERS</strong>
-                <button class="btn-tool" style="width:auto;background:#64748b;padding:4px 10px;" onclick="closeRunningUsers()">CLOSE</button>
+                <div style="display:flex; gap:5px;">
+                    <button class="btn-tool" style="width:auto;background:var(--p-color);padding:4px 10px;" onclick="fetchLiveRunningUsers()"><i class="fa-solid fa-rotate"></i> RELOAD</button>
+                    <button class="btn-tool" style="width:auto;background:#64748b;padding:4px 10px;" onclick="closeRunningUsers()">CLOSE</button>
+                </div>
             </div>
             <div id="running-users-list"></div>
         </div>
@@ -1180,13 +1186,11 @@
                 const key = snapshot.key;
                 const val = snapshot.val();
                 
-                // Add or update only incremental item to localData
                 localData[key] = val;
                 if (!rowKeys.includes(key)) {
                     rowKeys.push(key);
                 }
                 
-                // Save cache and refresh UI dynamically without re-downloading all data
                 sessionStorage.setItem('mainData_' + currentUser, JSON.stringify(localData));
                 renderTable();
                 renderManageTable();
@@ -1653,7 +1657,7 @@
 
         function hasWorkingData(row) {
             if (!row || typeof row !== 'object') return false;
-            return ['tfa', 'cookie']
+            return ['tfa', 'cookie', 'username', 'pass']
                 .some(field => String(row[field] || '').trim() !== '');
         }
 
@@ -1673,7 +1677,7 @@
             showToast(`${currentUser ? currentUser.toUpperCase() : 'YOU'}: ${count} active task${count === 1 ? '' : 's'}`);
         }
 
-        async function showRunningUsers() {
+        function showRunningUsers() {
             const modal = document.getElementById('running-users-modal');
             const list = document.getElementById('running-users-list');
             if (!modal || !list) return;
@@ -1684,7 +1688,7 @@
             if (myCount === 0) {
                 const empty = document.createElement('div');
                 empty.style.cssText = 'padding:14px 4px;color:#64748b;font-size:11px;';
-                empty.innerText = 'No running users found.';
+                empty.innerText = 'No running users found (Cached). Click RELOAD to check server.';
                 list.appendChild(empty);
             } else {
                 const row = document.createElement('div');
@@ -1718,6 +1722,72 @@
             modal.style.display = 'flex';
         }
 
+        // Live Server Fetch on Reload Click inside Running Users Modal
+        async function fetchLiveRunningUsers() {
+            const list = document.getElementById('running-users-list');
+            if (!list) return;
+            list.innerHTML = '<div style="text-align:center;color:var(--p-color);font-size:11px;padding:15px;"><i class="fa-solid fa-spinner fa-spin"></i> Fetching live history from server...</div>';
+
+            if (!db) {
+                list.innerHTML = '<div style="text-align:center;color:#ef4444;font-size:11px;padding:15px;">Database not connected.</div>';
+                return;
+            }
+
+            try {
+                const snap = await db.ref('data').once('value');
+                const allData = snap.val() || {};
+                list.innerHTML = '';
+                let totalActiveFound = 0;
+
+                for (const user of Object.keys(allData)) {
+                    const fbData = allData[user]?.facebook || {};
+                    const activeCount = Object.values(fbData).filter(hasWorkingData).length;
+
+                    if (activeCount > 0) {
+                        totalActiveFound++;
+                        const row = document.createElement('div');
+                        row.className = 'running-user-row';
+                        
+                        const nameContainer = document.createElement('div');
+                        nameContainer.style.display = 'flex';
+                        nameContainer.style.alignItems = 'center';
+                        nameContainer.style.gap = '4px';
+
+                        const name = document.createElement('span');
+                        name.innerText = user.toUpperCase();
+                        nameContainer.appendChild(name);
+
+                        // Check verification from global cache or load
+                        if (globalUsersCache[user]?.isVerified === true) {
+                            const vBadge = document.createElement('img');
+                            vBadge.src = 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Twitter_Verified_Badge.svg';
+                            vBadge.style.width = '14px';
+                            vBadge.style.height = '14px';
+                            vBadge.style.verticalAlign = 'middle';
+                            nameContainer.appendChild(vBadge);
+                        }
+
+                        const tasks = document.createElement('strong');
+                        tasks.innerText = `${activeCount} task${activeCount === 1 ? '' : 's'}`;
+                        tasks.style.color = 'var(--p-color)';
+                        row.append(nameContainer, tasks);
+                        list.appendChild(row);
+                    }
+                }
+
+                if (totalActiveFound === 0) {
+                    const empty = document.createElement('div');
+                    empty.style.cssText = 'padding:14px 4px;color:#64748b;font-size:11px;text-align:center;';
+                    empty.innerText = 'No running users active on server right now.';
+                    list.appendChild(empty);
+                } else {
+                    showToast('Live history updated from server!');
+                }
+            } catch (err) {
+                list.innerHTML = '<div style="text-align:center;color:#ef4444;font-size:11px;padding:15px;">Failed to fetch live data.</div>';
+            }
+        }
+
         function closeRunningUsers(event) {
             if (event && event.target !== event.currentTarget) return;
             const modal = document.getElementById('running-users-modal');
@@ -1737,6 +1807,7 @@
                 html += `<tr style="background-color:${rowBg};">
                     <td>${i}</td>
                     <td>${row.uid||''}</td>
+                    <td>${row.username||''}</td>
                     <td>${row.pass||''}</td>
                     <td>${row.tfa||''}</td>
                     <td>${row.cookie||''}</td>
@@ -1760,7 +1831,7 @@
                 if (isD && rowBg === '#ffffff') rowBg = 'transparent';
                 html += `<tr style="background-color:${rowBg};">
                     <td>${i}</td>
-                    ${['uid','pass','tfa','cookie','fullMail','status'].map(f => `
+                    ${['uid','username','pass','tfa','cookie','fullMail','status'].map(f => `
                         <td class="${sC}" onclick="handleManageSelect(event, '${key}', ${i-1})"><input class="edit-input" value="${row[f]||''}" onchange="saveEdit('${key}','${f}',this.value)"></td>
                     `).join('')}
                     <td><i class="fa-solid fa-trash" style="color:red;cursor:pointer;" onclick="deleteRow('${key}')"></i></td>
@@ -1772,7 +1843,6 @@
 
         // ===== SAVE / EDIT =====
         function saveEdit(id, f, v) {
-            // Optimistic update
             if (!localData[id]) localData[id] = {};
             localData[id][f] = v;
 
@@ -1834,6 +1904,8 @@
         function clearTopDataInputs() {
             document.getElementById('cookie-input').value = '';
             document.getElementById('tfa-input').value = '';
+            document.getElementById('username-input').value = '';
+            document.getElementById('password-input').value = '';
             document.getElementById('tfa-code-display').innerText = '------';
             document.getElementById('otp-area').style.display = 'none';
         }
@@ -2028,9 +2100,13 @@
             }
             const cV = document.getElementById('cookie-input').value.trim();
             const tV = document.getElementById('tfa-input').value.trim();
+            const uV = document.getElementById('username-input').value.trim();
+            const pV = document.getElementById('password-input').value.trim();
 
             const syncD = {};
             if (tV) syncD.tfa = tV;
+            if (uV) syncD.username = uV;
+            if (pV) syncD.pass = pV;
             if (cV) {
                 syncD.cookie = cV;
                 const match = cV.match(/c_user=([0-9]+)/);
@@ -2038,7 +2114,7 @@
             }
 
             if (Object.keys(syncD).length === 0) {
-                alert('Enter Cookie or 2FA data first.');
+                alert('Enter Cookie, 2FA, Username or Password data first.');
                 return;
             }
 
@@ -2194,7 +2270,7 @@
             lines.forEach((l, idx) => {
                 let target = start + idx;
                 let k = (target < currentKeys.length) ? currentKeys[target] : db.ref(path).push().key;
-                let obj = { uid: '', pass: '', tfa: '', cookie: '', fullMail: l.trim(), status: '', color: '#ffffff' };
+                let obj = { uid: '', username: '', pass: '', tfa: '', cookie: '', fullMail: l.trim(), status: '', color: '#ffffff' };
                 ups[`${path}/${k}`] = obj;
                 localData[k] = obj;
                 arch.push(obj);
@@ -2291,9 +2367,9 @@
             if (confirm('Clear row?')) {
                 backupRow(rId);
                 const path = `data/${currentUser}/facebook/${rId}`;
-                db.ref(path).update({ uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' });
+                db.ref(path).update({ uid: '', username: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' });
                 if(localData[rId]) {
-                    localData[rId] = { ...localData[rId], uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' };
+                    localData[rId] = { ...localData[rId], uid: '', username: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '' };
                     updateLocalAndSync(localData);
                 }
             }
@@ -2313,7 +2389,7 @@
         function addRow() {
             const path = `data/${currentUser}/facebook`;
             const newRef = db.ref(path).push();
-            const newObj = { uid: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' };
+            const newObj = { uid: '', username: '', pass: '', tfa: '', cookie: '', fullMail: '', status: '', color: '#ffffff' };
             newRef.set(newObj).then(() => {
                 localData[newRef.key] = newObj;
                 updateLocalAndSync(localData);
@@ -2349,7 +2425,7 @@
 
         function applyRangeSelection(rE, fE) {
             selectedSet.clear();
-            const flds = ['uid', 'pass', 'tfa', 'cookie', 'fullMail', 'status', 'color'];
+            const flds = ['uid', 'username', 'pass', 'tfa', 'cookie', 'fullMail', 'status', 'color'];
             let fS = flds.indexOf(startPoint.f), fE2 = flds.indexOf(fE);
             let rS = Math.min(startPoint.r, rE), rEx = Math.max(startPoint.r, rE);
             let cS = Math.min(fS, fE2), cEx = Math.max(fS, fE2);
@@ -2466,7 +2542,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('theme') === 'dark') {
                 document.body.setAttribute('data-theme', 'dark');
-                document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+                document.getElementById('theme-icon').className, 'fa-solid fa-sun';
                 document.getElementById('theme-label').innerText = 'DAY';
             }
             checkSession();
